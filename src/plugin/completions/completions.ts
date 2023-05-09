@@ -1,4 +1,4 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import { Logger, TemplateContext } from "typescript-template-language-service-decorator";
 import {
   CompletionEntry,
   CompletionInfo,
@@ -6,7 +6,6 @@ import {
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
 import { CustomElementsResource } from "../transformer/custom-elements-resource";
-import { LanguageServiceLogger } from "../utils";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
@@ -25,7 +24,7 @@ export type CompletionTypeParams =
 
 export class CompletionsService {
   constructor(
-    private logger: LanguageServiceLogger,
+    private logger: Logger,
     private ceResource: CustomElementsResource
   ) {
     logger.log("Setting up Completions Service");
