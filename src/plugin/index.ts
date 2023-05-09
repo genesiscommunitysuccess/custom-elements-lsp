@@ -1,4 +1,5 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
+import { CompletionsService } from "./completions";
 import { CustomElementsLanguageService } from "./customelements";
 import { DiagnosticsService } from "./diagnostics";
 import { CustomElementsManifestTransformer } from "./transformer/cem-transformer";
@@ -69,7 +70,8 @@ export function init(modules: {
       new CustomElementsLanguageService(
         logger,
         ceresource,
-        new DiagnosticsService(logger, ceresource)
+        new DiagnosticsService(logger, ceresource),
+        new CompletionsService(logger, ceresource)
       ),
       {
         tags: ["html"], // Could add for css too
