@@ -1,6 +1,9 @@
 import { Package } from "custom-elements-manifest";
 import { readFileSync, existsSync } from "fs";
-import { Logger } from "typescript-template-language-service-decorator";
+import {
+  Logger,
+  TemplateContext,
+} from "typescript-template-language-service-decorator";
 import { CustomElementsManifestTransformer } from "../plugin/transformer/cem-transformer";
 
 const MANIFSST_PATH = "./src/jest/ce-test.json";
@@ -40,3 +43,25 @@ export function getLogger() {
   const debugLog = process.env.TEST_LOG === "1";
   return constructLogger(debugLog);
 }
+
+/**
+ * Tagged template literal which is converted to TemplateContext
+ * for use in the unit tests
+ */
+export const html = (
+  strings: TemplateStringsArray,
+  ...values: ((...args: any[]) => any)[]
+): TemplateContext => {
+  return {
+    typescript: jest.fn() as any,
+    fileName: "test.ts",
+    text: String.raw(
+      { raw: strings },
+      ...values.map((v) => "x".repeat(v.toString().length))
+    ),
+    rawText: String.raw({ raw: strings }, ...values),
+    node: jest.fn() as any,
+    toOffset: jest.fn(),
+    toPosition: jest.fn(),
+  };
+};
