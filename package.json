@@ -1,0 +1,18 @@
+{
+	"name": "@genesiscommunitysuccess/custom-elements-lsp",
+	"version": "0.0.1",
+	"license": "MIT",
+	"main": "./out",
+	"bin": {
+		"customelements-analyse": "./src/parser/analyse.js"
+	},
+	"dependencies": {
+		"@custom-elements-manifest/analyzer": "^0.8.0",
+		"custom-elements-manifest": "^2.0.0",
+		"globby": "^13.1.4",
+		"minimist-lite": "^2.2.1",
+		"node-html-parser": "^6.1.5",
+		"typescript": "^4.4.3",
+		"typescript-template-language-service-decorator": "^2.3.2"
+	}
+}
