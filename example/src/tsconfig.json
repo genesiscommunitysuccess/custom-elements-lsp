@@ -3,7 +3,7 @@
 		// This matches the package name given in this package.json
 		"plugins": [
 			{
-				"name": "webcomponents-lsp-plugin",
+				"name": "@genesiscommunitysuccess/custom-elements-lsp",
 				"srcRouteFromTSServer": "../../.."
 			}
 		],

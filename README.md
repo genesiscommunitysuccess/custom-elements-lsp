@@ -10,7 +10,7 @@ To use this plugin you have a version of typescript as part of the project, loca
 	"compilerOptions": {
 		"plugins": [
 			{
-				"name": "webcomponents-lsp-plugin",
+				"name": "@genesiscommunitysuccess/custom-elements-lsp",
 				"srcRouteFromTSServer": "../../.."
 			}
 		],
@@ -43,7 +43,7 @@ The app in `/example` is setup to use the LSP plugin out of the box for NVIM and
 The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
 1. `npm link` in the project root
 2. `cd example`
-3. `npm link webcomponents-lsp-plugin`
+3. `npm link @genesiscommunitysuccess/custom-elements-lsp`
 
 While developing:
 1. `npx tsc --watch` from the root directory to incrementally transpile the plugin.
