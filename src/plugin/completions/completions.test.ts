@@ -1,12 +1,14 @@
-import { getCEManifest, getLogger, html } from "../../jest/utils";
+import { buildDefaultCEFake } from "../../jest/custom-elements-resource";
+import { getLogger, html } from "../../jest/utils";
+import { CustomElementsResource } from "../transformer/custom-elements-resource";
 import { CompletionsService } from "./completions";
 
-const getCompletionsService = () =>
-  new CompletionsService(getLogger(), getCEManifest());
+const getCompletionsService = (ceRes: CustomElementsResource) =>
+  new CompletionsService(getLogger(), ceRes);
 
 describe("getComletionType", () => {
   it("Returns key none if not match is found", () => {
-    const service = getCompletionsService();
+    const service = getCompletionsService(buildDefaultCEFake());
     const context = html``;
 
     const completions = service.getCompletionsAtPosition(context, {
