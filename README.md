@@ -1,4 +1,4 @@
-# PoC LSP Plugin
+# Custom Elements LSP Plugin
 
 ## Plugin Setup and Usage
 
@@ -18,7 +18,7 @@ To use this plugin you have a version of typescript as part of the project, loca
 ```
 > `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where `ce.json` (see step 4) is saved to. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`.
 
-3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/@genesislcap/**/custom-elements.json'",`
+3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
 <!-- TODO: need much better explanation of this command -->
 4. Run `npm run lsp:analyse` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
 5. Any IDE specific configuration...
