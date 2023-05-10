@@ -37,7 +37,7 @@ describe("getCompletionType", () => {
     ],
     [
       'Key "none" after an unclosed tag',
-      [html`<div>`, { line: 0, character: 5 }],
+      [html`<div></div>`, { line: 0, character: 5 }],
       { key: "none", params: undefined },
     ],
     // custom-element-name
@@ -79,12 +79,18 @@ describe("getCompletionType", () => {
     ],
     [
       'Key "custom-element-attribute" and gets custom element name when string attribute is present',
-      [html`<ce-elem></ce-elem><cus-elem attr="value"`, { line: 0, character: 41 }],
+      [
+        html`<ce-elem></ce-elem><cus-elem attr="value"`,
+        { line: 0, character: 41 },
+      ],
       { key: "custom-element-attribute", params: "cus-elem" },
     ],
     [
       'Key "custom-element-attribute" and gets custom element when curso is inside of a fully closed element',
-      [html`<ce-elem></ce-elem><cus-elem attr="value"></cus-elem>`, { line: 0, character: 41 }],
+      [
+        html`<ce-elem></ce-elem><cus-elem attr="value"></cus-elem>`,
+        { line: 0, character: 41 },
+      ],
       { key: "custom-element-attribute", params: "cus-elem" },
     ],
   ];
@@ -136,6 +142,114 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
+      },
+    ]);
+  });
+
+  it("Returns completions for the custom element tags if inside of an opening with an incomplete custom element", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<custom-eleme`;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 13,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: "<custom-element></custom-element>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "custom-element",
+        sortText: "custom-element",
+      },
+      {
+        insertText: "<no-attr></no-attr>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "no-attr",
+        sortText: "custom-element",
+      },
+    ]);
+  });
+
+  it("Returns attribute completions when past a valid custom element name which has defined attributes", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<custom-element `;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 16,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'colour=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "colour",
+        sortText: "custom-element-attribute",
+      },
+      {
+        insertText: 'activated=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "activated",
+        sortText: "custom-element-attribute",
+      },
+    ]);
+  });
+
+  it("Returns attribute completions when writing an attribute", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<custom-element col`;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 19,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'colour=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "colour",
+        sortText: "custom-element-attribute",
+      },
+      {
+        insertText: 'activated=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "activated",
+        sortText: "custom-element-attribute",
+      },
+    ]);
+  });
+
+  it("Returns attribute completions when writing an attribute inside of a finished tag", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<custom-element colour="red"></custom-element>`;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 28,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'colour=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "colour",
+        sortText: "custom-element-attribute",
+      },
+      {
+        insertText: 'activated=""',
+        kind: "parameter",
+        kindModifiers: "custom-element-attribute",
+        name: "activated",
+        sortText: "custom-element-attribute",
       },
     ]);
   });
