@@ -253,4 +253,59 @@ describe("getCompletionsAtPosition", () => {
       },
     ]);
   });
+
+  // TODO: This should be changed to not returning anything
+  it("Returns name completions when we try and complete attributes on a custom element with no attributes", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<no-attr `;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 9,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: "<custom-element></custom-element>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "custom-element",
+        sortText: "custom-element",
+      },
+      {
+        insertText: "<no-attr></no-attr>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "no-attr",
+        sortText: "custom-element",
+      },
+    ]);
+  });
+
+  it("Returns name completions when we try and complete attributes on an unknown custom element", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<unknown-element `;
+
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 17,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: "<custom-element></custom-element>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "custom-element",
+        sortText: "custom-element",
+      },
+      {
+        insertText: "<no-attr></no-attr>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "no-attr",
+        sortText: "custom-element",
+      },
+    ]);
+  });
 });
