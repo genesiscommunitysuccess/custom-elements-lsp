@@ -20,6 +20,9 @@ export const buildDefaultCEFake = (): CustomElementsResourceFake => {
         { name: "activated", type: "boolean" },
       ],
     },
+    "no-attr": {
+      attr: [],
+    },
   });
 };
 

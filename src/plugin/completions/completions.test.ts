@@ -6,8 +6,22 @@ import { CompletionsService } from "./completions";
 const getCompletionsService = (ceRes: CustomElementsResource) =>
   new CompletionsService(getLogger(), ceRes);
 
-describe("getComletionType", () => {
-  it("Returns key none if not match is found", () => {
+describe("getCompletionType", () => {
+  it('Returns "none" if we are in a blank template', () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html``;
+
+    // `getComptionType` is private so need to case to `any` to test it
+    const result = (service as any).getComptionType(context, {
+      line: 0,
+      character: 0,
+    });
+    expect(result).toEqual({ key: "none", params: undefined });
+  });
+});
+
+describe("getCompletionsAtPosition", () => {
+  it("Returns no completions if we are in a blank template", () => {
     const service = getCompletionsService(buildDefaultCEFake());
     const context = html``;
 
@@ -19,32 +33,30 @@ describe("getComletionType", () => {
     expect(completions.entries).toHaveLength(0);
   });
 
-  /*
-  it("Returns key XXXXX if no match is found", () => {
-    const service = getCompletionsService();
+  it("Returns completions for the custom element tags if inside of an opening tag", () => {
+    const service = getCompletionsService(buildDefaultCEFake());
+    const context = html`<`;
 
-    const context = html`
-      <template>
-        <div class="fg">
-          <input type="text" value="${(x) => `#${x.foreground}`}" />
-          <button @click="${(x) => x.updateTheme("foreground")}">
-            Foreground
-          </button>
-        </div>
+    const completions = service.getCompletionsAtPosition(context, {
+      line: 0,
+      character: 1,
+    });
 
-        <div class="bg">
-          <input type="text" value="${(x) => `#${x.background}`}" />
-          <button @click="${(x) => x.updateTheme("background")}">
-            Background
-          </button>
-        </div>
-      </template>
-    `;
-
-    console.log(context.text);
-    console.log(context.rawText);
-
-    // TODO: Finish
+    expect(completions.entries).toEqual([
+      {
+        insertText: "<custom-element></custom-element>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "custom-element",
+        sortText: "custom-element",
+      },
+      {
+        insertText: "<no-attr></no-attr>",
+        kind: "type",
+        kindModifiers: "custom-element",
+        name: "no-attr",
+        sortText: "custom-element",
+      },
+    ]);
   });
-  */
 });
