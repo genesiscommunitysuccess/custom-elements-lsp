@@ -16,7 +16,11 @@ const constructLogger = (debugLog: boolean = false): Logger => ({
   },
 });
 
-export function getCEManifest() {
+/**
+ * Builds a real `CustomElementsManifestTransformer` from the test manifest
+ * located at `MANIFSST_PATH`.
+ */
+export function getCEFromTestJson() {
   if (!manifest) {
     if (!existsSync(MANIFSST_PATH)) {
       console.error(
@@ -39,6 +43,10 @@ export function getCEManifest() {
   );
 }
 
+/**
+ * Construct a logger which will output debug logs if the `TEST_LOG` environment
+ * variable is set to `1`. Use via `npm run test:unit:verbose`.
+ */
 export function getLogger() {
   const debugLog = process.env.TEST_LOG === "1";
   return constructLogger(debugLog);
