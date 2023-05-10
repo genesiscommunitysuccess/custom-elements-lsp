@@ -1,5 +1,5 @@
 import { CustomElementDeclaration, Package } from "custom-elements-manifest";
-import { LanguageServiceLogger } from "../utils";
+import { Logger } from "typescript-template-language-service-decorator";
 import {
   CustomElementAttribute,
   CustomElementsResource,
@@ -11,7 +11,7 @@ export class CustomElementsManifestTransformer
     new Map();
 
   constructor(
-    private logger: LanguageServiceLogger,
+    private logger: Logger,
     private manifest: Package
   ) {
     this.tranfsormManifest();
