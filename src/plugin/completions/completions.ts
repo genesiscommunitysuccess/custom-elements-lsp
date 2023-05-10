@@ -1,4 +1,7 @@
-import { Logger, TemplateContext } from "typescript-template-language-service-decorator";
+import {
+  Logger,
+  TemplateContext,
+} from "typescript-template-language-service-decorator";
 import {
   CompletionEntry,
   CompletionInfo,
@@ -57,7 +60,7 @@ export class CompletionsService {
         );
         entries = attrs.map(({ name, type }) => ({
           name,
-          insertText: `${name}=""`,
+          insertText: `${name}${type === "boolean" ? "" : '=""'}`,
           kind: ScriptElementKind.parameterElement,
           kindModifiers: "custom-element-attribute",
           sortText: "custom-element-attribute",

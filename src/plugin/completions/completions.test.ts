@@ -191,7 +191,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated=""',
+        insertText: 'activated',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
@@ -218,7 +218,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated=""',
+        insertText: 'activated',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
@@ -245,7 +245,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated=""',
+        insertText: 'activated',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
