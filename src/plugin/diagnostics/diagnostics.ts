@@ -86,9 +86,9 @@ export class DiagnosticsService {
   }
 
   /**
-   * Get any diagnotic items for attributes on known custom elements, which are invalid attributes
+   * Get any diagnostic items for attributes on known custom elements, which are invalid attributes
    * @param context - TemplateContext from the template language service
-   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parseR` **not** the standard DOM API.
+   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
   getInvalidCEAttribute(

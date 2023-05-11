@@ -235,3 +235,82 @@ describe("getUnknownCETag", () => {
     ]);
   });
 });
+
+describe("getInvalidCEAttribute", () => {
+  it("No diagnostics for an empty template", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html``;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("No diagnostics for standard html elements", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <div>
+        <invalid></invalid>
+      </div>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("No diagnostics for unknown custom elements", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <unknown-element></unknown-element>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("No diagnostics for all correct attributes", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <unknown-element></unknown-element>
+      <no-attr></no-attr>
+      <custom-element activated colour="red"></custom-element>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("Diagnostics for invalid attributes on known custom elements", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <unknown-element></unknown-element>
+      <no-attr invalidattr></no-attr>
+      <custom-element
+        activated
+        colour="red"
+        alsoinvalid="test"
+      ></custom-element>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 0,
+        file: "test.ts",
+        length: 11,
+        messageText:
+          "Unknown attribute: invalidattr for custom element no-attr",
+        start: 68,
+      },
+      {
+        category: 1,
+        code: 0,
+        file: "test.ts",
+        length: 11,
+        messageText:
+          "Unknown attribute: alsoinvalid for custom element custom-element",
+        start: 160,
+      },
+    ]);
+  });
+});
