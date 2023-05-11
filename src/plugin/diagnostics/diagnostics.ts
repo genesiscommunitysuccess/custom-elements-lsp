@@ -39,42 +39,50 @@ export class DiagnosticsService {
     const invalidCETags = customElementTags
       .filter((elem) => !ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => elem.tagName.toLowerCase());
+    const checkTags = [...new Set(invalidCETags)];
 
-    this.logger.log(`getUnknownCETag: invalidCETags: ${invalidCETags}`);
-
+    this.logger.log(`getUnknownCETag: checkTags: ${checkTags}`);
     this.logger.log(`getUnknownCETag: rawText: ${context.rawText}`);
 
-    const r = context.rawText
+    // Loop over each line and build one tag with location object
+    // for every match on every line (so a line with two of the same invalid
+    // tag will be there twice, with different column values)
+    const tagsWithLocations = context.rawText
       .split(/\n/g)
-      .map((line, i) => invalidCETags.map((tag) => ({ line, tag, i })))
+      .map((line, i) => checkTags.map((tag) => ({ line, tag, row: i })))
       .flat()
-      // .filter(({ line, tag }) => line.includes(tag));
-      // .filter(({ line, tag }) => (new RegExp(`<${tag}[>\s]`)).test(line));
-      .map((x) => {
-        const { line, tag } = x;
+      .map((tagAndLine) => {
+        const { line, tag } = tagAndLine;
         const regex = new RegExp(`<${tag}[>\s]`, "g");
         const matchesCount = line.match(regex)?.length ?? 0;
-        return new Array(matchesCount).fill(x);
-      }).flat();
 
-    this.logger.log(`getUnknownCETag: r: ${JSON.stringify(r)}`);
-    const r2 = r.map(({ line, tag, i }) => ({
+        return Array(matchesCount)
+          .fill(0)
+          .map((_, i) => ({
+            ...tagAndLine,
+            column:
+              this.getPositionOfNthTagEnd({
+                context: {
+                  rawText: line,
+                },
+                tagName: tag,
+                occurrence: i + 1,
+              }) - tag.length,
+          }));
+      })
+      .flat();
+
+    return tagsWithLocations.map(({ line, tag, row, column }) => ({
       category: DiagnosticCategory.Warning,
       code: 0,
       file: sourceFile,
       start: context.toOffset({
-        line: i,
-        character: line.indexOf(tag),
+        line: row,
+        character: column,
       }),
       length: tag.length,
       messageText: `Unknown custom element: ${tag}`,
     }));
-
-    this.logger.log(
-      `getUnknownCETag: offsets: ${r2.map((d) => d.start).join(", ")}`
-    );
-
-    return r2;
   }
 
   /**
@@ -163,7 +171,9 @@ export class DiagnosticsService {
     tagName,
     occurrence,
   }: {
-    context: TemplateContext;
+    context: {
+      rawText: string;
+    };
     tagName: string;
     occurrence: number;
   }): number {
