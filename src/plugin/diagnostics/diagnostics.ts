@@ -1,5 +1,8 @@
 import { HTMLElement } from "node-html-parser";
-import { Logger, TemplateContext } from "typescript-template-language-service-decorator";
+import {
+  Logger,
+  TemplateContext,
+} from "typescript-template-language-service-decorator";
 import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
 import { CustomElementsResource } from "../transformer/custom-elements-resource";
 
@@ -81,44 +84,44 @@ export class DiagnosticsService {
         attrs: Object.keys(elem.attributes),
       }));
 
-    const occurances: Map<string, number> = new Map();
+    const occurrences: Map<string, number> = new Map();
 
-    const withOccurances = tagsAndAttrs.map((tagAndAttrs) => {
-      const o = occurances.get(tagAndAttrs.tagName) || 0;
-      occurances.set(tagAndAttrs.tagName, o + 1);
+    const withOccurrences = tagsAndAttrs.map((tagAndAttrs) => {
+      const o = occurrences.get(tagAndAttrs.tagName) || 0;
+      occurrences.set(tagAndAttrs.tagName, o + 1);
       return {
         ...tagAndAttrs,
-        occurance: o + 1,
+        occurrence: o + 1,
       };
     });
 
-    withOccurances.forEach((tagAndAttrs) => {
+    withOccurrences.forEach((tagAndAttrs) => {
       this.logger.log(
-        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurance}`
+        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurrence}`
       );
     });
 
-    const invalidAttr = withOccurances
-      .map(({ tagName, occurance, attrs }) => {
+    const invalidAttr = withOccurrences
+      .map(({ tagName, occurrence, attrs }) => {
         const ceAttrs = this.ceResource
           .getCEAttributes(tagName)
           .map(({ name }) => name);
         return attrs
           .filter((attr) => !ceAttrs.includes(attr))
-          .map((attr) => ({ tagName, occurance, attr }));
+          .map((attr) => ({ tagName, occurrence, attr }));
       })
       .flat();
 
     invalidAttr.forEach((attr) => {
       this.logger.log(
-        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurance}`
+        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`
       );
     });
 
-    return invalidAttr.map(({ tagName, occurance, attr }) => {
+    return invalidAttr.map(({ tagName, occurrence, attr }) => {
       const attrSearchOffset = this.getPositionOfNthTagEnd({
         tagName,
-        occurance,
+        occurrence,
         context,
       });
 
@@ -136,24 +139,30 @@ export class DiagnosticsService {
   }
 
   /**
-   * Get the index in a string of the end of a substring tag name, at a given occurance
+   * Get the index in a string of the end of a substring tag name, at a given occurrence
    */
   private getPositionOfNthTagEnd({
     context,
     tagName,
-    occurance,
+    occurrence,
   }: {
     context: TemplateContext;
     tagName: string;
-    occurance: number;
+    occurrence: number;
   }): number {
+    if (occurrence < 1) {
+      return -2;
+    }
     const rawText = context.rawText;
-    let countdown = occurance;
+    let countdown = occurrence;
     let stringIndex = 0;
 
     while (countdown > 0) {
-      stringIndex =
-        rawText.indexOf(`<${tagName}`, stringIndex) + tagName.length + 1;
+      const nextOccurrenceIndex = rawText.indexOf(`<${tagName}`, stringIndex);
+      if (nextOccurrenceIndex === -1) {
+        return -1;
+      }
+      stringIndex = nextOccurrenceIndex + tagName.length + 1;
       countdown--;
     }
 
