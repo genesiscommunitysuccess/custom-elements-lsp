@@ -1,12 +1,11 @@
 import { HTMLElement } from "node-html-parser";
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import { Logger, TemplateContext } from "typescript-template-language-service-decorator";
 import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
 import { CustomElementsResource } from "../transformer/custom-elements-resource";
-import { LanguageServiceLogger } from "../utils";
 
 export class DiagnosticsService {
   constructor(
-    private logger: LanguageServiceLogger,
+    private logger: Logger,
     private ceResource: CustomElementsResource
   ) {
     logger.log("Setting up Diagnostics");
