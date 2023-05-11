@@ -145,7 +145,24 @@ describe("getUnknownCETag", () => {
     </template>`;
     const elementList = getElements(context);
     const result = service.getUnknownCETag(context, elementList);
-    expect(result).toEqual([]);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 10,
+        messageText: "Unknown custom element: invalid-ce",
+        start: 23,
+      },
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 10,
+        messageText: "Unknown custom element: invalid-ce",
+        start: 48,
+      },
+    ]);
   });
 
   it("Correct warnings when tag on the same line and substring of another", () => {
@@ -158,6 +175,31 @@ describe("getUnknownCETag", () => {
     </template>`;
     const elementList = getElements(context);
     const result = service.getUnknownCETag(context, elementList);
-    expect(result).toEqual([]);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 10,
+        messageText: "Unknown custom element: invalid-ce",
+        start: 32,
+      },
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 10,
+        messageText: "Unknown custom element: invalid-ce",
+        start: 57,
+      },
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 18,
+        messageText: "Unknown custom element: another-invalid-ce",
+        start: 91,
+      },
+    ]);
   });
 });
