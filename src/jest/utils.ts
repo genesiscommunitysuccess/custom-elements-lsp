@@ -63,11 +63,12 @@ export const html = (
   return {
     typescript: jest.fn() as any,
     fileName: "test.ts",
-    text: String.raw(
-      { raw: strings },
-      ...values.map((v) => "x".repeat(v.toString().length))
-    ),
-    rawText: String.raw({ raw: strings }, ...values),
+    text:
+      String.raw(
+        { raw: strings },
+        ...values.map((v) => "x".repeat(v.toString().length))
+      ) ?? "",
+    rawText: String.raw({ raw: strings }, ...values) ?? "",
     node: jest.fn() as any,
     toOffset: jest.fn(),
     toPosition: jest.fn(),
