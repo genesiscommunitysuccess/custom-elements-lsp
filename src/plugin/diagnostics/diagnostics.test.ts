@@ -108,7 +108,7 @@ describe("getUnknownCETag", () => {
     ]);
   });
 
-  it("Correct warnings when one invalid tag is a substring of another invalid tag", () => {
+  it("Correct warnings when one unknown tag is a substring of another unknown tag", () => {
     const service = getDiagnosticsService(buildDefaultCEFake());
     const context = html`<template>
       <div>
@@ -138,7 +138,7 @@ describe("getUnknownCETag", () => {
     ]);
   });
 
-  it("Correct warnings when the same invalid tag is on one line multiple times", () => {
+  it("Correct warnings when the same unknown tag is on one line multiple times", () => {
     const service = getDiagnosticsService(buildDefaultCEFake());
     const context = html`<template>
       <div><invalid-ce></invalid-ce><invalid-ce></invalid-ce></div>
@@ -165,7 +165,7 @@ describe("getUnknownCETag", () => {
     ]);
   });
 
-  it("Correct warnings when tag on the same line and substring of another", () => {
+  it("Correct warnings when unknown tag on the same line and substring of another", () => {
     const service = getDiagnosticsService(buildDefaultCEFake());
     const context = html`<template>
       <div>
@@ -199,6 +199,38 @@ describe("getUnknownCETag", () => {
         length: 18,
         messageText: "Unknown custom element: another-invalid-ce",
         start: 91,
+      },
+    ]);
+  });
+
+  it("No diagnostics when we only have known custom elements", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <no-attr></no-attr>
+      <custom-element activated></custom-element>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getUnknownCETag(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("Diagnostics for invalid elements when there are known elements too", () => {
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <no-attr></no-attr>
+      <custom-element activated></custom-element>
+      <no-at></no-at>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getUnknownCETag(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 5,
+        messageText: "Unknown custom element: no-at",
+        start: 94,
       },
     ]);
   });
