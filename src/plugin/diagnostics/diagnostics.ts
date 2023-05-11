@@ -32,7 +32,7 @@ export class DiagnosticsService {
       elem.tagName.includes("-")
     );
     this.logger.log(
-      `getUnkownCETag: customElementTags: ${customElementTags.length}`
+      `getUnknownCETag: customElementTags: ${customElementTags.length}`
     );
 
     const ceNames = this.ceResource.getCENames();
@@ -40,24 +40,41 @@ export class DiagnosticsService {
       .filter((elem) => !ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => elem.tagName.toLowerCase());
 
-    this.logger.log(`getUnkownCETag: invalidCETags: ${invalidCETags}`);
+    this.logger.log(`getUnknownCETag: invalidCETags: ${invalidCETags}`);
 
-    return context.rawText
+    this.logger.log(`getUnknownCETag: rawText: ${context.rawText}`);
+
+    const r = context.rawText
       .split(/\n/g)
       .map((line, i) => invalidCETags.map((tag) => ({ line, tag, i })))
       .flat()
-      .filter(({ line, tag }) => line.includes(tag))
-      .map(({ line, tag, i }) => ({
-        category: DiagnosticCategory.Warning,
-        code: 0,
-        file: sourceFile,
-        start: context.toOffset({
-          line: i,
-          character: line.indexOf(tag),
-        }),
-        length: tag.length,
-        messageText: `Unknown custom element: ${tag}`,
-      }));
+      // .filter(({ line, tag }) => line.includes(tag));
+      // .filter(({ line, tag }) => (new RegExp(`<${tag}[>\s]`)).test(line));
+      .map((x) => {
+        const { line, tag } = x;
+        const regex = new RegExp(`<${tag}[>\s]`, "g");
+        const matchesCount = line.match(regex)?.length ?? 0;
+        return new Array(matchesCount).fill(x);
+      }).flat();
+
+    this.logger.log(`getUnknownCETag: r: ${JSON.stringify(r)}`);
+    const r2 = r.map(({ line, tag, i }) => ({
+      category: DiagnosticCategory.Warning,
+      code: 0,
+      file: sourceFile,
+      start: context.toOffset({
+        line: i,
+        character: line.indexOf(tag),
+      }),
+      length: tag.length,
+      messageText: `Unknown custom element: ${tag}`,
+    }));
+
+    this.logger.log(
+      `getUnknownCETag: offsets: ${r2.map((d) => d.start).join(", ")}`
+    );
+
+    return r2;
   }
 
   /**
