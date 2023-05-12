@@ -1,12 +1,14 @@
 import { HTMLElement } from "node-html-parser";
-import { TemplateContext } from "typescript-template-language-service-decorator";
+import {
+  Logger,
+  TemplateContext,
+} from "typescript-template-language-service-decorator";
 import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
 import { CustomElementsResource } from "../transformer/custom-elements-resource";
-import { LanguageServiceLogger } from "../utils";
 
 export class DiagnosticsService {
   constructor(
-    private logger: LanguageServiceLogger,
+    private logger: Logger,
     private ceResource: CustomElementsResource
   ) {
     logger.log("Setting up Diagnostics");
@@ -30,38 +32,63 @@ export class DiagnosticsService {
       elem.tagName.includes("-")
     );
     this.logger.log(
-      `getUnkownCETag: customElementTags: ${customElementTags.length}`
+      `getUnknownCETag: customElementTags: ${customElementTags.length}`
     );
 
     const ceNames = this.ceResource.getCENames();
     const invalidCETags = customElementTags
       .filter((elem) => !ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => elem.tagName.toLowerCase());
+    const checkTags = [...new Set(invalidCETags)];
 
-    this.logger.log(`getUnkownCETag: invalidCETags: ${invalidCETags}`);
+    this.logger.log(`getUnknownCETag: checkTags: ${checkTags}`);
+    this.logger.log(`getUnknownCETag: rawText: ${context.rawText}`);
 
-    return context.rawText
+    // Loop over each line and build one tag with location object
+    // for every match on every line (so a line with two of the same invalid
+    // tag will be there twice, with different column values)
+    const tagsWithLocations = context.rawText
       .split(/\n/g)
-      .map((line, i) => invalidCETags.map((tag) => ({ line, tag, i })))
+      .map((line, i) => checkTags.map((tag) => ({ line, tag, row: i })))
       .flat()
-      .filter(({ line, tag }) => line.includes(tag))
-      .map(({ line, tag, i }) => ({
-        category: DiagnosticCategory.Warning,
-        code: 0,
-        file: sourceFile,
-        start: context.toOffset({
-          line: i,
-          character: line.indexOf(tag),
-        }),
-        length: tag.length,
-        messageText: `Unknown custom element: ${tag}`,
-      }));
+      .map((tagAndLine) => {
+        const { line, tag } = tagAndLine;
+        const regex = new RegExp(`<${tag}[>\s]`, "g");
+        const matchesCount = line.match(regex)?.length ?? 0;
+
+        return Array(matchesCount)
+          .fill(0)
+          .map((_, i) => ({
+            ...tagAndLine,
+            column:
+              this.getPositionOfNthTagEnd({
+                context: {
+                  rawText: line,
+                },
+                tagName: tag,
+                occurrence: i + 1,
+              }) - tag.length,
+          }));
+      })
+      .flat();
+
+    return tagsWithLocations.map(({ line, tag, row, column }) => ({
+      category: DiagnosticCategory.Warning,
+      code: 0,
+      file: sourceFile,
+      start: context.toOffset({
+        line: row,
+        character: column,
+      }),
+      length: tag.length,
+      messageText: `Unknown custom element: ${tag}`,
+    }));
   }
 
   /**
-   * Get any diagnotic items for attributes on known custom elements, which are invalid attributes
+   * Get any diagnostic items for attributes on known custom elements, which are invalid attributes
    * @param context - TemplateContext from the template language service
-   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parseR` **not** the standard DOM API.
+   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
   getInvalidCEAttribute(
@@ -82,44 +109,44 @@ export class DiagnosticsService {
         attrs: Object.keys(elem.attributes),
       }));
 
-    const occurances: Map<string, number> = new Map();
+    const occurrences: Map<string, number> = new Map();
 
-    const withOccurances = tagsAndAttrs.map((tagAndAttrs) => {
-      const o = occurances.get(tagAndAttrs.tagName) || 0;
-      occurances.set(tagAndAttrs.tagName, o + 1);
+    const withOccurrences = tagsAndAttrs.map((tagAndAttrs) => {
+      const o = occurrences.get(tagAndAttrs.tagName) || 0;
+      occurrences.set(tagAndAttrs.tagName, o + 1);
       return {
         ...tagAndAttrs,
-        occurance: o + 1,
+        occurrence: o + 1,
       };
     });
 
-    withOccurances.forEach((tagAndAttrs) => {
+    withOccurrences.forEach((tagAndAttrs) => {
       this.logger.log(
-        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurance}`
+        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurrence}`
       );
     });
 
-    const invalidAttr = withOccurances
-      .map(({ tagName, occurance, attrs }) => {
+    const invalidAttr = withOccurrences
+      .map(({ tagName, occurrence, attrs }) => {
         const ceAttrs = this.ceResource
           .getCEAttributes(tagName)
           .map(({ name }) => name);
         return attrs
           .filter((attr) => !ceAttrs.includes(attr))
-          .map((attr) => ({ tagName, occurance, attr }));
+          .map((attr) => ({ tagName, occurrence, attr }));
       })
       .flat();
 
     invalidAttr.forEach((attr) => {
       this.logger.log(
-        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurance}`
+        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`
       );
     });
 
-    return invalidAttr.map(({ tagName, occurance, attr }) => {
+    return invalidAttr.map(({ tagName, occurrence, attr }) => {
       const attrSearchOffset = this.getPositionOfNthTagEnd({
         tagName,
-        occurance,
+        occurrence,
         context,
       });
 
@@ -137,24 +164,32 @@ export class DiagnosticsService {
   }
 
   /**
-   * Get the index in a string of the end of a substring tag name, at a given occurance
+   * Get the index in a string of the end of a substring tag name, at a given occurrence
    */
   private getPositionOfNthTagEnd({
     context,
     tagName,
-    occurance,
+    occurrence,
   }: {
-    context: TemplateContext;
+    context: {
+      rawText: string;
+    };
     tagName: string;
-    occurance: number;
+    occurrence: number;
   }): number {
+    if (occurrence < 1) {
+      return -2;
+    }
     const rawText = context.rawText;
-    let countdown = occurance;
+    let countdown = occurrence;
     let stringIndex = 0;
 
     while (countdown > 0) {
-      stringIndex =
-        rawText.indexOf(`<${tagName}`, stringIndex) + tagName.length + 1;
+      const nextOccurrenceIndex = rawText.indexOf(`<${tagName}`, stringIndex);
+      if (nextOccurrenceIndex === -1) {
+        return -1;
+      }
+      stringIndex = nextOccurrenceIndex + tagName.length + 1;
       countdown--;
     }
 

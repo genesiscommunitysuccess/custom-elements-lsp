@@ -52,6 +52,14 @@ export function getLogger() {
   return constructLogger(debugLog);
 }
 
+const toOffset =
+  (rawText: string) =>
+  ({ line, character }: { line: number; character: number }) =>
+    rawText
+      .split(/\n/g)
+      .slice(0, line)
+      .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
+
 /**
  * Tagged template literal which is converted to TemplateContext
  * for use in the unit tests
@@ -60,16 +68,21 @@ export const html = (
   strings: TemplateStringsArray,
   ...values: ((...args: any[]) => any)[]
 ): TemplateContext => {
+  const rawText = String.raw({ raw: strings }, ...values) ?? "";
+
   return {
     typescript: jest.fn() as any,
     fileName: "test.ts",
-    text: String.raw(
-      { raw: strings },
-      ...values.map((v) => "x".repeat(v.toString().length))
-    ),
-    rawText: String.raw({ raw: strings }, ...values),
-    node: jest.fn() as any,
-    toOffset: jest.fn(),
+    text:
+      String.raw(
+        { raw: strings },
+        ...values.map((v) => "x".repeat(v.toString().length))
+      ) ?? "",
+    rawText,
+    node: {
+      getSourceFile: () => "test.ts",
+    } as any,
+    toOffset: toOffset(rawText),
     toPosition: jest.fn(),
   };
 };
