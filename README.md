@@ -11,7 +11,8 @@ To use this plugin you have a version of typescript as part of the project, loca
 		"plugins": [
 			{
 				"name": "@genesiscommunitysuccess/custom-elements-lsp",
-				"srcRouteFromTSServer": "../../.."
+				"srcRouteFromTSServer": "../../..",
+                "designSystemPrefix": "example"
 			}
 		],
     }
@@ -21,7 +22,8 @@ To use this plugin you have a version of typescript as part of the project, loca
 3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
 <!-- TODO: need much better explanation of this command -->
 4. Run `npm run lsp:analyse` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
-5. Any IDE specific configuration...
+5. Run `npx tsc` in the root of the project to compile the plugin code. (This will be done automatically in a future release!)
+6. Any IDE specific configuration...
 
 ### VSCode
 
@@ -53,3 +55,9 @@ To view logs
 2. View logs at specified location
 
 > If you're using VSCode you can view the logs using `TypeScript: Open TS Server log` from the command palette.
+
+## Advanced Usage
+
+`designSystemPrefix` is used to specify how to handle custom elements which are defined but not exported as registered, and later registered against a design system with a specific prefix. An example of this is [FAST component libraries](https://www.fast.design/docs/design-systems/creating-a-component-library). Export these with the magic string `%%prefix%%-` at the start of the tagname and then `designSystemPrefix` will override the `%%prefix%%`.
+
+In the config of this repository it is set to `example` because we use the `example` prefix as set in `./example/src/components.ts`. An example of a component exported in this way can be found in the `./example/src/components/button/` directory.
