@@ -3,6 +3,9 @@ import { FoundationElement } from "@microsoft/fast-foundation";
 import { customButtonStyles } from "./button.style";
 import { customButtonTemplate } from "./button.template";
 
+/**
+ * @tagname %%prefix%%-button
+ */
 export class CustomButton extends FoundationElement {
   @attr title: string = "Default text";
 }
