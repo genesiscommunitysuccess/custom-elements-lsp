@@ -22,6 +22,42 @@ describe("getCENames", () => {
       "theme-picker",
     ]);
   });
+});
 
-  // Test work if the compose export isn't in the same file
+describe("getCEAttributes", () => {
+  const tests: [string, [string], any][] = [
+    ["Unknown element returns an empty array", ["invalid-ce"], []],
+    [
+      "Element returns its attribute",
+      ["example-button"],
+      [
+        {
+          name: "title",
+          type: "string",
+        },
+      ],
+    ],
+    [
+      "Element returns its attributes with correct type and name if the attribute does not match the variable name",
+      ["person-avatar"],
+      [
+        {
+          name: "avatar-src",
+          type: "string",
+        },
+        {
+          name: "fullInfoDisabled",
+          type: "boolean",
+        },
+      ],
+    ],
+  ];
+
+  for (const [name, [tagName], expected] of tests) {
+    const ceResource = getCEFromTestJson({});
+    it(name, () => {
+      const res = ceResource.getCEAttributes(tagName);
+      expect(res).toEqual(expected);
+    });
+  }
 });
