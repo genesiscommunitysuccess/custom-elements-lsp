@@ -143,7 +143,11 @@ export class DiagnosticsService {
       );
     });
 
-    return invalidAttr.map(({ tagName, occurrence, attr }) => {
+    const errorAttrs = invalidAttr
+      .filter(({ attr }) => !attr.startsWith(":")) // TODO: FUI-1193
+      .filter(({ attr }) => attr.replaceAll("x", "").length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
+
+    return errorAttrs.map(({ tagName, occurrence, attr }) => {
       const attrSearchOffset = this.getPositionOfNthTagEnd({
         tagName,
         occurrence,

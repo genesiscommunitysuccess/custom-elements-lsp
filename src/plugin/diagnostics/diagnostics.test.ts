@@ -313,4 +313,29 @@ describe("getInvalidCEAttribute", () => {
       },
     ]);
   });
+
+  // TODO: handled in FUI-1193
+  it("Temp: Diagnostics for a FAST properties are ignored", () => {
+    const nothing = "";
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <unknown-element></unknown-element>
+      <no-attr :test=${(_) => nothing}></no-attr>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
+
+  it("Diagnostics for a FAST ref() are ignored", () => {
+    const ref = (x: any) => () => "";
+    const service = getDiagnosticsService(buildDefaultCEFake());
+    const context = html`<template>
+      <unknown-element></unknown-element>
+      <no-attr ${ref("test")}></no-attr>
+    </template>`;
+    const elementList = getElements(context);
+    const result = service.getInvalidCEAttribute(context, elementList);
+    expect(result.length).toEqual(0);
+  });
 });
