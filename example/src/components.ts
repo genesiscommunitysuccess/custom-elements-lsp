@@ -5,7 +5,7 @@ import { ThemePicker } from "./components/theme/theme";
 import { RootComponent } from "./root";
 
 function provideExampleDesignSystem(element?: HTMLElement): DesignSystem {
-    return DesignSystem.getOrCreate(element).withPrefix("example");
+  return DesignSystem.getOrCreate(element).withPrefix("example");
 }
 
 export const registerComponents = () => {

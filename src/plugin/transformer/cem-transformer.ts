@@ -10,14 +10,26 @@ import {
   CustomElementsResource,
 } from "./custom-elements-resource";
 
+export type CEMTConfig = {
+  designSystemPrefix?: string;
+};
+
 export class CustomElementsManifestTransformer
   implements CustomElementsResource {
   private customElementsDefinition: Map<string, CustomElementDeclaration> =
     new Map();
 
-  constructor(private logger: Logger, private manifest: Package) {
+  constructor(
+    private logger: Logger,
+    private manifest: Package,
+    private config: CEMTConfig
+  ) {
     this.tranfsormManifest();
-    logger.log(`Setting up CustomElementsManifestTransformer class`);
+    logger.log(
+      `Setting up CustomElementsManifestTransformer class with config ${JSON.stringify(
+        config
+      )}`
+    );
   }
 
   private tranfsormManifest() {
@@ -57,9 +69,15 @@ export class CustomElementsManifestTransformer
 
     this.logger.log(`composed declaration: ${JSON.stringify(declaration)}`);
 
+    // We know it has a tagName as we checked in the filter
+    const baseTag = (declaration as { tagName: string }).tagName;
+
+    const tagName = this.config.designSystemPrefix
+      ? baseTag.replace("%%prefix%%", this.config.designSystemPrefix)
+      : baseTag;
+
     this.customElementsDefinition.set(
-      // We know it has a tagName as we checked in the filter
-      (declaration as any).tagName,
+      tagName,
       declaration as CustomElementDeclaration
     );
     return true;

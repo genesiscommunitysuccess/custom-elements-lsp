@@ -4,7 +4,10 @@ import {
   Logger,
   TemplateContext,
 } from "typescript-template-language-service-decorator";
-import { CustomElementsManifestTransformer } from "../plugin/transformer/cem-transformer";
+import {
+  CEMTConfig,
+  CustomElementsManifestTransformer,
+} from "../plugin/transformer/cem-transformer";
 
 const MANIFSST_PATH = "./src/jest/ce-test.json";
 
@@ -20,7 +23,7 @@ const constructLogger = (debugLog: boolean = false): Logger => ({
  * Builds a real `CustomElementsManifestTransformer` from the test manifest
  * located at `MANIFSST_PATH`.
  */
-export function getCEFromTestJson() {
+export function getCEFromTestJson(configOverride: Partial<CEMTConfig>) {
   if (!manifest) {
     if (!existsSync(MANIFSST_PATH)) {
       console.error(
@@ -32,14 +35,18 @@ export function getCEFromTestJson() {
       process.exit(1);
     }
     manifest = readFileSync(MANIFSST_PATH, "utf8");
+    manifest = JSON.parse(manifest);
   }
-  manifest = JSON.parse(manifest);
 
   const logger = getLogger();
 
   return new CustomElementsManifestTransformer(
     logger,
-    manifest as unknown as Package
+    manifest as unknown as Package,
+    {
+      designSystemPrefix: "example",
+      ...configOverride,
+    }
   );
 }
 
@@ -54,11 +61,11 @@ export function getLogger() {
 
 const toOffset =
   (rawText: string) =>
-  ({ line, character }: { line: number; character: number }) =>
-    rawText
-      .split(/\n/g)
-      .slice(0, line)
-      .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
+    ({ line, character }: { line: number; character: number }) =>
+      rawText
+        .split(/\n/g)
+        .slice(0, line)
+        .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
 
 /**
  * Tagged template literal which is converted to TemplateContext

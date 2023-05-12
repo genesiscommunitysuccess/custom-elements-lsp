@@ -61,7 +61,9 @@ export function init(modules: {
 
     let schema = JSON.parse(maybeSchema);
 
-    const ceresource = new CustomElementsManifestTransformer(logger, schema);
+    const ceresource = new CustomElementsManifestTransformer(logger, schema, {
+      designSystemPrefix: info.config.designSystemPrefix,
+    });
 
     return decorateWithTemplateLanguageService(
       ts,
