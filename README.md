@@ -12,7 +12,7 @@ To use this plugin you have a version of typescript as part of the project, loca
 			{
 				"name": "@genesiscommunitysuccess/custom-elements-lsp",
 				"srcRouteFromTSServer": "../../..",
-                "designSystemPrefix": "example"
+                		"designSystemPrefix": "example"
 			}
 		],
     }
