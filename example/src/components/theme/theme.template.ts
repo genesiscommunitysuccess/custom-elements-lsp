@@ -9,7 +9,10 @@ export const themeTemplate = html<ThemePicker>`
         value="${(x) => `#${x.foreground}`}"
         ${ref("fgInput")}
       />
-      <button @click="${(x) => x.updateTheme("foreground")}">Foreground</button>
+      <example-button
+        @click="${(x) => x.updateTheme("foreground")}"
+        title="Foreground"
+      ></example-button>
     </div>
 
     <div class="bg">
@@ -18,7 +21,11 @@ export const themeTemplate = html<ThemePicker>`
         value="${(x) => `#${x.background}`}"
         ${ref("bgInput")}
       />
-      <button @click="${(x) => x.updateTheme("background")}">Background</button>
+      <example-button
+        @click="${(x) => x.updateTheme("background")}"
+        title="Background"
+        >Background</example-button
+      >
     </div>
   </template>
 `;
