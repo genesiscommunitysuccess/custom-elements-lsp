@@ -1,6 +1,6 @@
 import { DesignSystem } from "@microsoft/fast-foundation";
 import { Avatar } from "./components/avatar/avatar";
-import { button } from "./components/button/button";
+import { button } from "./components/button/button.declaration";
 import { ThemePicker } from "./components/theme/theme";
 import { RootComponent } from "./root";
 

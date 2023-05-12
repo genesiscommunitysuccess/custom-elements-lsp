@@ -188,6 +188,26 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/button/button.declaration.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "button"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "button",
+          "declaration": {
+            "name": "button",
+            "module": "src/components/button/button.declaration.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/button/button.style.ts",
       "declarations": [
         {
@@ -262,10 +282,6 @@
           },
           "tagName": "%%prefix%%-button",
           "customElement": true
-        },
-        {
-          "kind": "variable",
-          "name": "button"
         }
       ],
       "exports": [
@@ -274,14 +290,6 @@
           "name": "CustomButton",
           "declaration": {
             "name": "CustomButton",
-            "module": "src/components/button/button.ts"
-          }
-        },
-        {
-          "kind": "js",
-          "name": "button",
-          "declaration": {
-            "name": "button",
             "module": "src/components/button/button.ts"
           }
         }
