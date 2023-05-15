@@ -3,7 +3,11 @@ import { CompletionsService } from "./completions";
 import { CustomElementsLanguageService } from "./customelements";
 import { DiagnosticsService } from "./diagnostics";
 import { CustomElementsManifestTransformer } from "./transformer/cem-transformer";
-import { LanguageServiceLogger, TypescriptCompilerIOService } from "./utils";
+import {
+  LanguageServiceLogger,
+  NodeIOService,
+  TypescriptCompilerIOService,
+} from "./utils";
 
 const USE_BYPASS = false;
 
@@ -61,6 +65,7 @@ export function init(modules: {
 
     let schema = JSON.parse(maybeSchema);
 
+    const nodeIoService = new NodeIOService(logger);
     const ceresource = new CustomElementsManifestTransformer(logger, schema, {
       designSystemPrefix: info.config.designSystemPrefix,
     });
