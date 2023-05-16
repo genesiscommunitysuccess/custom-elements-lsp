@@ -1,4 +1,7 @@
-import { getCEServiceFromTestJsonResource } from "../../jest/custom-elements";
+import {
+  getCEServiceFromStubbedResource,
+  getCEServiceFromTestJsonResource,
+} from "../../jest/custom-elements";
 import { expectArrayElements } from "../../jest/utils";
 
 describe("getCENames", () => {
@@ -101,4 +104,36 @@ describe("processPath", () => {
       expect(res).toEqual(expected);
     });
   }
+});
+
+describe("getCEInfo", () => {
+  it("Returns the custom element info with full paths when configured", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEInfo({ getFullPath: true });
+    expectArrayElements(res, [
+      {
+        path: "src/components/avatar/avatar.ts",
+        tagName: "custom-element",
+      },
+      {
+        path: "node_modules/pkg/src/components/misc/no-attr.ts",
+        tagName: "no-attr",
+      },
+    ]);
+  });
+
+  it("Returns the custom element info with reduced paths when configured", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEInfo({ getFullPath: false });
+    expectArrayElements(res, [
+      {
+        path: "src/components/avatar/avatar.ts",
+        tagName: "custom-element",
+      },
+      {
+        path: "pkg",
+        tagName: "no-attr",
+      },
+    ]);
+  });
 });
