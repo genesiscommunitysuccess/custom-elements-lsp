@@ -4,6 +4,19 @@ import {
 } from "../../jest/custom-elements";
 import { expectArrayElements } from "../../jest/utils";
 
+describe("customElementKnown", () => {
+  it("Returns true if the element is known", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.customElementKnown("no-attr");
+    expect(res).toBe(true);
+  });
+  it("Returns false if the element is not found", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.customElementKnown("not-found");
+    expect(res).toBe(false);
+  });
+})
+
 describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest", () => {
     const ceResource = getCEServiceFromTestJsonResource({
