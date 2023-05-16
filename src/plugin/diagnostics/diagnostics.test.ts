@@ -1,12 +1,12 @@
 import parse from "node-html-parser";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
-import { getLogger, html } from "../../jest/utils";
+import { buildServices, getLogger, html } from "../../jest/utils";
 import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { DiagnosticsService } from "./diagnostics";
 
 const getDiagnosticsService = (ce: CustomElementsService) =>
-  new DiagnosticsService(getLogger(), ce);
+  new DiagnosticsService(getLogger(), buildServices({ customElements: ce }));
 
 const getElements = (context: TemplateContext) =>
   parse(context.text).querySelectorAll("*");

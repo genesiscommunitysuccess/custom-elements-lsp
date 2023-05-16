@@ -8,7 +8,7 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
-import { CustomElementsService } from "../custom-elements/custom-elements.types";
+import { Services } from "../utils/services.type";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
@@ -26,10 +26,7 @@ export type CompletionTypeParams =
   };
 
 export class CompletionsService {
-  constructor(
-    private logger: Logger,
-    private ceResource: CustomElementsService
-  ) {
+  constructor(private logger: Logger, private services: Services) {
     logger.log("Setting up Completions Service");
   }
 
@@ -44,7 +41,7 @@ export class CompletionsService {
 
     switch (key) {
       case "custom-element-name":
-        entries = this.ceResource
+        entries = this.services.customElements
           .getCEInfo({ getFullPath: false })
           .map(({ tagName: name, path }) => ({
             name: name,
@@ -59,7 +56,7 @@ export class CompletionsService {
         break;
 
       case "custom-element-attribute":
-        const attrs = this.ceResource.getCEAttributes(params);
+        const attrs = this.services.customElements.getCEAttributes(params);
         this.logger.log(
           `custom-element-attribute: ${params}, ${JSON.stringify(attrs)}`
         );
@@ -74,7 +71,7 @@ export class CompletionsService {
 
         // Else, we need to finish the name
         this.logger.log(`custom-element-attribute: name completion`);
-        entries = this.ceResource
+        entries = this.services.customElements
           .getCEInfo({ getFullPath: false })
           .map(({ tagName: name, path }) => ({
             name: name,

@@ -1,12 +1,12 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { LineAndCharacter } from "typescript/lib/tsserverlibrary";
 import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
-import { getLogger, html } from "../../jest/utils";
+import { buildServices, getLogger, html } from "../../jest/utils";
 import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { CompletionsService } from "./completions";
 
 const getCompletionsService = (ceRes: CustomElementsService) =>
-  new CompletionsService(getLogger(), ceRes);
+  new CompletionsService(getLogger(), buildServices({ customElements: ceRes }));
 
 describe("getCompletionType", () => {
   const tests: [string, [TemplateContext, LineAndCharacter], any][] = [

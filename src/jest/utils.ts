@@ -2,11 +2,27 @@ import {
   Logger,
   TemplateContext,
 } from "typescript-template-language-service-decorator";
+import { GlobalDataRepositoryImpl } from "../plugin/global-data/repository";
+import { GlobalDataServiceImpl } from "../plugin/global-data/service";
+import { Services } from "../plugin/utils/services.type";
+import { getCEServiceFromTestJsonResource } from "./custom-elements";
 
 const constructLogger = (debugLog: boolean = false): Logger => ({
   log: (msg: string) => {
     debugLog && console.log(`[debug-log] ${msg}`);
   },
+});
+
+export const getGlobalDataService = () =>
+  new GlobalDataServiceImpl(
+    getLogger(),
+    new GlobalDataRepositoryImpl(getLogger())
+  );
+
+export const buildServices = (overrides: Partial<Services>): Services => ({
+  customElements: getCEServiceFromTestJsonResource({}),
+  globalData: getGlobalDataService(),
+  ...overrides,
 });
 
 /**

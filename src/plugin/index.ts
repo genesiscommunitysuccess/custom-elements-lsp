@@ -1,10 +1,16 @@
-import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
+import {
+  decorateWithTemplateLanguageService,
+  Logger,
+} from "typescript-template-language-service-decorator";
 import { CompletionsService } from "./completions";
 import { CustomElementsAnalyzerManifestParser } from "./custom-elements/repository";
 import { CustomElementsServiceImpl } from "./custom-elements/service";
 import { CustomElementsLanguageService } from "./customelements";
 import { DiagnosticsService } from "./diagnostics";
+import { GlobalDataRepositoryImpl } from "./global-data/repository";
+import { GlobalDataServiceImpl } from "./global-data/service";
 import { LanguageServiceLogger, TypescriptCompilerIOService } from "./utils";
+import { Services } from "./utils/services.type";
 
 const USE_BYPASS = false;
 
@@ -62,12 +68,11 @@ export function init(modules: {
 
     let schema = JSON.parse(maybeSchema);
 
-    const customElementsResource = new CustomElementsServiceImpl(
+    const services = initServices({
       logger,
-      new CustomElementsAnalyzerManifestParser(logger, schema, {
-        designSystemPrefix: info.config.designSystemPrefix,
-      })
-    );
+      schema,
+      config: info.config,
+    });
 
     return decorateWithTemplateLanguageService(
       ts,
@@ -75,9 +80,8 @@ export function init(modules: {
       info.project,
       new CustomElementsLanguageService(
         logger,
-        customElementsResource,
-        new DiagnosticsService(logger, customElementsResource),
-        new CompletionsService(logger, customElementsResource)
+        new DiagnosticsService(logger, services),
+        new CompletionsService(logger, services)
       ),
       {
         tags: ["html"], // Could add for css too
@@ -87,4 +91,28 @@ export function init(modules: {
   }
 
   return { create: useBypassDueToError ? bypass : create };
+}
+
+function initServices({
+  logger,
+  schema,
+  config,
+}: {
+  logger: Logger;
+  schema: any;
+  config: any;
+}): Services {
+  const customElements = new CustomElementsServiceImpl(
+    logger,
+    new CustomElementsAnalyzerManifestParser(logger, schema, {
+      designSystemPrefix: config.designSystemPrefix,
+    })
+  );
+
+  const globalData = new GlobalDataServiceImpl(
+    logger,
+    new GlobalDataRepositoryImpl(logger)
+  );
+
+  return { customElements, globalData };
 }
