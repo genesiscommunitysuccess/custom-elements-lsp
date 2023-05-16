@@ -6,8 +6,9 @@ import {
 } from "typescript-template-language-service-decorator";
 import {
   CEMTConfig,
-  CustomElementsManifestTransformer,
-} from "../plugin/transformer/cem-transformer";
+  CustomElementsAnalyzerManifestParser,
+} from "../plugin/transformer/cem-analyzer-parser";
+import { CustomElementsServiceImpl } from "../plugin/transformer/cem-transformer";
 
 const MANIFSST_PATH = "./src/jest/ce-test.json";
 
@@ -40,13 +41,16 @@ export function getCEFromTestJson(configOverride: Partial<CEMTConfig>) {
 
   const logger = getLogger();
 
-  return new CustomElementsManifestTransformer(
+  return new CustomElementsServiceImpl(
     logger,
-    manifest as unknown as Package,
-    {
-      designSystemPrefix: "example",
-      ...configOverride,
-    }
+    new CustomElementsAnalyzerManifestParser(
+      logger,
+      manifest as unknown as Package,
+      {
+        designSystemPrefix: "example",
+        ...configOverride,
+      }
+    )
   );
 }
 

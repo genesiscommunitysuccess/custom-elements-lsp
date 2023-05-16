@@ -1,4 +1,17 @@
+import { CustomElementDeclaration } from "custom-elements-manifest";
+
+// RAW DATA
 export interface CustomElementsResource {
+  data: Map<string, CustomElementDef>;
+}
+
+export interface CustomElementDef extends CustomElementDeclaration {
+  path: string;
+}
+
+// RESOURCE
+
+export interface CustomElementsService {
   getCENames(): string[];
   getCEAttributes(name: string): CustomElementAttribute[];
   getCEInfo(config: GetCEInfo): CEInfo[];

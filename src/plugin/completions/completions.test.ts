@@ -2,10 +2,10 @@ import { TemplateContext } from "typescript-template-language-service-decorator"
 import { LineAndCharacter } from "typescript/lib/tsserverlibrary";
 import { buildDefaultCEFake } from "../../jest/custom-elements-resource";
 import { getLogger, html } from "../../jest/utils";
-import { CustomElementsResource } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../transformer/custom-elements-resource";
 import { CompletionsService } from "./completions";
 
-const getCompletionsService = (ceRes: CustomElementsResource) =>
+const getCompletionsService = (ceRes: CustomElementsService) =>
   new CompletionsService(getLogger(), ceRes);
 
 describe("getCompletionType", () => {

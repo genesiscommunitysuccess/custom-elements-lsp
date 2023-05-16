@@ -4,7 +4,7 @@ import {
   TemplateLanguageService,
 } from "typescript-template-language-service-decorator";
 import { Diagnostic } from "typescript/lib/tsserverlibrary";
-import { CustomElementsResource } from "./transformer/custom-elements-resource";
+import { CustomElementsService } from "./transformer/custom-elements-resource";
 import { LanguageServiceLogger } from "./utils";
 
 import parse from "node-html-parser";
@@ -14,7 +14,7 @@ import { CompletionsService } from "./completions";
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private ceResource: CustomElementsResource,
+    private ceResource: CustomElementsService,
     private diagnostics: DiagnosticsService,
     private completions: CompletionsService
   ) {

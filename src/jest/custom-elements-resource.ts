@@ -1,7 +1,7 @@
 import {
   CEInfo,
   CustomElementAttribute,
-  CustomElementsResource,
+  CustomElementsService,
   GetCEInfo,
 } from "../plugin/transformer/custom-elements-resource";
 
@@ -32,7 +32,7 @@ export const buildDefaultCEFake = (): CustomElementsResourceFake => {
  * Implements `CustomElementsResource` so can be used as a custom elements resource
  * as a fake/stub during unit tests
  */
-export class CustomElementsResourceFake implements CustomElementsResource {
+export class CustomElementsResourceFake implements CustomElementsService {
   constructor(private manifest: StubbedManifest) { }
 
   getCEAttributes(name: string): CustomElementAttribute[] {

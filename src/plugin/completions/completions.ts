@@ -8,7 +8,7 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
-import { CustomElementsResource } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../transformer/custom-elements-resource";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
@@ -28,7 +28,7 @@ export type CompletionTypeParams =
 export class CompletionsService {
   constructor(
     private logger: Logger,
-    private ceResource: CustomElementsResource
+    private ceResource: CustomElementsService
   ) {
     logger.log("Setting up Completions Service");
   }
@@ -50,6 +50,10 @@ export class CompletionsService {
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
+          // labelDetails: {
+            // description: "Finish custom element name",
+            // detail: "Detail",
+          // },
         }));
         break;
 
@@ -75,6 +79,10 @@ export class CompletionsService {
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
+          // labelDetails: {
+            // description: "Finish custom element name",
+            // detail: "Detail",
+          // },
         }));
         break;
 
