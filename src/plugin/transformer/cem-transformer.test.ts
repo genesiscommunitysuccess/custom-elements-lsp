@@ -61,3 +61,41 @@ describe("getCEAttributes", () => {
     });
   }
 });
+
+describe("processPath", () => {
+  const tests: [string, [string, boolean], string][] = [
+    [
+      "Returns the input if getFullPath is true",
+      ["Input string", true],
+      "Input string",
+    ],
+    [
+      "Returns the input including node_modules/@scope if getFullPath is true",
+      ["node_modules/@scope/pkg/index.ts", true],
+      "node_modules/@scope/pkg/index.ts",
+    ],
+    [
+      "Returns the entire path if a local file, if getFullpath is false",
+      ["pkg/index.ts", false],
+      "pkg/index.ts",
+    ],
+    [
+      "Returns the package if a library file, if getFullpath is false, and the package is not scoped",
+      ["node_modules/pkg/index.ts", false],
+      "pkg",
+    ],
+    [
+      "Returns the scoped package if a library file, if getFullpath is false, and the package is scoped",
+      ["node_modules/@scope/pkg/index.ts", false],
+      "@scope/pkg",
+    ],
+  ];
+
+  for (const [name, [path, getFullpath], expected] of tests) {
+    const ceResource = getCEFromTestJson({});
+    it(name, () => {
+      const res = (ceResource as any).processPath(path, getFullpath);
+      expect(res).toEqual(expected);
+    });
+  }
+});

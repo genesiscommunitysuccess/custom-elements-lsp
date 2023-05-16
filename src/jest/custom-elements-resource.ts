@@ -1,6 +1,8 @@
 import {
+  CEInfo,
   CustomElementAttribute,
   CustomElementsResource,
+  GetCEInfo,
 } from "../plugin/transformer/custom-elements-resource";
 
 type StubbedManifest = {
@@ -45,5 +47,9 @@ export class CustomElementsResourceFake implements CustomElementsResource {
 
   getCENames(): string[] {
     return [...Object.keys(this.manifest)];
+  }
+
+  getCEInfo(config: GetCEInfo): CEInfo[] {
+    return [];
   }
 }

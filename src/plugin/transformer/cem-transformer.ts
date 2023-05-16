@@ -6,18 +6,26 @@ import {
 } from "custom-elements-manifest";
 import { Logger } from "typescript-template-language-service-decorator";
 import {
+  CEInfo,
   CustomElementAttribute,
   CustomElementsResource,
+  GetCEInfo,
 } from "./custom-elements-resource";
 
 export type CEMTConfig = {
   designSystemPrefix?: string;
 };
 
+interface CustomElementDef extends CustomElementDeclaration {
+  path: string;
+}
+
+const PARSE_PATH_REGEXP =
+  /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;
+
 export class CustomElementsManifestTransformer
   implements CustomElementsResource {
-  private customElementsDefinition: Map<string, CustomElementDeclaration> =
-    new Map();
+  private customElementsDefinition: Map<string, CustomElementDef> = new Map();
 
   constructor(
     private logger: Logger,
@@ -31,6 +39,10 @@ export class CustomElementsManifestTransformer
       )}`
     );
   }
+
+  /**
+   * PARSE
+   */
 
   private tranfsormManifest() {
     this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifest)}`);
@@ -76,10 +88,10 @@ export class CustomElementsManifestTransformer
       ? baseTag.replace("%%prefix%%", this.config.designSystemPrefix)
       : baseTag;
 
-    this.customElementsDefinition.set(
-      tagName,
-      declaration as CustomElementDeclaration
-    );
+    this.customElementsDefinition.set(tagName, {
+      ...(declaration as CustomElementDef),
+      path: module.path,
+    });
     return true;
   }
 
@@ -106,12 +118,16 @@ export class CustomElementsManifestTransformer
     if (!declaration) return false;
 
     // If the declaration has kind === "class" and customElement is true, then it is a custom element
-    this.customElementsDefinition.set(
-      name,
-      declaration as CustomElementDeclaration
-    );
+    this.customElementsDefinition.set(name, {
+      ...(declaration as CustomElementDef),
+      path: module.path,
+    });
     return true;
   }
+
+  /**
+   * IMPLEMENTS CustomElementsResource
+   */
 
   getCEAttributes(name: string): CustomElementAttribute[] {
     const definition = this.customElementsDefinition.get(name);
@@ -125,5 +141,30 @@ export class CustomElementsManifestTransformer
 
   getCENames(): string[] {
     return [...this.customElementsDefinition.keys()];
+  }
+
+  getCEInfo(config: GetCEInfo): CEInfo[] {
+    const info: CEInfo[] = [];
+    for (const [k, v] of this.customElementsDefinition) {
+      info.push({
+        tagName: k,
+        path: this.processPath(v.path, config.getFullPath),
+      });
+    }
+    return info;
+  }
+
+  /**
+   * PRIVATE
+   */
+  private processPath(path: string, getFullPath: boolean): string {
+    if (getFullPath) {
+      return path;
+    }
+    let matches = path.match(PARSE_PATH_REGEXP);
+    if (matches === null) {
+      return path;
+    }
+    return matches.slice(1).filter((m) => m)[0];
   }
 }
