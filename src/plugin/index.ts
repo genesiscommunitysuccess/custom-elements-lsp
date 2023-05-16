@@ -61,7 +61,9 @@ export function init(modules: {
 
     let schema = JSON.parse(maybeSchema);
 
-    const ceresource = new CustomElementsManifestTransformer(logger, schema);
+    const customElementsResource = new CustomElementsManifestTransformer(logger, schema, {
+      designSystemPrefix: info.config.designSystemPrefix,
+    });
 
     return decorateWithTemplateLanguageService(
       ts,
@@ -69,9 +71,9 @@ export function init(modules: {
       info.project,
       new CustomElementsLanguageService(
         logger,
-        ceresource,
-        new DiagnosticsService(logger, ceresource),
-        new CompletionsService(logger, ceresource)
+        customElementsResource,
+        new DiagnosticsService(logger, customElementsResource),
+        new CompletionsService(logger, customElementsResource)
       ),
       {
         tags: ["html"], // Could add for css too

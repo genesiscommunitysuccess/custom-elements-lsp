@@ -188,6 +188,115 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/button/button.declaration.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "button"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "button",
+          "declaration": {
+            "name": "button",
+            "module": "src/components/button/button.declaration.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.style.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "customButtonStyles",
+          "default": "css``"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "customButtonStyles",
+          "declaration": {
+            "name": "customButtonStyles",
+            "module": "src/components/button/button.style.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.template.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "customButtonTemplate",
+          "default": "html<CustomButton>`<button>\n  ${(x) => x.title}\n</button> `"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "customButtonTemplate",
+          "declaration": {
+            "name": "customButtonTemplate",
+            "module": "src/components/button/button.template.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CustomButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Default text\""
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Default text\"",
+              "fieldName": "title"
+            }
+          ],
+          "superclass": {
+            "name": "FoundationElement",
+            "package": "@microsoft/fast-foundation"
+          },
+          "tagName": "%%prefix%%-button",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomButton",
+          "declaration": {
+            "name": "CustomButton",
+            "module": "src/components/button/button.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/theme/theme.style.ts",
       "declarations": [
         {
@@ -214,7 +323,7 @@
         {
           "kind": "variable",
           "name": "themeTemplate",
-          "default": "html<ThemePicker>`\n  <template>\n    <div class=\"fg\">\n      <input\n        type=\"text\"\n        value=\"${(x) => `#${x.foreground}`}\"\n        ${ref(\"fgInput\")}\n      />\n      <button @click=\"${(x) => x.updateTheme(\"foreground\")}\">Foreground</button>\n    </div>\n\n    <div class=\"bg\">\n      <input\n        type=\"text\"\n        value=\"${(x) => `#${x.background}`}\"\n        ${ref(\"bgInput\")}\n      />\n      <button @click=\"${(x) => x.updateTheme(\"background\")}\">Background</button>\n    </div>\n  </template>\n`"
+          "default": "html<ThemePicker>`\n  <template>\n    <div class=\"fg\">\n      <input\n        type=\"text\"\n        value=\"${(x) => `#${x.foreground}`}\"\n        ${ref(\"fgInput\")}\n      />\n      <example-button\n        @click=\"${(x) => x.updateTheme(\"foreground\")}\"\n        title=\"Foreground\"\n      ></example-button>\n    </div>\n\n    <div class=\"bg\">\n      <input\n        type=\"text\"\n        value=\"${(x) => `#${x.background}`}\"\n        ${ref(\"bgInput\")}\n      />\n      <example-button\n        @click=\"${(x) => x.updateTheme(\"background\")}\"\n        title=\"Background\"\n        >Background</example-button\n      >\n    </div>\n  </template>\n`"
         }
       ],
       "exports": [
