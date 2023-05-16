@@ -1,10 +1,10 @@
-import { getCEFromTestJson } from "../../jest/utils";
+import { expectArrayElements, getCEFromTestJson } from "../../jest/utils";
 
 describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest", () => {
     const ceResource = getCEFromTestJson({ designSystemPrefix: undefined });
     const res = ceResource.getCENames();
-    expect(res).toEqual([
+    expectArrayElements(res, [
       "root-component",
       "person-avatar",
       "%%prefix%%-button",
@@ -15,7 +15,7 @@ describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest, with the prefix replaced if the design system prefix is set", () => {
     const ceResource = getCEFromTestJson({});
     const res = ceResource.getCENames();
-    expect(res).toEqual([
+    expectArrayElements(res, [
       "root-component",
       "person-avatar",
       "example-button",

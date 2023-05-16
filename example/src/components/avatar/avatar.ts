@@ -11,14 +11,23 @@ import { avatarTemplate } from "./avatar.template";
 const defaultAvatarSrc =
   "https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light";
 
+/**
+ * Avatar class to display information about a person.
+ * @remarks
+ * Intractable to show extra information, configurable via attributes.
+ * @privateRemarks
+ * Coloured based on the `design system` css variables.
+ */
 @customElement({
   name: "person-avatar",
   template: avatarTemplate,
   styles: avatarStyles,
 })
 export class Avatar extends FASTElement {
+  /** Boolean attribute to show/hide the full info section. */
   @observable showFullInfo = false;
+  /** String is the `img` src to show for the avatar. Defaulted to `avataaars.io` */
   @attr({ attribute: "avatar-src" }) avatarSrc: string = defaultAvatarSrc;
-  @attr({mode: "boolean"}) fullInfoDisabled: boolean = false;
+  /** Boolean attribute to disable the full info section entirely. */
+  @attr({ mode: "boolean" }) fullInfoDisabled: boolean = false;
 }
-

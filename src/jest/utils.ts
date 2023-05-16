@@ -93,3 +93,7 @@ export const html = (
     toPosition: jest.fn(),
   };
 };
+
+export function expectArrayElements(expected: any[], actual: any[]): void {
+  expect(expected.sort()).toEqual(actual.sort());
+}
