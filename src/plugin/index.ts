@@ -1,8 +1,9 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
 import { CompletionsService } from "./completions";
+import { CustomElementsAnalyzerManifestParser } from "./custom-elements/repository";
+import { CustomElementsServiceImpl } from "./custom-elements/service";
 import { CustomElementsLanguageService } from "./customelements";
 import { DiagnosticsService } from "./diagnostics";
-import { CustomElementsManifestTransformer } from "./transformer/cem-transformer";
 import { LanguageServiceLogger, TypescriptCompilerIOService } from "./utils";
 
 const USE_BYPASS = false;
@@ -61,9 +62,12 @@ export function init(modules: {
 
     let schema = JSON.parse(maybeSchema);
 
-    const customElementsResource = new CustomElementsManifestTransformer(logger, schema, {
-      designSystemPrefix: info.config.designSystemPrefix,
-    });
+    const customElementsResource = new CustomElementsServiceImpl(
+      logger,
+      new CustomElementsAnalyzerManifestParser(logger, schema, {
+        designSystemPrefix: info.config.designSystemPrefix,
+      })
+    );
 
     return decorateWithTemplateLanguageService(
       ts,

@@ -1,24 +1,20 @@
 import {
   CustomElement,
-  CustomElementDeclaration,
   JavaScriptModule,
   Package,
 } from "custom-elements-manifest";
 import { Logger } from "typescript-template-language-service-decorator";
 import {
-  CustomElementAttribute,
+  CustomElementDef,
   CustomElementsResource,
-} from "./custom-elements-resource";
+} from "./custom-elements.types";
 
 export type CEMTConfig = {
   designSystemPrefix?: string;
 };
 
-export class CustomElementsManifestTransformer
+export class CustomElementsAnalyzerManifestParser
   implements CustomElementsResource {
-  private customElementsDefinition: Map<string, CustomElementDeclaration> =
-    new Map();
-
   constructor(
     private logger: Logger,
     private manifest: Package,
@@ -26,11 +22,20 @@ export class CustomElementsManifestTransformer
   ) {
     this.tranfsormManifest();
     logger.log(
-      `Setting up CustomElementsManifestTransformer class with config ${JSON.stringify(
+      `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(
         config
       )}`
     );
   }
+
+  /**
+   * API
+   */
+  data: Map<string, CustomElementDef> = new Map();
+
+  /**
+   * PRIVATE
+   */
 
   private tranfsormManifest() {
     this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifest)}`);
@@ -43,9 +48,7 @@ export class CustomElementsManifestTransformer
     }
 
     this.logger.log(
-      `webComponentNames: ${JSON.stringify([
-        ...this.customElementsDefinition.keys(),
-      ])}`
+      `webComponentNames: ${JSON.stringify([...this.data.keys()])}`
     );
   }
 
@@ -76,10 +79,10 @@ export class CustomElementsManifestTransformer
       ? baseTag.replace("%%prefix%%", this.config.designSystemPrefix)
       : baseTag;
 
-    this.customElementsDefinition.set(
-      tagName,
-      declaration as CustomElementDeclaration
-    );
+    this.data.set(tagName, {
+      ...(declaration as CustomElementDef),
+      path: module.path,
+    });
     return true;
   }
 
@@ -106,24 +109,10 @@ export class CustomElementsManifestTransformer
     if (!declaration) return false;
 
     // If the declaration has kind === "class" and customElement is true, then it is a custom element
-    this.customElementsDefinition.set(
-      name,
-      declaration as CustomElementDeclaration
-    );
+    this.data.set(name, {
+      ...(declaration as CustomElementDef),
+      path: module.path,
+    });
     return true;
-  }
-
-  getCEAttributes(name: string): CustomElementAttribute[] {
-    const definition = this.customElementsDefinition.get(name);
-    if (!definition || !definition.attributes) return [];
-
-    return definition.attributes.map((a) => ({
-      name: a.name ?? a.fieldName,
-      type: a.type?.text ?? "string",
-    }));
-  }
-
-  getCENames(): string[] {
-    return [...this.customElementsDefinition.keys()];
   }
 }

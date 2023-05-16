@@ -4,12 +4,12 @@ import {
   TemplateContext,
 } from "typescript-template-language-service-decorator";
 import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
-import { CustomElementsResource } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../custom-elements/custom-elements.types";
 
 export class DiagnosticsService {
   constructor(
     private logger: Logger,
-    private ceResource: CustomElementsResource
+    private ceResource: CustomElementsService
   ) {
     logger.log("Setting up Diagnostics");
   }

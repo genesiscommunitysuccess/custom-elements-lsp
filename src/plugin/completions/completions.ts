@@ -8,7 +8,7 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
-import { CustomElementsResource } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
@@ -28,7 +28,7 @@ export type CompletionTypeParams =
 export class CompletionsService {
   constructor(
     private logger: Logger,
-    private ceResource: CustomElementsResource
+    private ceResource: CustomElementsService
   ) {
     logger.log("Setting up Completions Service");
   }
@@ -46,10 +46,14 @@ export class CompletionsService {
       case "custom-element-name":
         entries = this.ceResource.getCENames().map((name) => ({
           name: name,
-          insertText: `<${name}></${name}>`,
+          insertText: `${name}></${name}>`,
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
+          // labelDetails: {
+            // description: "Finish custom element name",
+            // detail: "Detail",
+          // },
         }));
         break;
 
@@ -71,10 +75,14 @@ export class CompletionsService {
         this.logger.log(`custom-element-attribute: name completion`);
         entries = this.ceResource.getCENames().map((name) => ({
           name: name,
-          insertText: `<${name}></${name}>`,
+          insertText: `${name}></${name}>`,
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
+          // labelDetails: {
+            // description: "Finish custom element name",
+            // detail: "Detail",
+          // },
         }));
         break;
 

@@ -1,11 +1,11 @@
 import parse from "node-html-parser";
 import { TemplateContext } from "typescript-template-language-service-decorator";
-import { buildDefaultCEFake } from "../../jest/custom-elements-resource";
+import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
 import { getLogger, html } from "../../jest/utils";
-import { CustomElementsResource } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { DiagnosticsService } from "./diagnostics";
 
-const getDiagnosticsService = (ce: CustomElementsResource) =>
+const getDiagnosticsService = (ce: CustomElementsService) =>
   new DiagnosticsService(getLogger(), ce);
 
 const getElements = (context: TemplateContext) =>
@@ -44,7 +44,7 @@ describe("getPositionOfNthTagEnd", () => {
   ];
 
   for (const [name, [context, tagName, occurrence], expected] of tests) {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     it(name, () => {
       // Need to use `as any` because the function is private.
       const result = (service as any).getPositionOfNthTagEnd({
@@ -59,7 +59,7 @@ describe("getPositionOfNthTagEnd", () => {
 
 describe("getUnknownCETag", () => {
   it("No diagnostics for an empty template", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
     const result = service.getUnknownCETag(context, elementList);
@@ -67,7 +67,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("No diagnostics for standard html elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div>
         <invalid></invalid>
@@ -79,7 +79,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("Warning diagnostics for unknown custom elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div>
         <invalid-ce></invalid-ce>
@@ -109,7 +109,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("Correct warnings when one unknown tag is a substring of another unknown tag", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div>
         <another-invalid-ce></another-invalid-ce>
@@ -139,7 +139,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("Correct warnings when the same unknown tag is on one line multiple times", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div><invalid-ce></invalid-ce><invalid-ce></invalid-ce></div>
     </template>`;
@@ -166,7 +166,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("Correct warnings when unknown tag on the same line and substring of another", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div>
         <invalid-ce></invalid-ce><invalid-ce></invalid-ce>
@@ -204,7 +204,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("No diagnostics when we only have known custom elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <no-attr></no-attr>
       <custom-element activated></custom-element>
@@ -215,7 +215,7 @@ describe("getUnknownCETag", () => {
   });
 
   it("Diagnostics for invalid elements when there are known elements too", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <no-attr></no-attr>
       <custom-element activated></custom-element>
@@ -238,7 +238,7 @@ describe("getUnknownCETag", () => {
 
 describe("getInvalidCEAttribute", () => {
   it("No diagnostics for an empty template", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
     const result = service.getInvalidCEAttribute(context, elementList);
@@ -246,7 +246,7 @@ describe("getInvalidCEAttribute", () => {
   });
 
   it("No diagnostics for standard html elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <div>
         <invalid></invalid>
@@ -258,7 +258,7 @@ describe("getInvalidCEAttribute", () => {
   });
 
   it("No diagnostics for unknown custom elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <unknown-element></unknown-element>
     </template>`;
@@ -268,7 +268,7 @@ describe("getInvalidCEAttribute", () => {
   });
 
   it("No diagnostics for all correct attributes", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <unknown-element></unknown-element>
       <no-attr></no-attr>
@@ -280,7 +280,7 @@ describe("getInvalidCEAttribute", () => {
   });
 
   it("Diagnostics for invalid attributes on known custom elements", () => {
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <unknown-element></unknown-element>
       <no-attr invalidattr></no-attr>
@@ -317,7 +317,7 @@ describe("getInvalidCEAttribute", () => {
   // TODO: handled in FUI-1193
   it("Temp: Diagnostics for a FAST properties are ignored", () => {
     const nothing = "";
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <unknown-element></unknown-element>
       <no-attr :test=${(_) => nothing}></no-attr>
@@ -329,7 +329,7 @@ describe("getInvalidCEAttribute", () => {
 
   it("Diagnostics for a FAST ref() are ignored", () => {
     const ref = (x: any) => () => "";
-    const service = getDiagnosticsService(buildDefaultCEFake());
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`<template>
       <unknown-element></unknown-element>
       <no-attr ${ref("test")}></no-attr>
