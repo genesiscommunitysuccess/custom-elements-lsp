@@ -1,8 +1,11 @@
-import { expectArrayElements, getCEServiceFromTestJsonResource } from "../../jest/utils";
+import { getCEServiceFromTestJsonResource } from "../../jest/custom-elements";
+import { expectArrayElements } from "../../jest/utils";
 
 describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest", () => {
-    const ceResource = getCEServiceFromTestJsonResource({ designSystemPrefix: undefined });
+    const ceResource = getCEServiceFromTestJsonResource({
+      designSystemPrefix: undefined,
+    });
     const res = ceResource.getCENames();
     expectArrayElements(res, [
       "root-component",
