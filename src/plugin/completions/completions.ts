@@ -41,48 +41,15 @@ export class CompletionsService {
 
     switch (key) {
       case "custom-element-name":
-        entries = this.services.customElements
-          .getCEInfo({ getFullPath: false })
-          .map(({ tagName: name, path }) => ({
-            name: name,
-            insertText: `${name}></${name}>`,
-            kind: ScriptElementKind.typeElement,
-            kindModifiers: "custom-element",
-            sortText: "custom-element",
-            labelDetails: {
-              description: path,
-            },
-          }));
+        entries = this.getTagCompletions();
         break;
 
       case "custom-element-attribute":
-        const attrs = this.services.customElements.getCEAttributes(params);
-        this.logger.log(
-          `custom-element-attribute: ${params}, ${JSON.stringify(attrs)}`
-        );
-        entries = attrs.map(({ name, type }) => ({
-          name,
-          insertText: `${name}${type === "boolean" ? "" : '=""'}`,
-          kind: ScriptElementKind.parameterElement,
-          kindModifiers: "custom-element-attribute",
-          sortText: "custom-element-attribute",
-        }));
-        if (entries.length > 0) break;
-
-        // Else, we need to finish the name
-        this.logger.log(`custom-element-attribute: name completion`);
-        entries = this.services.customElements
-          .getCEInfo({ getFullPath: false })
-          .map(({ tagName: name, path }) => ({
-            name: name,
-            insertText: `${name}></${name}>`,
-            kind: ScriptElementKind.typeElement,
-            kindModifiers: "custom-element",
-            sortText: "custom-element",
-            labelDetails: {
-              description: path,
-            },
-          }));
+        if (!this.services.customElements.customElementKnown(params)) {
+          entries = this.getTagCompletions();
+          break;
+        }
+        entries = this.getAttributeCompletions(params);
         break;
 
       case "none":
@@ -97,6 +64,35 @@ export class CompletionsService {
       isNewIdentifierLocation: false,
       entries,
     };
+  }
+
+  private getAttributeCompletions(tagName: string): CompletionEntry[] {
+    const attrs = this.services.customElements.getCEAttributes(tagName);
+    this.logger.log(
+      `custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`
+    );
+    return attrs.map(({ name, type }) => ({
+      name,
+      insertText: `${name}${type === "boolean" ? "" : '=""'}`,
+      kind: ScriptElementKind.parameterElement,
+      kindModifiers: "custom-element-attribute",
+      sortText: "custom-element-attribute",
+    }));
+  }
+
+  private getTagCompletions(): CompletionEntry[] {
+    return this.services.customElements
+      .getCEInfo({ getFullPath: false })
+      .map(({ tagName: name, path }) => ({
+        name: name,
+        insertText: `${name}></${name}>`,
+        kind: ScriptElementKind.typeElement,
+        kindModifiers: "custom-element",
+        sortText: "custom-element",
+        labelDetails: {
+          description: path,
+        },
+      }));
   }
 
   private getComptionType(

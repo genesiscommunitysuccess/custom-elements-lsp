@@ -266,7 +266,6 @@ describe("getCompletionsAtPosition", () => {
     ]);
   });
 
-  // TODO: This should be changed to not returning anything
   it("Returns name completions when we try and complete attributes on a custom element with no attributes", () => {
     const service = getCompletionsService(getCEServiceFromStubbedResource());
     const context = html`<no-attr `;
@@ -276,28 +275,7 @@ describe("getCompletionsAtPosition", () => {
       character: 9,
     });
 
-    expect(completions.entries).toEqual([
-      {
-        insertText: "custom-element></custom-element>",
-        kind: "type",
-        kindModifiers: "custom-element",
-        name: "custom-element",
-        sortText: "custom-element",
-        labelDetails: {
-          description: "src/components/avatar/avatar.ts",
-        },
-      },
-      {
-        insertText: "no-attr></no-attr>",
-        kind: "type",
-        kindModifiers: "custom-element",
-        name: "no-attr",
-        sortText: "custom-element",
-        labelDetails: {
-          description: "pkg",
-        },
-      },
-    ]);
+    expect(completions.entries).toEqual([]);
   });
 
   it("Returns name completions when we try and complete attributes on an unknown custom element", () => {
