@@ -10,15 +10,10 @@ import {
 const PARSE_PATH_REGEXP =
   /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;
 
-export class CustomElementsServiceImpl
-  implements CustomElementsService {
+export class CustomElementsServiceImpl implements CustomElementsService {
   constructor(private logger: Logger, private ceData: CustomElementsResource) {
     logger.log("Setting up CustomElementsServiceImpl");
   }
-
-  /**
-   * API
-   */
 
   getCEAttributes(name: string): CustomElementAttribute[] {
     const definition = this.ceData.data.get(name);
