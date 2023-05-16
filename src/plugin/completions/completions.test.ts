@@ -130,14 +130,14 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "<custom-element></custom-element>",
+        insertText: "custom-element></custom-element>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
       },
       {
-        insertText: "<no-attr></no-attr>",
+        insertText: "no-attr></no-attr>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "no-attr",
@@ -157,14 +157,14 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "<custom-element></custom-element>",
+        insertText: "custom-element></custom-element>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
       },
       {
-        insertText: "<no-attr></no-attr>",
+        insertText: "no-attr></no-attr>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "no-attr",
@@ -266,14 +266,14 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "<custom-element></custom-element>",
+        insertText: "custom-element></custom-element>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
       },
       {
-        insertText: "<no-attr></no-attr>",
+        insertText: "no-attr></no-attr>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "no-attr",
@@ -293,14 +293,14 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "<custom-element></custom-element>",
+        insertText: "custom-element></custom-element>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
       },
       {
-        insertText: "<no-attr></no-attr>",
+        insertText: "no-attr></no-attr>",
         kind: "type",
         kindModifiers: "custom-element",
         name: "no-attr",

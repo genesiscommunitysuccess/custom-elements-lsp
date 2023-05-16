@@ -46,7 +46,7 @@ export class CompletionsService {
       case "custom-element-name":
         entries = this.ceResource.getCENames().map((name) => ({
           name: name,
-          insertText: `<${name}></${name}>`,
+          insertText: `${name}></${name}>`,
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
@@ -71,7 +71,7 @@ export class CompletionsService {
         this.logger.log(`custom-element-attribute: name completion`);
         entries = this.ceResource.getCENames().map((name) => ({
           name: name,
-          insertText: `<${name}></${name}>`,
+          insertText: `${name}></${name}>`,
           kind: ScriptElementKind.typeElement,
           kindModifiers: "custom-element",
           sortText: "custom-element",
