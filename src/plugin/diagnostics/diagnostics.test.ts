@@ -2,7 +2,7 @@ import parse from "node-html-parser";
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { buildDefaultCEFake } from "../../jest/custom-elements-resource";
 import { getLogger, html } from "../../jest/utils";
-import { CustomElementsService } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { DiagnosticsService } from "./diagnostics";
 
 const getDiagnosticsService = (ce: CustomElementsService) =>

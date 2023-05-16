@@ -1,9 +1,9 @@
 import { decorateWithTemplateLanguageService } from "typescript-template-language-service-decorator";
 import { CompletionsService } from "./completions";
+import { CustomElementsAnalyzerManifestParser } from "./custom-elements/repository";
+import { CustomElementsServiceImpl } from "./custom-elements/service";
 import { CustomElementsLanguageService } from "./customelements";
 import { DiagnosticsService } from "./diagnostics";
-import { CustomElementsAnalyzerManifestParser } from "./transformer/cem-analyzer-parser";
-import { CustomElementsServiceImpl } from "./transformer/cem-transformer";
 import { LanguageServiceLogger, TypescriptCompilerIOService } from "./utils";
 
 const USE_BYPASS = false;

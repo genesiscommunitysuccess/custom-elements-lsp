@@ -7,7 +7,7 @@ import { Logger } from "typescript-template-language-service-decorator";
 import {
   CustomElementDef,
   CustomElementsResource,
-} from "./custom-elements-resource";
+} from "./custom-elements.types";
 
 export type CEMTConfig = {
   designSystemPrefix?: string;

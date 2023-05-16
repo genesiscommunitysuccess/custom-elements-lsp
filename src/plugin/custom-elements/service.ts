@@ -5,7 +5,7 @@ import {
   CustomElementsResource,
   CustomElementsService,
   GetCEInfo,
-} from "./custom-elements-resource";
+} from "./custom-elements.types";
 
 const PARSE_PATH_REGEXP =
   /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;

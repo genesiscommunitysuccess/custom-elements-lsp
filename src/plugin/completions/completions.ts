@@ -8,7 +8,7 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
-import { CustomElementsService } from "../transformer/custom-elements-resource";
+import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =

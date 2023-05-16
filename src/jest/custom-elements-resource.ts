@@ -3,7 +3,7 @@ import {
   CustomElementAttribute,
   CustomElementsService,
   GetCEInfo,
-} from "../plugin/transformer/custom-elements-resource";
+} from "../plugin/custom-elements/custom-elements.types";
 
 type StubbedManifest = {
   [key: string]: {

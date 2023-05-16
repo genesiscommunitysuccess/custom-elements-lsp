@@ -7,8 +7,8 @@ import {
 import {
   CEMTConfig,
   CustomElementsAnalyzerManifestParser,
-} from "../plugin/transformer/cem-analyzer-parser";
-import { CustomElementsServiceImpl } from "../plugin/transformer/cem-transformer";
+} from "../plugin/custom-elements/repository";
+import { CustomElementsServiceImpl } from "../plugin/custom-elements/service";
 
 const MANIFSST_PATH = "./src/jest/ce-test.json";
 
