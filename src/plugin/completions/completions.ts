@@ -44,17 +44,18 @@ export class CompletionsService {
 
     switch (key) {
       case "custom-element-name":
-        entries = this.ceResource.getCENames().map((name) => ({
-          name: name,
-          insertText: `${name}></${name}>`,
-          kind: ScriptElementKind.typeElement,
-          kindModifiers: "custom-element",
-          sortText: "custom-element",
-          // labelDetails: {
-            // description: "Finish custom element name",
-            // detail: "Detail",
-          // },
-        }));
+        entries = this.ceResource
+          .getCEInfo({ getFullPath: false })
+          .map(({ tagName: name, path }) => ({
+            name: name,
+            insertText: `${name}></${name}>`,
+            kind: ScriptElementKind.typeElement,
+            kindModifiers: "custom-element",
+            sortText: "custom-element",
+            labelDetails: {
+              description: path,
+            },
+          }));
         break;
 
       case "custom-element-attribute":
@@ -73,17 +74,18 @@ export class CompletionsService {
 
         // Else, we need to finish the name
         this.logger.log(`custom-element-attribute: name completion`);
-        entries = this.ceResource.getCENames().map((name) => ({
-          name: name,
-          insertText: `${name}></${name}>`,
-          kind: ScriptElementKind.typeElement,
-          kindModifiers: "custom-element",
-          sortText: "custom-element",
-          // labelDetails: {
-            // description: "Finish custom element name",
-            // detail: "Detail",
-          // },
-        }));
+        entries = this.ceResource
+          .getCEInfo({ getFullPath: false })
+          .map(({ tagName: name, path }) => ({
+            name: name,
+            insertText: `${name}></${name}>`,
+            kind: ScriptElementKind.typeElement,
+            kindModifiers: "custom-element",
+            sortText: "custom-element",
+            labelDetails: {
+              description: path,
+            },
+          }));
         break;
 
       case "none":

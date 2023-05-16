@@ -135,6 +135,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
+        labelDetails: {
+          description: "src/components/avatar/avatar.ts",
+        },
       },
       {
         insertText: "no-attr></no-attr>",
@@ -142,6 +145,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
+        labelDetails: {
+          description: "pkg",
+        },
       },
     ]);
   });
@@ -162,6 +168,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
+        labelDetails: {
+          description: "src/components/avatar/avatar.ts",
+        },
       },
       {
         insertText: "no-attr></no-attr>",
@@ -169,6 +178,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
+        labelDetails: {
+          description: "pkg",
+        },
       },
     ]);
   });
@@ -191,7 +203,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated',
+        insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
@@ -218,7 +230,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated',
+        insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
@@ -245,7 +257,7 @@ describe("getCompletionsAtPosition", () => {
         sortText: "custom-element-attribute",
       },
       {
-        insertText: 'activated',
+        insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
@@ -271,6 +283,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
+        labelDetails: {
+          description: "src/components/avatar/avatar.ts",
+        },
       },
       {
         insertText: "no-attr></no-attr>",
@@ -278,6 +293,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
+        labelDetails: {
+          description: "pkg",
+        },
       },
     ]);
   });
@@ -298,6 +316,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
+        labelDetails: {
+          description: "src/components/avatar/avatar.ts",
+        },
       },
       {
         insertText: "no-attr></no-attr>",
@@ -305,6 +326,9 @@ describe("getCompletionsAtPosition", () => {
         kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
+        labelDetails: {
+          description: "pkg",
+        },
       },
     ]);
   });
