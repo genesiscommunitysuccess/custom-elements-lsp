@@ -21,10 +21,11 @@ const constructLogger = (debugLog: boolean = false): Logger => ({
 });
 
 /**
- * Builds a real `CustomElementsManifestTransformer` from the test manifest
- * located at `MANIFSST_PATH`.
+ * Builds a real `CustomElementsAnalyzerManifestParser` from the test manifest
+ * located at `MANIFSST_PATH`, and constructs a `CustomElementsServiceImpl` using
+ * it as the resource.
  */
-export function getCEFromTestJson(configOverride: Partial<CEMTConfig>) {
+export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTConfig>) {
   if (!manifest) {
     if (!existsSync(MANIFSST_PATH)) {
       console.error(
