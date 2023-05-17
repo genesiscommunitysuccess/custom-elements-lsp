@@ -8,22 +8,23 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
+import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
   | {
-    key: "none";
-    params: undefined;
-  }
+      key: "none";
+      params: undefined;
+    }
   | {
-    key: "custom-element-name";
-    params: undefined;
-  }
+      key: "custom-element-name";
+      params: undefined;
+    }
   | {
-    key: "custom-element-attribute";
-    params: string;
-  };
+      key: "custom-element-attribute";
+      params: string;
+    };
 
 export class CompletionsService {
   constructor(private logger: Logger, private services: Services) {
@@ -71,13 +72,46 @@ export class CompletionsService {
     this.logger.log(
       `custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`
     );
-    return attrs.map(({ name, type }) => ({
-      name,
-      insertText: `${name}${type === "boolean" ? "" : '=""'}`,
-      kind: ScriptElementKind.parameterElement,
-      kindModifiers: "custom-element-attribute",
-      sortText: "custom-element-attribute",
-    }));
+
+    const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd(
+      "global-attributes",
+      () =>
+        this.services.globalData
+          .getAttributes()
+          .map((name) => ({
+            name,
+            insertText: `${name}=""`,
+            kind: ScriptElementKind.parameterElement,
+            kindModifiers: "global-attribute",
+            sortText: "m",
+            labelDetails: {
+              description: "[attr] Global",
+            },
+          }))
+          .concat(
+            this.services.globalData.getAriaAttributes().map((name) => ({
+              name,
+              insertText: `${name}=""`,
+              kind: ScriptElementKind.parameterElement,
+              kindModifiers: "aria-attribute",
+              sortText: "z",
+              labelDetails: {
+                description: "[attr] Aria",
+              },
+            }))
+          )
+    );
+
+    return attrs
+      .map(({ name, type }) => ({
+        name,
+        insertText: `${name}${type === "boolean" ? "" : '=""'}`,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "custom-element-attribute",
+        sortText: "a",
+        // TODO: Add description which accounts for superclass attributes
+      }))
+      .concat(globalAttrs);
   }
 
   private getTagCompletions(): CompletionEntry[] {
@@ -89,6 +123,7 @@ export class CompletionsService {
         kind: ScriptElementKind.typeElement,
         kindModifiers: "custom-element",
         sortText: "custom-element",
+        documentation: "Hello",
         labelDetails: {
           description: path,
         },
@@ -107,7 +142,7 @@ export class CompletionsService {
         ((tagname = suggestCustomElements(
           rawLine.substring(0, position.character)
         )),
-          tagname)
+        tagname)
       ) {
         return {
           key: "custom-element-attribute",

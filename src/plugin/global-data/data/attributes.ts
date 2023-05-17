@@ -1,7 +1,3 @@
-// ARIA
-export const ROLE = "role";
-export const ARIA = "aria-*";
-
 // Misc
 export const ACCESSKEY = "accesskey";
 export const AUTOCAPITALIZE = "autocapitalize";

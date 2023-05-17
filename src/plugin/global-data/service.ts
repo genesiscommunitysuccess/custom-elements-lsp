@@ -9,4 +9,8 @@ export class GlobalDataServiceImpl implements GlobalDataService {
   getAttributes(): string[] {
     return this.repo.getAttributes();
   }
+
+  getAriaAttributes(): string[] {
+    return this.repo.getAriaAttributes();
+  }
 }
