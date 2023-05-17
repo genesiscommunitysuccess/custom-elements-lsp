@@ -15,6 +15,8 @@ const rootTemplate = html`
     </person-avatar>
 
     <invalid-component></invalid-component>
+
+    <example-counter></example-counter>
   </template>
 `;
 

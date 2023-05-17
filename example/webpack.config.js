@@ -1,11 +1,12 @@
-const path = require('path');
+const path = require("path");
 module.exports = {
-    entry: [
-        "./out/index.js",
-    ],
-    output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'public'),
-    },
-    // optimization: { minimize: false },
+	resolve: {
+		extensions: [".ts", ".js"],
+	},
+	entry: ["./out/index.js"],
+	output: {
+		filename: "bundle.js",
+		path: path.resolve(__dirname, "public"),
+	},
+	// optimization: { minimize: false },
 };

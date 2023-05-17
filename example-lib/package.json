@@ -5,22 +5,17 @@
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"build": "mkdir -p {out,dist} && npm run build:tsc && npm run build:webpack && npm run build:copy-dts",
-		"build:tsc": "./node_modules/typescript/bin/tsc -p lib --declaration",
-		"build:webpack": "webpack --config webpack.config.js",
-		"build:copy-dts": "copyfiles -u 1 \"out/**/*.d.ts\" dist"
+		"build": "mkdir -p dist && npm run build:tsc",
+		"build:tsc": "./node_modules/typescript/bin/tsc -p lib --declaration"
 	},
 	"dependencies": {
 		"@microsoft/fast-components": "2.21.3",
 		"@microsoft/fast-element": "1.11.0",
 		"@microsoft/fast-foundation": "2.47.0",
-		"copyfiles": "^2.4.1",
 		"tslib": "^2.4.1",
-		"typescript": "^4.4.3",
-		"webpack": "^5.70.0"
+		"typescript": "^4.4.3"
 	},
 	"devDependencies": {
-		"html-webpack-plugin": "^5.5.1",
-		"webpack-cli": "^4.9.2"
+		"html-webpack-plugin": "^5.5.1"
 	}
 }

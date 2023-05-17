@@ -12,7 +12,7 @@
 		"skipLibCheck": true,
 		"preserveConstEnums": true,
 		"stripInternal": true,
-		"outDir": "../out",
+		"outDir": "../dist",
 		"strict": true,
 		"lib": [
 			"dom",

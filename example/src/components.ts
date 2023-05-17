@@ -1,6 +1,7 @@
 import { DesignSystem } from "@microsoft/fast-foundation";
 import { Avatar } from "./components/avatar/avatar";
 import { button } from "./components/button/button.declaration";
+import { ExampleCounter } from "./components/counter/counter";
 import { ThemePicker } from "./components/theme/theme";
 import { RootComponent } from "./root";
 
@@ -14,4 +15,5 @@ export const registerComponents = () => {
   RootComponent;
   Avatar;
   ThemePicker;
+  ExampleCounter;
 };
