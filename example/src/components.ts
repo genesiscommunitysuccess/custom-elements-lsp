@@ -1,7 +1,7 @@
 import { DesignSystem } from "@microsoft/fast-foundation";
 import { Avatar } from "./components/avatar/avatar";
 import { button } from "./components/button/button.declaration";
-import {  exampleCounter, ExampleCounter } from "./components/counter/counter";
+import {  ExampleCounter } from "./components/counter/counter";
 import { ThemePicker } from "./components/theme/theme";
 import { RootComponent } from "./root";
 
@@ -10,9 +10,10 @@ function provideExampleDesignSystem(element?: HTMLElement): DesignSystem {
 }
 
 export const registerComponents = () => {
-  provideExampleDesignSystem().register(button(), exampleCounter());
+  provideExampleDesignSystem().register(button());
 
   RootComponent;
   Avatar;
   ThemePicker;
+  ExampleCounter;
 };
