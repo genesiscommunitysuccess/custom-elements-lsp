@@ -10,7 +10,7 @@ import { CustomElementsServiceImpl } from "../plugin/custom-elements/service";
 
 const MANIFSST_PATH = "./src/jest/ce-test.json";
 
-let manifest: string | undefined = undefined;
+let manifest: string;
 
 /**
  * Builds a stubbed `CustomElementsResource` and constructs a `CustomElementsServiceImpl`.

@@ -26,6 +26,7 @@ export const buildServices = (overrides: Partial<Services>): Services => ({
 });
 
 /**
+/**
  * Construct a logger which will output debug logs if the `TEST_LOG` environment
  * variable is set to `1`. Use via `npm run test:unit:verbose`.
  */

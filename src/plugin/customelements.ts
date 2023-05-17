@@ -4,6 +4,7 @@ import {
   TemplateLanguageService,
 } from "typescript-template-language-service-decorator";
 import { Diagnostic } from "typescript/lib/tsserverlibrary";
+import { CustomElementsService } from "./custom-elements/custom-elements.types";
 import { LanguageServiceLogger } from "./utils";
 
 import parse from "node-html-parser";
