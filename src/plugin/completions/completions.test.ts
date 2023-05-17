@@ -1,12 +1,53 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { LineAndCharacter } from "typescript/lib/tsserverlibrary";
 import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
+import { getGDServiceFromStubbedResource } from "../../jest/global-data";
 import { buildServices, getLogger, html } from "../../jest/utils";
 import { CustomElementsService } from "../custom-elements/custom-elements.types";
+import { GlobalDataService } from "../global-data/global-data.types";
 import { CompletionsService } from "./completions";
 
-const getCompletionsService = (ceRes: CustomElementsService) =>
-  new CompletionsService(getLogger(), buildServices({ customElements: ceRes }));
+const getCompletionsService = (
+  ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
+  gdRes: GlobalDataService = getGDServiceFromStubbedResource()
+) =>
+  new CompletionsService(
+    getLogger(),
+    buildServices({ customElements: ceRes, globalData: gdRes })
+  );
+
+const globalDataAttributeAssersions = [
+  {
+    insertText: 'data-*=""',
+    kind: "parameter",
+    kindModifiers: "global-attribute",
+    labelDetails: {
+      description: "[attr] Global",
+    },
+    name: "data-*",
+    sortText: "m",
+  },
+  {
+    insertText: 'class=""',
+    kind: "parameter",
+    kindModifiers: "global-attribute",
+    labelDetails: {
+      description: "[attr] Global",
+    },
+    name: "class",
+    sortText: "m",
+  },
+  {
+    insertText: 'aria-label=""',
+    kind: "parameter",
+    kindModifiers: "aria-attribute",
+    labelDetails: {
+      description: "[attr] Aria",
+    },
+    name: "aria-label",
+    sortText: "z",
+  },
+];
 
 describe("getCompletionType", () => {
   const tests: [string, [TemplateContext, LineAndCharacter], any][] = [
@@ -98,7 +139,7 @@ describe("getCompletionType", () => {
   for (const test of tests) {
     const [name, [context, lineAndChar], expected] = test;
     it(name, () => {
-      const service = getCompletionsService(getCEServiceFromStubbedResource());
+      const service = getCompletionsService();
       // `getComptionType` is private so need to case to `any` to test it
       const result = (service as any).getComptionType(context, lineAndChar);
       expect(result).toEqual(expected);
@@ -108,7 +149,7 @@ describe("getCompletionType", () => {
 
 describe("getCompletionsAtPosition", () => {
   it("Returns no completions if we are in a blank template", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html``;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -120,7 +161,7 @@ describe("getCompletionsAtPosition", () => {
   });
 
   it("Returns completions for the custom element tags if inside of an opening tag", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<`;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -153,7 +194,7 @@ describe("getCompletionsAtPosition", () => {
   });
 
   it("Returns completions for the custom element tags if inside of an opening with an incomplete custom element", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<custom-eleme`;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -186,7 +227,7 @@ describe("getCompletionsAtPosition", () => {
   });
 
   it("Returns attribute completions when past a valid custom element name which has defined attributes", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<custom-element `;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -200,20 +241,21 @@ describe("getCompletionsAtPosition", () => {
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "colour",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
       {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
+      ...globalDataAttributeAssersions,
     ]);
   });
 
   it("Returns attribute completions when writing an attribute", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<custom-element col`;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -227,20 +269,21 @@ describe("getCompletionsAtPosition", () => {
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "colour",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
       {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
+      ...globalDataAttributeAssersions,
     ]);
   });
 
   it("Returns attribute completions when writing an attribute inside of a finished tag", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<custom-element colour="red"></custom-element>`;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -254,20 +297,21 @@ describe("getCompletionsAtPosition", () => {
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "colour",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
       {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
         name: "activated",
-        sortText: "custom-element-attribute",
+        sortText: "a",
       },
+      ...globalDataAttributeAssersions,
     ]);
   });
 
-  it("Returns name completions when we try and complete attributes on a custom element with no attributes", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+  it("Returns only the global attribute completions when we try and complete attributes on a custom element with no attributes", () => {
+    const service = getCompletionsService();
     const context = html`<no-attr `;
 
     const completions = service.getCompletionsAtPosition(context, {
@@ -275,11 +319,11 @@ describe("getCompletionsAtPosition", () => {
       character: 9,
     });
 
-    expect(completions.entries).toEqual([]);
+    expect(completions.entries).toEqual([...globalDataAttributeAssersions]);
   });
 
   it("Returns name completions when we try and complete attributes on an unknown custom element", () => {
-    const service = getCompletionsService(getCEServiceFromStubbedResource());
+    const service = getCompletionsService();
     const context = html`<unknown-element `;
 
     const completions = service.getCompletionsAtPosition(context, {

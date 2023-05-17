@@ -123,7 +123,6 @@ export class CompletionsService {
         kind: ScriptElementKind.typeElement,
         kindModifiers: "custom-element",
         sortText: "custom-element",
-        documentation: "Hello",
         labelDetails: {
           description: path,
         },
