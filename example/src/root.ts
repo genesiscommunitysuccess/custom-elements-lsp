@@ -17,6 +17,9 @@ const rootTemplate = html`
     <invalid-component></invalid-component>
 
     <example-counter></example-counter>
+
+    <example-counter display-text="Reverse" reverse></example-counter>
+    <lib-counter display-text="Reverse" reverse></lib-counter>
   </template>
 `;
 
@@ -24,4 +27,4 @@ const rootTemplate = html`
   name: "root-component",
   template: rootTemplate,
 })
-export class RootComponent extends FASTElement {}
+export class RootComponent extends FASTElement { }
