@@ -1,14 +1,20 @@
 {
-  "name": "example-lib",
-  "version": "1.0.0",
-  "description": "Example library to demonstrate custom elements linking",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+	"name": "example-lib",
+	"version": "1.0.0",
+	"description": "Example library to demonstrate custom elements linking",
+	"main": "dist/index.js",
+	"types": "dist/index.d.ts",
+	"scripts": {
+		"build": "mkdir -p {out,dist} && npm run build:tsc && npm run build:webpack && npm run build:copy-dts",
+		"build:tsc": "./node_modules/typescript/bin/tsc -p lib --declaration",
+		"build:webpack": "webpack --config webpack.config.js",
+		"build:copy-dts": "copyfiles -u 1 \"out/**/*.d.ts\" dist"
+	},
 	"dependencies": {
 		"@microsoft/fast-components": "2.21.3",
 		"@microsoft/fast-element": "1.11.0",
 		"@microsoft/fast-foundation": "2.47.0",
+		"copyfiles": "^2.4.1",
 		"tslib": "^2.4.1",
 		"typescript": "^4.4.3",
 		"webpack": "^5.70.0"
