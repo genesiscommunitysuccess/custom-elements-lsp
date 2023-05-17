@@ -56,6 +56,10 @@ To view logs
 
 > If you're using VSCode you can view the logs using `TypeScript: Open TS Server log` from the command palette.
 
+### Example Library
+
+The directory `/example-lib` contains a small example library which publishes a FAST web component and associated custom elements manifest. It is added as a dependency of the example app already, and then you need to build the output using `npm run build` for use in the example app.
+
 ## Advanced Usage
 
 `designSystemPrefix` is used to specify how to handle custom elements which are defined but exported as an element registry function, and later registered against a design system with a specific prefix. An example of this is [FAST component libraries](https://www.fast.design/docs/design-systems/creating-a-component-library). Export these with the magic string `%%prefix%%-` at the start of the tagname and then `designSystemPrefix` will override the `%%prefix%%`.
