@@ -15,7 +15,7 @@ describe("customElementKnown", () => {
     const res = ceResource.customElementKnown("not-found");
     expect(res).toBe(false);
   });
-})
+});
 
 describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest", () => {
@@ -25,6 +25,7 @@ describe("getCENames", () => {
     const res = ceResource.getCENames();
     expectArrayElements(res, [
       "root-component",
+      "example-counter",
       "person-avatar",
       "%%prefix%%-button",
       "theme-picker",
@@ -36,6 +37,7 @@ describe("getCENames", () => {
     const res = ceResource.getCENames();
     expectArrayElements(res, [
       "root-component",
+      "example-counter",
       "person-avatar",
       "example-button",
       "theme-picker",
@@ -52,21 +54,40 @@ describe("getCEAttributes", () => {
       [
         {
           name: "title",
+          referenceClass: "CustomButton",
           type: "string",
         },
       ],
     ],
     [
-      "Element returns its attributes with correct type and name if the attribute does not match the variable name",
+      "Element returns its attributes with correct type and name, accounting for if the attribute does not match the variable name",
       ["person-avatar"],
       [
         {
           name: "avatar-src",
+          referenceClass: "Avatar",
           type: "string",
         },
         {
           name: "fullInfoDisabled",
+          referenceClass: "Avatar",
           type: "boolean",
+        },
+      ],
+    ],
+    [
+      "Element returns its attributes with reference class as a superclass if appropriate",
+      ["example-counter"],
+      [
+        {
+          name: "reverse",
+          referenceClass: "ExampleCounter",
+          type: "boolean",
+        },
+        {
+          name: "display-text",
+          referenceClass: "Counter",
+          type: "string | undefined",
         },
       ],
     ],

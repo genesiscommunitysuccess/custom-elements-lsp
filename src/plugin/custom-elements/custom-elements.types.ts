@@ -30,4 +30,5 @@ export type CEInfo = {
 export type CustomElementAttribute = {
   name: string; // Attribute name rather than associated field if available
   type: string;
+  referenceClass?: string;
 };

@@ -240,6 +240,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: 'colour=""',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "colour",
         sortText: "a",
       },
@@ -247,6 +250,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "activated",
         sortText: "a",
       },
@@ -268,6 +274,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: 'colour=""',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "colour",
         sortText: "a",
       },
@@ -275,6 +284,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "activated",
         sortText: "a",
       },
@@ -296,6 +308,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: 'colour=""',
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "colour",
         sortText: "a",
       },
@@ -303,6 +318,9 @@ describe("getCompletionsAtPosition", () => {
         insertText: "activated",
         kind: "parameter",
         kindModifiers: "custom-element-attribute",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
         name: "activated",
         sortText: "a",
       },
