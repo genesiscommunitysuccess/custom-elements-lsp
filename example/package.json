@@ -3,7 +3,7 @@
 	"scripts": {
 		"build": "mkdir -p out && ./node_modules/typescript/bin/tsc -p src && webpack --config webpack.config.js",
 		"dev": "npm run build && npm run serve",
-		"lsp:analyse": "customelements-analyse --src='src/**/*.{js,ts}'",
+		"lsp:analyse": "customelements-analyse --src='src/**/*.{js,ts}' --lib='node_modules/example-lib/**/custom-elements.json' --dependencies",
 		"serve": "http-server -c-1 ./public"
 	},
 	"dependencies": {

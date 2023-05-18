@@ -1,12 +1,14 @@
 module.exports = {
 	/** Globs to analyze */
-	globs: ["example/src/**/*.ts"],
+	globs: ["lib/**/*.ts"],
 	/** Directory to output CEM to */
-	outdir: "./data",
+	outdir: "./dist",
 	/** Run in dev mode, provides extra logging */
 	dev: false,
 	/** Enable special handling for FastElement */
 	fast: true,
-	/** Provide custom plugins */
-	// plugins: [generateCustomData()],
+	/** Include third party custom elements manifests */
+	dependencies: true,
+	/** Output CEM path to `package.json`, defaults to true */
+	packagejson: true,
 };
