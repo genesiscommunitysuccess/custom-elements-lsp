@@ -1,21 +1,8 @@
-import { attr, customElement, FASTElement, observable } from "@microsoft/fast-element";
+import {
+  attr,
+  customElement,
+} from "@microsoft/fast-element";
 import { Counter, counterTemplate } from "example-lib";
-
-// export class Counter extends FASTElement {
-  // @observable public count: number = 0;
-//
-  // /** The text to display on the counter button */
-  // @attr({ attribute: "display-text" }) displayText: string | undefined;
-//
-  // increment() {
-    // this.count++;
-  // }
-//
-  // connectedCallback(): void {
-    // super.connectedCallback();
-    // console.log("Counter connectedCallback()");
-  // }
-// }
 
 Counter;
 

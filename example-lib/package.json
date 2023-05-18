@@ -2,11 +2,11 @@
 	"name": "example-lib",
 	"version": "1.0.0",
 	"description": "Example library to demonstrate custom elements linking",
-	"main": "dist/index.js",
-	"types": "dist/index.d.ts",
+	"main": "dist/esm/index.js",
+	"types": "dist/dts/index.d.ts",
 	"scripts": {
 		"build": "mkdir -p dist && npm run build:tsc",
-		"build:tsc": "./node_modules/typescript/bin/tsc -p lib --declaration"
+		"build:tsc": "tsc -b tsconfig.json"
 	},
 	"dependencies": {
 		"@microsoft/fast-components": "2.21.3",

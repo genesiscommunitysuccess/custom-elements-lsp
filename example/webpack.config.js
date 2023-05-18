@@ -3,6 +3,7 @@ module.exports = {
 	resolve: {
 		extensions: [".ts", ".js"],
 	},
+	devtool: "source-map",
 	entry: ["./out/index.js"],
 	output: {
 		filename: "bundle.js",
