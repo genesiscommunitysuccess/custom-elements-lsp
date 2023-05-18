@@ -40,6 +40,10 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     return info;
   }
 
+  customElementKnown(tagName: string): boolean {
+    return this.ceData.data.has(tagName);
+  }
+
   /**
    * PRIVATE
    */

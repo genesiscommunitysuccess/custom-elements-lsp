@@ -1,5 +1,21 @@
-import { getCEServiceFromTestJsonResource } from "../../jest/custom-elements";
+import {
+  getCEServiceFromStubbedResource,
+  getCEServiceFromTestJsonResource,
+} from "../../jest/custom-elements";
 import { expectArrayElements } from "../../jest/utils";
+
+describe("customElementKnown", () => {
+  it("Returns true if the element is known", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.customElementKnown("no-attr");
+    expect(res).toBe(true);
+  });
+  it("Returns false if the element is not found", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.customElementKnown("not-found");
+    expect(res).toBe(false);
+  });
+})
 
 describe("getCENames", () => {
   it("Returns the names of the custom elements from the manifest", () => {
@@ -101,4 +117,36 @@ describe("processPath", () => {
       expect(res).toEqual(expected);
     });
   }
+});
+
+describe("getCEInfo", () => {
+  it("Returns the custom element info with full paths when configured", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEInfo({ getFullPath: true });
+    expectArrayElements(res, [
+      {
+        path: "src/components/avatar/avatar.ts",
+        tagName: "custom-element",
+      },
+      {
+        path: "node_modules/pkg/src/components/misc/no-attr.ts",
+        tagName: "no-attr",
+      },
+    ]);
+  });
+
+  it("Returns the custom element info with reduced paths when configured", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEInfo({ getFullPath: false });
+    expectArrayElements(res, [
+      {
+        path: "src/components/avatar/avatar.ts",
+        tagName: "custom-element",
+      },
+      {
+        path: "pkg",
+        tagName: "no-attr",
+      },
+    ]);
+  });
 });

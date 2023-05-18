@@ -34,7 +34,7 @@ export const getCEServiceFromStubbedResource = () => {
   resource.data.set("no-attr", {
     name: "NoAttribute",
     kind: "class",
-    path: "src/components/misc/no-attr.ts",
+    path: "node_modules/pkg/src/components/misc/no-attr.ts",
     customElement: true,
     attributes: [],
   });

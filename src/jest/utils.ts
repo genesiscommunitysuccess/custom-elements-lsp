@@ -2,6 +2,10 @@ import {
   Logger,
   TemplateContext,
 } from "typescript-template-language-service-decorator";
+import { GlobalDataRepositoryImpl } from "../plugin/global-data/repository";
+import { GlobalDataServiceImpl } from "../plugin/global-data/service";
+import { Services } from "../plugin/utils/services.type";
+import { getCEServiceFromTestJsonResource } from "./custom-elements";
 
 const constructLogger = (debugLog: boolean = false): Logger => ({
   log: (msg: string) => {
@@ -9,6 +13,19 @@ const constructLogger = (debugLog: boolean = false): Logger => ({
   },
 });
 
+export const getGlobalDataService = () =>
+  new GlobalDataServiceImpl(
+    getLogger(),
+    new GlobalDataRepositoryImpl(getLogger())
+  );
+
+export const buildServices = (overrides: Partial<Services>): Services => ({
+  customElements: getCEServiceFromTestJsonResource({}),
+  globalData: getGlobalDataService(),
+  ...overrides,
+});
+
+/**
 /**
  * Construct a logger which will output debug logs if the `TEST_LOG` environment
  * variable is set to `1`. Use via `npm run test:unit:verbose`.

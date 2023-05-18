@@ -8,28 +8,26 @@ import {
   LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
-import { CustomElementsService } from "../custom-elements/custom-elements.types";
+import { getStore } from "../utils/kvstore";
+import { Services } from "../utils/services.type";
 import { suggestCustomElements, suggestTags } from "./helpers";
 
 export type CompletionTypeParams =
   | {
-    key: "none";
-    params: undefined;
-  }
+      key: "none";
+      params: undefined;
+    }
   | {
-    key: "custom-element-name";
-    params: undefined;
-  }
+      key: "custom-element-name";
+      params: undefined;
+    }
   | {
-    key: "custom-element-attribute";
-    params: string;
-  };
+      key: "custom-element-attribute";
+      params: string;
+    };
 
 export class CompletionsService {
-  constructor(
-    private logger: Logger,
-    private ceResource: CustomElementsService
-  ) {
+  constructor(private logger: Logger, private services: Services) {
     logger.log("Setting up Completions Service");
   }
 
@@ -44,46 +42,15 @@ export class CompletionsService {
 
     switch (key) {
       case "custom-element-name":
-        entries = this.ceResource.getCENames().map((name) => ({
-          name: name,
-          insertText: `${name}></${name}>`,
-          kind: ScriptElementKind.typeElement,
-          kindModifiers: "custom-element",
-          sortText: "custom-element",
-          // labelDetails: {
-            // description: "Finish custom element name",
-            // detail: "Detail",
-          // },
-        }));
+        entries = this.getTagCompletions();
         break;
 
       case "custom-element-attribute":
-        const attrs = this.ceResource.getCEAttributes(params);
-        this.logger.log(
-          `custom-element-attribute: ${params}, ${JSON.stringify(attrs)}`
-        );
-        entries = attrs.map(({ name, type }) => ({
-          name,
-          insertText: `${name}${type === "boolean" ? "" : '=""'}`,
-          kind: ScriptElementKind.parameterElement,
-          kindModifiers: "custom-element-attribute",
-          sortText: "custom-element-attribute",
-        }));
-        if (entries.length > 0) break;
-
-        // Else, we need to finish the name
-        this.logger.log(`custom-element-attribute: name completion`);
-        entries = this.ceResource.getCENames().map((name) => ({
-          name: name,
-          insertText: `${name}></${name}>`,
-          kind: ScriptElementKind.typeElement,
-          kindModifiers: "custom-element",
-          sortText: "custom-element",
-          // labelDetails: {
-            // description: "Finish custom element name",
-            // detail: "Detail",
-          // },
-        }));
+        if (!this.services.customElements.customElementKnown(params)) {
+          entries = this.getTagCompletions();
+          break;
+        }
+        entries = this.getAttributeCompletions(params);
         break;
 
       case "none":
@@ -100,6 +67,68 @@ export class CompletionsService {
     };
   }
 
+  private getAttributeCompletions(tagName: string): CompletionEntry[] {
+    const attrs = this.services.customElements.getCEAttributes(tagName);
+    this.logger.log(
+      `custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`
+    );
+
+    const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd(
+      "global-attributes",
+      () =>
+        this.services.globalData
+          .getAttributes()
+          .map((name) => ({
+            name,
+            insertText: `${name}=""`,
+            kind: ScriptElementKind.parameterElement,
+            kindModifiers: "global-attribute",
+            sortText: "m",
+            labelDetails: {
+              description: "[attr] Global",
+            },
+          }))
+          .concat(
+            this.services.globalData.getAriaAttributes().map((name) => ({
+              name,
+              insertText: `${name}=""`,
+              kind: ScriptElementKind.parameterElement,
+              kindModifiers: "aria-attribute",
+              sortText: "z",
+              labelDetails: {
+                description: "[attr] Aria",
+              },
+            }))
+          )
+    );
+
+    return attrs
+      .map(({ name, type }) => ({
+        name,
+        insertText: `${name}${type === "boolean" ? "" : '=""'}`,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "custom-element-attribute",
+        sortText: "a",
+        // TODO: Add description which accounts for superclass attributes
+      }))
+      .concat(globalAttrs);
+  }
+
+  private getTagCompletions(): CompletionEntry[] {
+    return this.services.customElements
+      .getCEInfo({ getFullPath: false })
+      .map(({ tagName: name, path }) => ({
+        name: name,
+        insertText: `${name}></${name}>`,
+        kind: ScriptElementKind.typeElement,
+        kindModifiers: "custom-element",
+        sortText: "custom-element",
+        labelDetails: {
+          description: path,
+        },
+      }));
+  }
+
   private getComptionType(
     context: TemplateContext,
     position: LineAndCharacter
@@ -112,7 +141,7 @@ export class CompletionsService {
         ((tagname = suggestCustomElements(
           rawLine.substring(0, position.character)
         )),
-          tagname)
+        tagname)
       ) {
         return {
           key: "custom-element-attribute",

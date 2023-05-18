@@ -4,13 +4,10 @@ import {
   TemplateContext,
 } from "typescript-template-language-service-decorator";
 import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
-import { CustomElementsService } from "../custom-elements/custom-elements.types";
+import { Services } from "../utils/services.type";
 
 export class DiagnosticsService {
-  constructor(
-    private logger: Logger,
-    private ceResource: CustomElementsService
-  ) {
+  constructor(private logger: Logger, private services: Services) {
     logger.log("Setting up Diagnostics");
   }
 
@@ -35,7 +32,7 @@ export class DiagnosticsService {
       `getUnknownCETag: customElementTags: ${customElementTags.length}`
     );
 
-    const ceNames = this.ceResource.getCENames();
+    const ceNames = this.services.customElements.getCENames();
     const invalidCETags = customElementTags
       .filter((elem) => !ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => elem.tagName.toLowerCase());
@@ -96,7 +93,7 @@ export class DiagnosticsService {
     elementList: HTMLElement[]
   ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
-    const ceNames = this.ceResource.getCENames();
+    const ceNames = this.services.customElements.getCENames();
 
     const tagsAndAttrs = elementList
       .filter(
@@ -128,7 +125,7 @@ export class DiagnosticsService {
 
     const invalidAttr = withOccurrences
       .map(({ tagName, occurrence, attrs }) => {
-        const ceAttrs = this.ceResource
+        const ceAttrs = this.services.customElements
           .getCEAttributes(tagName)
           .map(({ name }) => name);
         return attrs

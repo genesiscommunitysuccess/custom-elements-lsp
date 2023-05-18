@@ -12,6 +12,7 @@ export interface CustomElementDef extends CustomElementDeclaration {
 // RESOURCE
 
 export interface CustomElementsService {
+  customElementKnown(tagName: string): boolean;
   getCENames(): string[];
   getCEAttributes(name: string): CustomElementAttribute[];
   getCEInfo(config: GetCEInfo): CEInfo[];

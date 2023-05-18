@@ -14,7 +14,6 @@ import { CompletionsService } from "./completions";
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private ceResource: CustomElementsService,
     private diagnostics: DiagnosticsService,
     private completions: CompletionsService
   ) {
