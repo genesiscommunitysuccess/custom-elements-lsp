@@ -14,7 +14,6 @@ const rootTemplate = html`
       <h1 slot="title">Full info disabled</h1>
     </person-avatar>
 
-    <lib-counter display-text="Reverse" reverse></lib-counter>
     <invalid-component></invalid-component>
 
     <example-counter></example-counter>

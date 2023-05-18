@@ -234,6 +234,23 @@ describe("getUnknownCETag", () => {
       },
     ]);
   });
+
+  it("Diagnostics for an unknown element if attributes are set", () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`<template><no-at test-attr="test"></no-at></template>`;
+    const elementList = getElements(context);
+    const result = service.getUnknownCETag(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 0,
+        file: "test.ts",
+        length: 5,
+        messageText: "Unknown custom element: no-at",
+        start: 11,
+      },
+    ]);
+  });
 });
 
 describe("getInvalidCEAttribute", () => {
