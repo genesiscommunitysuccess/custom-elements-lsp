@@ -1,3 +1,4 @@
+// export default {
 module.exports = {
 	/** Globs to analyze */
 	globs: ["example/src/**/*.ts"],

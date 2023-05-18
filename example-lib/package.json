@@ -6,8 +6,7 @@
 	"types": "dist/dts/index.d.ts",
 	"scripts": {
 		"build": "mkdir -p dist && npm run build:tsc",
-		"build:tsc": "tsc -b tsconfig.json",
-		"cem:analyze": "cem analyze --config custom-elements-manifest.config.js"
+		"build:tsc": "tsc -b tsconfig.json"
 	},
 	"dependencies": {
 		"@microsoft/fast-components": "2.21.3",
@@ -18,6 +17,5 @@
 	},
 	"devDependencies": {
 		"html-webpack-plugin": "^5.5.1"
-	},
-	"customElements": "dist/custom-elements.json"
+	}
 }
