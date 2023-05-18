@@ -7,10 +7,12 @@
 		"customelements-analyse": "./src/parser/analyse.js"
 	},
 	"scripts": {
+		"build": "npx tsc",
+		"build:watch": "npx tsc --watch",
+		"copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
 		"test:unit": "jest",
-		"test:unit:watch": "jest --watchAll",
 		"test:unit:verbose": "cross-env TEST_LOG=1 jest",
-		"copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json"
+		"test:unit:watch": "jest --watchAll"
 	},
 	"dependencies": {
 		"@custom-elements-manifest/analyzer": "^0.8.0",
