@@ -19,6 +19,8 @@ const rootTemplate = html`
     <example-counter></example-counter>
 
     <example-counter display-text="Reverse" reverse></example-counter>
+
+    <priority-selector></priority-selector>
   </template>
 `;
 
