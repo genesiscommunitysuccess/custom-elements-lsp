@@ -6,10 +6,9 @@ import { Counter } from "../counter";
 export const priorityTypes = ["low", "medium", "high"] as const;
 
 @customElement({
-  name: "priority-selector"
+  name: "priority-selector",
 })
 export class PrioritySelector extends Counter {
-
   override increment() {
     super.increment();
     if (this.count >= priorityTypes.length) {
