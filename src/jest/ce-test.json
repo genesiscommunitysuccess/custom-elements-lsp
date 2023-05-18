@@ -65,6 +65,571 @@
     },
     {
       "kind": "javascript-module",
+      "path": "src/components/avatar/avatar.styles.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "avatarStyles",
+          "default": "css`\n  :host {\n    margin: 10px;\n  }\n\n  div.container {\n    background-color: var(--accent-color);\n  }\n\n  div.top {\n    width: 80%;\n    flex: auo;\n    display: grid;\n    grid-auto-columns: 1fr 1fr;\n    grid-template-columns: 1fr 1fr;\n  }\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "avatarStyles",
+          "declaration": {
+            "name": "avatarStyles",
+            "module": "src/components/avatar/avatar.styles.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/avatar/avatar.template.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "avatarTemplate",
+          "default": "html<Avatar>`\n  <template>\n    <div class=\"container\">\n      <div class=\"top\">\n        <img\n          src=\"${(x) => x.avatarSrc}\"\n          @click=\"${(x, c) => (x.showFullInfo = !x.showFullInfo)})}\"\n        />\n        <div>\n          <slot name=\"title\">\n            <h1>Placeholder</h1>\n          </slot>\n          <slot name=\"address\">\n            <p>123 London Road</p>\n            <p>PA 112</p>\n          </slot>\n        </div>\n      </div>\n\n      ${when(\n        (x) => x.showFullInfo && !x.fullInfoDisabled,\n        html`\n          <div class=\"bottom\">\n            <slot name=\"info\">\n              <p>${(_) => placeholder}</p>\n            </slot>\n          </div>\n        `\n      )}\n    </div>\n  </template>\n`"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "avatarTemplate",
+          "declaration": {
+            "name": "avatarTemplate",
+            "module": "src/components/avatar/avatar.template.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/avatar/avatar.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "Avatar class to display information about a person.",
+          "name": "Avatar",
+          "members": [
+            {
+              "kind": "field",
+              "name": "showFullInfo",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Boolean attribute to show/hide the full info section."
+            },
+            {
+              "kind": "field",
+              "name": "avatarSrc",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light\"",
+              "description": "String is the `img` src to show for the avatar. Defaulted to `avataaars.io`"
+            },
+            {
+              "kind": "field",
+              "name": "fullInfoDisabled",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Boolean attribute to disable the full info section entirely."
+            },
+            {
+              "kind": "field",
+              "name": "_presentation",
+              "type": {
+                "text": "ComponentPresentation | null | undefined"
+              },
+              "privacy": "private",
+              "default": "void 0",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "$presentation",
+              "type": {
+                "text": "ComponentPresentation | null"
+              },
+              "privacy": "public",
+              "description": "A property which resolves the ComponentPresentation instance\nfor the current component.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "template",
+              "type": {
+                "text": "ElementViewTemplate | void | null"
+              },
+              "privacy": "public",
+              "description": "Sets the template of the element instance. When undefined,\nthe element will attempt to resolve the template from\nthe associated presentation or custom element definition.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "templateChanged",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "styles",
+              "type": {
+                "text": "ElementStyles | void | null"
+              },
+              "privacy": "public",
+              "description": "Sets the default styles for the element instance. When undefined,\nthe element will attempt to resolve default styles from\nthe associated presentation or custom element definition.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "stylesChanged",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "compose",
+              "privacy": "public",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "(\n        overrideDefinition?: OverrideFoundationElementDefinition<T>\n    ) => FoundationElementRegistry<T, K>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "this",
+                  "type": {
+                    "text": "K"
+                  }
+                },
+                {
+                  "name": "elementDefinition",
+                  "type": {
+                    "text": "T"
+                  },
+                  "description": "The definition of the element to create the registry\nfunction for."
+                }
+              ],
+              "description": "Defines an element registry function with a set of element definition defaults.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "avatar-src",
+              "type": {
+                "text": "string"
+              },
+              "default": "defaultAvatarSrc",
+              "description": "String is the `img` src to show for the avatar. Defaulted to `avataaars.io`",
+              "resolveInitializer": {
+                "module": "src/components/avatar/avatar.ts"
+              },
+              "fieldName": "avatarSrc"
+            },
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Boolean attribute to disable the full info section entirely.",
+              "fieldName": "fullInfoDisabled"
+            }
+          ],
+          "superclass": {
+            "name": "FASTElement",
+            "package": "@microsoft/fast-element"
+          },
+          "tagName": "person-avatar",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "Avatar",
+          "declaration": {
+            "name": "Avatar",
+            "module": "src/components/avatar/avatar.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "person-avatar",
+          "declaration": {
+            "name": "Avatar",
+            "module": "src/components/avatar/avatar.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/counter/counter.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ExampleCounter",
+          "members": [
+            {
+              "kind": "field",
+              "name": "reverse",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Counter will decrement if set"
+            },
+            {
+              "kind": "method",
+              "name": "increment",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "Counter",
+                "module": "lib/counter/counter.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "count",
+              "type": {
+                "text": "number"
+              },
+              "privacy": "public",
+              "default": "0",
+              "inheritedFrom": {
+                "name": "Counter",
+                "module": "lib/counter/counter.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "displayText",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The text to display on the counter button",
+              "inheritedFrom": {
+                "name": "Counter",
+                "module": "lib/counter/counter.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false",
+              "description": "Counter will decrement if set",
+              "fieldName": "reverse"
+            },
+            {
+              "name": "display-text",
+              "type": {
+                "text": "string | undefined"
+              },
+              "description": "The text to display on the counter button",
+              "fieldName": "displayText",
+              "inheritedFrom": {
+                "name": "Counter",
+                "module": "lib/counter/counter.ts"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "Counter",
+            "package": "example-lib"
+          },
+          "tagName": "example-counter",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ExampleCounter",
+          "declaration": {
+            "name": "ExampleCounter",
+            "module": "src/components/counter/counter.ts"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "example-counter",
+          "declaration": {
+            "name": "ExampleCounter",
+            "module": "src/components/counter/counter.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.declaration.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "button"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "button",
+          "declaration": {
+            "name": "button",
+            "module": "src/components/button/button.declaration.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.style.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "customButtonStyles",
+          "default": "css``"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "customButtonStyles",
+          "declaration": {
+            "name": "customButtonStyles",
+            "module": "src/components/button/button.style.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.template.ts",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "customButtonTemplate",
+          "default": "html<CustomButton>`<button>\n  ${(x) => x.title}\n</button> `"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "customButtonTemplate",
+          "declaration": {
+            "name": "customButtonTemplate",
+            "module": "src/components/button/button.template.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/components/button/button.ts",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "CustomButton",
+          "members": [
+            {
+              "kind": "field",
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Default text\""
+            },
+            {
+              "kind": "field",
+              "name": "_presentation",
+              "type": {
+                "text": "ComponentPresentation | null | undefined"
+              },
+              "privacy": "private",
+              "default": "void 0",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "$presentation",
+              "type": {
+                "text": "ComponentPresentation | null"
+              },
+              "privacy": "public",
+              "description": "A property which resolves the ComponentPresentation instance\nfor the current component.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "template",
+              "type": {
+                "text": "ElementViewTemplate | void | null"
+              },
+              "privacy": "public",
+              "description": "Sets the template of the element instance. When undefined,\nthe element will attempt to resolve the template from\nthe associated presentation or custom element definition.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "templateChanged",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "styles",
+              "type": {
+                "text": "ElementStyles | void | null"
+              },
+              "privacy": "public",
+              "description": "Sets the default styles for the element instance. When undefined,\nthe element will attempt to resolve default styles from\nthe associated presentation or custom element definition.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "stylesChanged",
+              "privacy": "protected",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "compose",
+              "privacy": "public",
+              "static": true,
+              "return": {
+                "type": {
+                  "text": "(\n        overrideDefinition?: OverrideFoundationElementDefinition<T>\n    ) => FoundationElementRegistry<T, K>"
+                }
+              },
+              "parameters": [
+                {
+                  "name": "this",
+                  "type": {
+                    "text": "K"
+                  }
+                },
+                {
+                  "name": "elementDefinition",
+                  "type": {
+                    "text": "T"
+                  },
+                  "description": "The definition of the element to create the registry\nfunction for."
+                }
+              ],
+              "description": "Defines an element registry function with a set of element definition defaults.",
+              "inheritedFrom": {
+                "name": "FoundationElement",
+                "module": "src/foundation-element/foundation-element.ts"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"Default text\"",
+              "fieldName": "title"
+            }
+          ],
+          "superclass": {
+            "name": "FoundationElement",
+            "package": "@microsoft/fast-foundation"
+          },
+          "tagName": "%%prefix%%-button",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "CustomButton",
+          "declaration": {
+            "name": "CustomButton",
+            "module": "src/components/button/button.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
       "path": "src/components/theme/theme.style.ts",
       "declarations": [
         {
@@ -206,237 +771,118 @@
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/avatar/avatar.styles.ts",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "avatarStyles",
-          "default": "css`\n  :host {\n    margin: 10px;\n  }\n\n  div.container {\n    background-color: var(--accent-color);\n  }\n\n  div.top {\n    width: 80%;\n    flex: auo;\n    display: grid;\n    grid-auto-columns: 1fr 1fr;\n    grid-template-columns: 1fr 1fr;\n  }\n`"
-        }
-      ],
+      "path": "node_modules/example-lib/dist/lib/index.ts",
+      "declarations": [],
       "exports": [
         {
           "kind": "js",
-          "name": "avatarStyles",
+          "name": "*",
           "declaration": {
-            "name": "avatarStyles",
-            "module": "src/components/avatar/avatar.styles.ts"
+            "name": "*",
+            "package": "\"./counter\""
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/avatar/avatar.template.ts",
+      "path": "node_modules/example-lib/dist/lib/counter/counter.template.ts",
       "declarations": [
         {
           "kind": "variable",
-          "name": "avatarTemplate",
-          "default": "html<Avatar>`\n  <template>\n    <div class=\"container\">\n      <div class=\"top\">\n        <img\n          src=\"${(x) => x.avatarSrc}\"\n          @click=\"${(x, c) => (x.showFullInfo = !x.showFullInfo)})}\"\n        />\n        <div>\n          <slot name=\"title\">\n            <h1>Placeholder</h1>\n          </slot>\n          <slot name=\"address\">\n            <p>123 London Road</p>\n            <p>PA 112</p>\n          </slot>\n        </div>\n      </div>\n\n      ${when(\n        (x) => x.showFullInfo && !x.fullInfoDisabled,\n        html`\n          <div class=\"bottom\">\n            <slot name=\"info\">\n              <p>${(_) => placeholder}</p>\n            </slot>\n          </div>\n        `\n      )}\n    </div>\n  </template>\n`"
+          "name": "counterTemplate",
+          "default": "html<Counter>`\n  <template>\n    <div>The count is ${(x) => x.count}.</div>\n    <button @click=${(x) => x.increment()}>\n      ${(x) => x.displayText ?? defaultText}\n    </button>\n  </template>\n`"
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "avatarTemplate",
+          "name": "counterTemplate",
           "declaration": {
-            "name": "avatarTemplate",
-            "module": "src/components/avatar/avatar.template.ts"
+            "name": "counterTemplate",
+            "module": "lib/counter/counter.template.ts"
           }
         }
       ]
     },
     {
       "kind": "javascript-module",
-      "path": "src/components/avatar/avatar.ts",
+      "path": "node_modules/example-lib/dist/lib/counter/counter.ts",
       "declarations": [
         {
           "kind": "class",
-          "description": "Avatar class to display information about a person.",
-          "name": "Avatar",
+          "description": "",
+          "name": "Counter",
           "members": [
             {
               "kind": "field",
-              "name": "showFullInfo",
+              "name": "count",
               "type": {
-                "text": "boolean"
+                "text": "number"
               },
-              "default": "false",
-              "description": "Boolean attribute to show/hide the full info section."
+              "privacy": "public",
+              "default": "0"
             },
             {
               "kind": "field",
-              "name": "avatarSrc",
+              "name": "displayText",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "\"https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light\"",
-              "description": "String is the `img` src to show for the avatar. Defaulted to `avataaars.io`"
+              "description": "The text to display on the counter button"
             },
             {
-              "kind": "field",
-              "name": "fullInfoDisabled",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Boolean attribute to disable the full info section entirely."
+              "kind": "method",
+              "name": "increment"
             }
           ],
           "attributes": [
             {
-              "name": "avatar-src",
+              "name": "display-text",
               "type": {
-                "text": "string"
+                "text": "string | undefined"
               },
-              "default": "defaultAvatarSrc",
-              "description": "String is the `img` src to show for the avatar. Defaulted to `avataaars.io`",
-              "resolveInitializer": {
-                "module": "src/components/avatar/avatar.ts"
-              },
-              "fieldName": "avatarSrc"
-            },
-            {
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false",
-              "description": "Boolean attribute to disable the full info section entirely.",
-              "fieldName": "fullInfoDisabled"
+              "description": "The text to display on the counter button",
+              "fieldName": "displayText"
             }
           ],
           "superclass": {
             "name": "FASTElement",
             "package": "@microsoft/fast-element"
           },
-          "tagName": "person-avatar",
           "customElement": true
         }
       ],
       "exports": [
         {
           "kind": "js",
-          "name": "Avatar",
+          "name": "Counter",
           "declaration": {
-            "name": "Avatar",
-            "module": "src/components/avatar/avatar.ts"
+            "name": "Counter",
+            "module": "lib/counter/counter.ts"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "node_modules/example-lib/dist/lib/counter/index.ts",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "*",
+          "declaration": {
+            "name": "*",
+            "package": "\"./counter\""
           }
         },
         {
-          "kind": "custom-element-definition",
-          "name": "person-avatar",
-          "declaration": {
-            "name": "Avatar",
-            "module": "src/components/avatar/avatar.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/button/button.declaration.ts",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "button"
-        }
-      ],
-      "exports": [
-        {
           "kind": "js",
-          "name": "button",
+          "name": "*",
           "declaration": {
-            "name": "button",
-            "module": "src/components/button/button.declaration.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/button/button.style.ts",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "customButtonStyles",
-          "default": "css``"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "customButtonStyles",
-          "declaration": {
-            "name": "customButtonStyles",
-            "module": "src/components/button/button.style.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/button/button.template.ts",
-      "declarations": [
-        {
-          "kind": "variable",
-          "name": "customButtonTemplate",
-          "default": "html<CustomButton>`<button>\n  ${(x) => x.title}\n</button> `"
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "customButtonTemplate",
-          "declaration": {
-            "name": "customButtonTemplate",
-            "module": "src/components/button/button.template.ts"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
-      "path": "src/components/button/button.ts",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "CustomButton",
-          "members": [
-            {
-              "kind": "field",
-              "name": "title",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"Default text\""
-            }
-          ],
-          "attributes": [
-            {
-              "name": "title",
-              "type": {
-                "text": "string"
-              },
-              "default": "\"Default text\"",
-              "fieldName": "title"
-            }
-          ],
-          "superclass": {
-            "name": "FoundationElement",
-            "package": "@microsoft/fast-foundation"
-          },
-          "tagName": "%%prefix%%-button",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "CustomButton",
-          "declaration": {
-            "name": "CustomButton",
-            "module": "src/components/button/button.ts"
+            "name": "*",
+            "package": "\"./counter.template\""
           }
         }
       ]
