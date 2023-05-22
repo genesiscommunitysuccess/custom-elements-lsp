@@ -7,7 +7,7 @@ Laborum a cupiditate aperiam eum eum aliquam. Enim rerum ut voluptatem quo conse
 
 export const avatarTemplate = html<Avatar>`
   <template>
-    <div class="container">
+    <div class="container" @click="${(x) => x.avatarSelected()}">
       <div class="top">
         <img
           src="${(x) => x.avatarSrc}"
@@ -25,15 +25,15 @@ export const avatarTemplate = html<Avatar>`
       </div>
 
       ${when(
-        (x) => x.showFullInfo && !x.fullInfoDisabled,
-        html`
+  (x) => x.showFullInfo && !x.fullInfoDisabled,
+  html`
           <div class="bottom">
             <slot name="info">
               <p>${(_) => placeholder}</p>
             </slot>
           </div>
         `
-      )}
+)}
     </div>
   </template>
 `;

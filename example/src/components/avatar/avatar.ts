@@ -17,6 +17,7 @@ const defaultAvatarSrc =
  * Intractable to show extra information, configurable via attributes.
  * @privateRemarks
  * Coloured based on the `design system` css variables.
+ * @fires "avatar-selected" on click with the avatar element as the detail.
  */
 @customElement({
   name: "person-avatar",
@@ -30,4 +31,8 @@ export class Avatar extends FASTElement {
   @attr({ attribute: "avatar-src" }) avatarSrc: string = defaultAvatarSrc;
   /** Boolean attribute to disable the full info section entirely. */
   @attr({ mode: "boolean" }) fullInfoDisabled: boolean = false;
+
+  avatarSelected() {
+    this.$emit("avatar-selected", this);
+  }
 }
