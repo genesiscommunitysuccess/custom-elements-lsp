@@ -8,13 +8,17 @@ import { LanguageServiceLogger } from "./utils";
 
 import parse from "node-html-parser";
 import { DiagnosticsService } from "./diagnostics";
-import { CoreCompletionsServiceImpl, getCompletionType } from "./completions";
+import {
+  CoreCompletionsServiceImpl,
+  getCompletionType,
+  PartialCompletionsService,
+} from "./completions";
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
     private diagnostics: DiagnosticsService,
-    private completions: CoreCompletionsServiceImpl
+    private completions: PartialCompletionsService[]
   ) {
     logger.log("Setting up customelements class");
   }
@@ -50,14 +54,22 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     this.logger.log(
       `getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`
     );
-    return this.completions.getCompletionsAtPosition(
+
+    return this.completions.reduce(
+      (acum: CompletionInfo, service) =>
+        service.getCompletionsAtPosition
+          ? service.getCompletionsAtPosition(acum, {
+            context,
+            position,
+            typeAndParam,
+          })
+          : acum,
       {
         isGlobalCompletion: false,
         isMemberCompletion: false,
         isNewIdentifierLocation: false,
         entries: [],
-      },
-      { context, position, typeAndParam }
+      }
     );
   }
 }

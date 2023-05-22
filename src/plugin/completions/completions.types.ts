@@ -30,3 +30,5 @@ export interface CompletionsService {
     ctx: CompletionCtx
   ): CompletionInfo;
 }
+
+export interface PartialCompletionsService extends Partial<CompletionsService> { }

@@ -6,17 +6,20 @@ To use this plugin you have a version of typescript as part of the project, loca
 
 1. Ensure the package is installed in your `package.json` and you've run `npm install`.
 2. Update your `tsconfig.json` with the following info:
+
 ```json
-	"compilerOptions": {
-		"plugins": [
-			{
-				"name": "@genesiscommunitysuccess/custom-elements-lsp",
-				"srcRouteFromTSServer": "../../..",
-                		"designSystemPrefix": "example"
-			}
-		],
-    }
+"compilerOptions": {
+    "plugins": [
+        {
+            "name": "@genesiscommunitysuccess/custom-elements-lsp",
+            "srcRouteFromTSServer": "../../..",
+            "designSystemPrefix": "example",
+            "fastEnable": true
+        }
+    ],
+}
 ```
+
 > `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where `ce.json` (see step 4) is saved to. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`.
 
 3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
@@ -24,6 +27,12 @@ To use this plugin you have a version of typescript as part of the project, loca
 4. Run `npm run lsp:analyse` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
 5. Run `npx tsc` in the root of the project to compile the plugin code. (This will be done automatically in a future release!)
 6. Any IDE specific configuration...
+
+### FAST Syntax
+
+Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
+
+<!-- If we get more language plugins then we need to also explain about setting the language for the lsp analyser as well as the plugin -->
 
 ### VSCode
 
@@ -43,14 +52,17 @@ Playground based on https://github.com/orta/TypeScript-TSServer-Plugin-Template 
 The app in `/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
 
 The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
+
 1. `npm link` in the project root
 2. `cd example`
 3. `npm link @genesiscommunitysuccess/custom-elements-lsp`
 
 While developing:
+
 1. `npx tsc --watch` from the root directory to incrementally transpile the plugin.
 
 To view logs
+
 1. Set env var `TSS_LOG="-logToFile true -file /path/to/lsp.log -level verbose"`
 2. View logs at specified location
 

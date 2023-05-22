@@ -2,7 +2,11 @@ import {
   decorateWithTemplateLanguageService,
   Logger,
 } from "typescript-template-language-service-decorator";
-import { CoreCompletionsServiceImpl } from "./completions";
+import {
+  CoreCompletionsServiceImpl,
+  PartialCompletionsService,
+} from "./completions";
+import { FASTCompletionsService } from "./completions/fast";
 import { CustomElementsAnalyzerManifestParser } from "./custom-elements/repository";
 import { CustomElementsServiceImpl } from "./custom-elements/service";
 import { CustomElementsLanguageService } from "./customelements";
@@ -74,6 +78,15 @@ export function init(modules: {
       config: info.config,
     });
 
+    const completions: PartialCompletionsService[] = [
+      new CoreCompletionsServiceImpl(logger, services),
+    ];
+
+    if (info.config.fastEnable) {
+      logger.log("FAST config enabled");
+      completions.push(new FASTCompletionsService(logger, services));
+    }
+
     return decorateWithTemplateLanguageService(
       ts,
       info.languageService,
@@ -81,7 +94,7 @@ export function init(modules: {
       new CustomElementsLanguageService(
         logger,
         new DiagnosticsService(logger, services),
-        new CoreCompletionsServiceImpl(logger, services)
+        completions
       ),
       {
         tags: ["html"], // Could add for css too

@@ -7,7 +7,7 @@ import {
 import { Avatar } from "./components/avatar/avatar";
 
 const rootTemplate = html`
-  <template @avatar-selected=${(x, c, a) => x.avatarSelected(c.event)}>
+  <template @avatar-selected=${(x, c) => x.avatarSelected(c.event)}>
     <theme-picker background="FFFFFF" background="000000"></theme-picker>
 
     <h1>

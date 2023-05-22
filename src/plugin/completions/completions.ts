@@ -8,6 +8,13 @@ import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
 import { CompletionCtx, CompletionsService } from "./";
 
+/**
+ * Base implementation of the CompletionsService.
+ * This should implement every method of the CompletionsService interface.
+ *
+ * Outputs from this base will then be thread through a completions pipleline
+ * and potentially adjusted by other services.
+ */
 export class CoreCompletionsServiceImpl implements CompletionsService {
   constructor(private logger: Logger, private services: Services) {
     logger.log("Setting up Completions Service");
