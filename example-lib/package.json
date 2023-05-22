@@ -5,19 +5,16 @@
   "main": "dist/esm/index.js",
   "types": "dist/dts/index.d.ts",
   "scripts": {
-    "build": "mkdir -p dist && npm run build:tsc",
+    "build": "npm run build:tsc",
     "build:tsc": "tsc -b tsconfig.json",
     "cem:analyze": "cem analyze --config custom-elements-manifest.config.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "@microsoft/fast-components": "2.21.3",
     "@microsoft/fast-element": "1.11.0",
     "@microsoft/fast-foundation": "2.47.0",
     "tslib": "^2.4.1",
     "typescript": "^4.4.3"
-  },
-  "devDependencies": {
-    "html-webpack-plugin": "^5.5.1"
   },
   "customElements": "dist/custom-elements.json"
 }
