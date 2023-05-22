@@ -21,7 +21,8 @@ export class CustomElementsServiceImpl implements CustomElementsService {
 
     return definition.attributes.map((a) => ({
       name: a.name ?? a.fieldName,
-      type: a.type?.text ?? "string",
+      type: a.type?.text ?? "any",
+      referenceClass: a.inheritedFrom?.name ?? definition.name
     }));
   }
 

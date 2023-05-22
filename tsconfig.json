@@ -1,6 +1,6 @@
 {
   "paths": ["src/**"],
-  "exclude": ["example"],
+  "exclude": ["example", "example-lib"],
   "compilerOptions": {
     "target": "es2021",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "commonjs",                                /* Specify what module code is generated. */

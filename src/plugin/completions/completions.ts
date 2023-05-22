@@ -103,13 +103,15 @@ export class CompletionsService {
     );
 
     return attrs
-      .map(({ name, type }) => ({
+      .map(({ name, type, referenceClass }) => ({
         name,
         insertText: `${name}${type === "boolean" ? "" : '=""'}`,
         kind: ScriptElementKind.parameterElement,
         kindModifiers: "custom-element-attribute",
         sortText: "a",
-        // TODO: Add description which accounts for superclass attributes
+        labelDetails: {
+          description: `[attr] ${referenceClass}`,
+        }
       }))
       .concat(globalAttrs);
   }

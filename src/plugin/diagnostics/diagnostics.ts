@@ -50,7 +50,7 @@ export class DiagnosticsService {
       .flat()
       .map((tagAndLine) => {
         const { line, tag } = tagAndLine;
-        const regex = new RegExp(`<${tag}[>\s]`, "g");
+        const regex = new RegExp(`<${tag}[>\\s]`, "g");
         const matchesCount = line.match(regex)?.length ?? 0;
 
         return Array(matchesCount)

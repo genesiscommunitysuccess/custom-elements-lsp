@@ -15,6 +15,12 @@ const rootTemplate = html`
     </person-avatar>
 
     <invalid-component></invalid-component>
+
+    <example-counter></example-counter>
+
+    <example-counter display-text="Reverse" reverse></example-counter>
+
+    <priority-selector></priority-selector>
   </template>
 `;
 
@@ -22,4 +28,4 @@ const rootTemplate = html`
   name: "root-component",
   template: rootTemplate,
 })
-export class RootComponent extends FASTElement {}
+export class RootComponent extends FASTElement { }
