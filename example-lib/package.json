@@ -9,11 +9,13 @@
     "build:tsc": "tsc -b tsconfig.json",
     "cem:analyze": "cem analyze --config custom-elements-manifest.config.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "@microsoft/fast-components": "2.21.3",
     "@microsoft/fast-element": "1.11.0",
     "@microsoft/fast-foundation": "2.47.0",
-    "tslib": "^2.4.1",
+    "tslib": "^2.4.1"
+  },
+  "devDependencies": {
     "typescript": "^4.4.3"
   },
   "customElements": "dist/custom-elements.json"
