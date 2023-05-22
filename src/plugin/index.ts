@@ -2,7 +2,7 @@ import {
   decorateWithTemplateLanguageService,
   Logger,
 } from "typescript-template-language-service-decorator";
-import { CompletionsService } from "./completions";
+import { CoreCompletionsServiceImpl } from "./completions";
 import { CustomElementsAnalyzerManifestParser } from "./custom-elements/repository";
 import { CustomElementsServiceImpl } from "./custom-elements/service";
 import { CustomElementsLanguageService } from "./customelements";
@@ -81,7 +81,7 @@ export function init(modules: {
       new CustomElementsLanguageService(
         logger,
         new DiagnosticsService(logger, services),
-        new CompletionsService(logger, services)
+        new CoreCompletionsServiceImpl(logger, services)
       ),
       {
         tags: ["html"], // Could add for css too

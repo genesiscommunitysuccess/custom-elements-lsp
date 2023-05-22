@@ -5,13 +5,13 @@ import { getGDServiceFromStubbedResource } from "../../jest/global-data";
 import { buildServices, getLogger, html } from "../../jest/utils";
 import { CustomElementsService } from "../custom-elements/custom-elements.types";
 import { GlobalDataService } from "../global-data/global-data.types";
-import { CompletionsService } from "./completions";
+import { CoreCompletionsServiceImpl } from "./completions";
 
 const getCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
   gdRes: GlobalDataService = getGDServiceFromStubbedResource()
 ) =>
-  new CompletionsService(
+  new CoreCompletionsServiceImpl(
     getLogger(),
     buildServices({ customElements: ceRes, globalData: gdRes })
   );

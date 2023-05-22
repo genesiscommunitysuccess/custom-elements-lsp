@@ -1,56 +1,37 @@
-import {
-  Logger,
-  TemplateContext,
-} from "typescript-template-language-service-decorator";
+import { Logger } from "typescript-template-language-service-decorator";
 import {
   CompletionEntry,
   CompletionInfo,
-  LineAndCharacter,
   ScriptElementKind,
 } from "typescript/lib/tsserverlibrary";
 import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
-import { suggestCustomElements, suggestTags } from "./helpers";
+import { CompletionCtx, CompletionsService } from "./";
 
-export type CompletionTypeParams =
-  | {
-      key: "none";
-      params: undefined;
-    }
-  | {
-      key: "custom-element-name";
-      params: undefined;
-    }
-  | {
-      key: "custom-element-attribute";
-      params: string;
-    };
-
-export class CompletionsService {
+export class CoreCompletionsServiceImpl implements CompletionsService {
   constructor(private logger: Logger, private services: Services) {
     logger.log("Setting up Completions Service");
   }
 
   getCompletionsAtPosition(
-    context: TemplateContext,
-    position: LineAndCharacter
+    completions: CompletionInfo,
+    { typeAndParam }: CompletionCtx
   ): CompletionInfo {
-    const { key, params } = this.getComptionType(context, position);
-    this.logger.log(`getCompletionsAtPosition: ${key}, ${params}`);
+    const { key, params } = typeAndParam;
 
-    let entries: CompletionEntry[] = [];
+    let baseEntries: CompletionEntry[] = [];
 
     switch (key) {
       case "custom-element-name":
-        entries = this.getTagCompletions();
+        baseEntries = this.getTagCompletions();
         break;
 
       case "custom-element-attribute":
         if (!this.services.customElements.customElementKnown(params)) {
-          entries = this.getTagCompletions();
+          baseEntries = this.getTagCompletions();
           break;
         }
-        entries = this.getAttributeCompletions(params);
+        baseEntries = this.getAttributeCompletions(params);
         break;
 
       case "none":
@@ -60,10 +41,11 @@ export class CompletionsService {
     }
 
     return {
+      ...completions,
       isGlobalCompletion: false,
       isMemberCompletion: false,
       isNewIdentifierLocation: false,
-      entries,
+      entries: completions.entries.concat(baseEntries),
     };
   }
 
@@ -111,7 +93,7 @@ export class CompletionsService {
         sortText: "a",
         labelDetails: {
           description: `[attr] ${referenceClass}`,
-        }
+        },
       }))
       .concat(globalAttrs);
   }
@@ -129,39 +111,5 @@ export class CompletionsService {
           description: path,
         },
       }));
-  }
-
-  private getComptionType(
-    context: TemplateContext,
-    position: LineAndCharacter
-  ): CompletionTypeParams {
-    const rawLine = context.rawText.split(/\n/g)[position.line];
-
-    {
-      let tagname: string | false;
-      if (
-        ((tagname = suggestCustomElements(
-          rawLine.substring(0, position.character)
-        )),
-        tagname)
-      ) {
-        return {
-          key: "custom-element-attribute",
-          params: tagname,
-        };
-      }
-    }
-
-    if (suggestTags(rawLine)) {
-      return {
-        key: "custom-element-name",
-        params: undefined,
-      };
-    }
-
-    return {
-      key: "none",
-      params: undefined,
-    };
   }
 }

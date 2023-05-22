@@ -4,18 +4,17 @@ import {
   TemplateLanguageService,
 } from "typescript-template-language-service-decorator";
 import { Diagnostic } from "typescript/lib/tsserverlibrary";
-import { CustomElementsService } from "./custom-elements/custom-elements.types";
 import { LanguageServiceLogger } from "./utils";
 
 import parse from "node-html-parser";
 import { DiagnosticsService } from "./diagnostics";
-import { CompletionsService } from "./completions";
+import { CoreCompletionsServiceImpl, getCompletionType } from "./completions";
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
     private diagnostics: DiagnosticsService,
-    private completions: CompletionsService
+    private completions: CoreCompletionsServiceImpl
   ) {
     logger.log("Setting up customelements class");
   }
@@ -47,6 +46,18 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     position: LineAndCharacter
   ): CompletionInfo {
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
-    return this.completions.getCompletionsAtPosition(context, position);
+    const typeAndParam = getCompletionType(context, position);
+    this.logger.log(
+      `getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`
+    );
+    return this.completions.getCompletionsAtPosition(
+      {
+        isGlobalCompletion: false,
+        isMemberCompletion: false,
+        isNewIdentifierLocation: false,
+        entries: [],
+      },
+      { context, position, typeAndParam }
+    );
   }
 }
