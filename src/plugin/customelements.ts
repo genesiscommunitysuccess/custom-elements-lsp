@@ -9,7 +9,6 @@ import { LanguageServiceLogger } from "./utils";
 import parse from "node-html-parser";
 import { DiagnosticsService } from "./diagnostics";
 import {
-  CoreCompletionsServiceImpl,
   getCompletionType,
   PartialCompletionsService,
 } from "./completions";

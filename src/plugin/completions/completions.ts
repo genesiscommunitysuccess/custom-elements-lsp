@@ -49,9 +49,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return {
       ...completions,
-      isGlobalCompletion: false,
-      isMemberCompletion: false,
-      isNewIdentifierLocation: false,
+      isMemberCompletion: key === 'custom-element-attribute',
       entries: completions.entries.concat(baseEntries),
     };
   }
@@ -86,6 +84,18 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
               sortText: "z",
               labelDetails: {
                 description: "[attr] Aria",
+              },
+            }))
+          )
+          .concat(
+            this.services.globalData.getEvents().map((name) => ({
+              name,
+              insertText: `${name}=""`,
+              kind: ScriptElementKind.parameterElement,
+              kindModifiers: "event-attribute",
+              sortText: "z",
+              labelDetails: {
+                description: "[attr] Event",
               },
             }))
           )

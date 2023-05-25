@@ -14,6 +14,9 @@ export const getGDServiceFromStubbedResource = () => {
     getAriaAttributes() {
       return ["aria-label"];
     },
+    getEvents() {
+      return ["onclick"];
+    },
   };
 
   return new GlobalDataServiceImpl(getLogger(), resource);
