@@ -1,3 +1,6 @@
+import { TemplateContext } from "typescript-template-language-service-decorator";
+import { LineAndCharacter, TextSpan } from "typescript/lib/tsserverlibrary";
+
 /**
  * Replace the content of a attribute binding in a template string interpolation region with `y`.
  * @privateRemarks
@@ -13,4 +16,24 @@ export function replaceTemplateStringBinding(line: string): string {
   return line.replace(/="\${(.+?)}"/g, (...args) => {
     return '="${' + "y".repeat(args[1].length) + '}"';
   });
+}
+
+/**
+ * Get a `ReplacementSpan` which is a slice of the string containing all word characters before cursor.
+ * @remarks
+ * VSCode doesn't account for characters such as "`@`" when matching on the completions returned by the LSP, meaning a string such as `@cl` will not show `@click` as an option in VSCode.
+ * We can force it to account for the character by manually returning a `ReplacementSpan`. This points from the first non-space character behind the cursor, to the cursor.
+ */
+export function getWholeTextReplcaementSpan(
+  position: LineAndCharacter,
+  context: TemplateContext
+): TextSpan {
+  const replacementSpan = { start: context.toOffset(position), length: 0 };
+  while (context.text[replacementSpan.start] !== " ") {
+    replacementSpan.start -= 1;
+    replacementSpan.length += 1;
+  }
+  replacementSpan.start += 1;
+  replacementSpan.length -= 1;
+  return replacementSpan;
 }

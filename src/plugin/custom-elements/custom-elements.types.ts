@@ -13,9 +13,10 @@ export interface CustomElementDef extends CustomElementDeclaration {
 
 export interface CustomElementsService {
   customElementKnown(tagName: string): boolean;
-  getCENames(): string[];
   getCEAttributes(name: string): CustomElementAttribute[];
+  getCEEvents(name: string): CustomElementEvent[];
   getCEInfo(config: GetCEInfo): CEInfo[];
+  getCENames(): string[];
 }
 
 export type GetCEInfo = {
@@ -32,3 +33,9 @@ export type CustomElementAttribute = {
   type: string;
   referenceClass?: string;
 };
+
+export type CustomElementEvent = {
+  name: string;
+  type: string;
+  referenceClass?: string;
+}

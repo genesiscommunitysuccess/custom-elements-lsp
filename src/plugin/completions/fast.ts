@@ -6,8 +6,10 @@ import {
   CompletionEntry,
   CompletionInfo,
   LineAndCharacter,
+  ScriptElementKind,
   TextSpan,
 } from "typescript/lib/tsserverlibrary";
+import { getWholeTextReplcaementSpan } from "../utils";
 import { Services } from "../utils/services.type";
 import { CompletionCtx, PartialCompletionsService } from "./completions.types";
 
@@ -37,15 +39,15 @@ export class FASTCompletionsService implements PartialCompletionsService {
 
     switch (key) {
       case "custom-element-attribute":
-        const replacementSpan = this.getEventReplacementSpan({
-          tagName: params,
-          position,
-          context,
-        });
+        const replacementSpan = getWholeTextReplcaementSpan(position, context);
         entries = this.convertFastEventAttributes(
           completions.entries,
           replacementSpan
         );
+        entries = entries.concat(
+          this.addElementEventCompletions(entries, replacementSpan, params)
+        );
+        this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;
     }
 
@@ -55,29 +57,28 @@ export class FASTCompletionsService implements PartialCompletionsService {
     };
   }
 
-  // TODO: If we come across `tagName` we should quit
-  private getEventReplacementSpan({
-    tagName,
-    position,
-    context,
-  }: {
-    tagName: string;
-    position: LineAndCharacter;
-    context: TemplateContext;
-  }): TextSpan {
-    const replacementSpan = { start: context.toOffset(position), length: 0 };
-    while (context.text[replacementSpan.start] !== " ") {
-      replacementSpan.start -= 1;
-      replacementSpan.length += 1;
-    }
-    replacementSpan.start += 1;
-    replacementSpan.length -= 1;
-    return replacementSpan;
+  private addElementEventCompletions(
+    completions: CompletionEntry[],
+    replacementSpan: TextSpan,
+    tagName: string
+  ): CompletionEntry[] {
+    return this.services.customElements
+      .getCEEvents(tagName)
+      .map(({ name, type, referenceClass }) => ({
+        name: `@${name}`,
+        insertText: `@${name}="\${(x, c) => $1}"$0`,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "custom-element-event",
+        sortText: "f",
+        labelDetails: {
+          description: `[attr] ${referenceClass}`,
+        },
+        isSnippet: true,
+        replacementSpan,
+      }));
   }
 
   // TODO: Need to account for events from the manifest too
-  // Completion seems to stop if '@' is written
-  // Need to update the inserttext
   private convertFastEventAttributes(
     completions: CompletionEntry[],
     replacementSpan: TextSpan
