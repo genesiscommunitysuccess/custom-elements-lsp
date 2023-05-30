@@ -55,6 +55,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     };
   }
 
+  // TODO: If we come across `tagName` we should quit
   private getEventReplacementSpan({
     tagName,
     position,
@@ -64,17 +65,6 @@ export class FASTCompletionsService implements PartialCompletionsService {
     position: LineAndCharacter;
     context: TemplateContext;
   }): TextSpan {
-    /*
-    const replacementSpan = { start: 0, length: 0 };
-    const cursorPosition = context.toOffset(position);
-    while (context.text[cursorPosition + replacementSpan.start] !== " ") {
-      replacementSpan.start -= 1;
-    }
-    replacementSpan.start -= 1;
-    replacementSpan.length = replacementSpan.start * -1 - 1;
-    replacementSpan.start += cursorPosition;
-    return replacementSpan;
-      */
     const replacementSpan = { start: context.toOffset(position), length: 0 };
     while (context.text[replacementSpan.start] !== " ") {
       replacementSpan.start -= 1;
@@ -94,7 +84,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
   ): CompletionEntry[] {
     return completions.map((completion) => {
       if (completion.kindModifiers === "event-attribute") {
-        const converted: any = {
+        return {
           ...completion,
           name: completion.name.replace("on", "@"),
           insertText: completion.insertText
@@ -102,14 +92,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
             .replace('""', '"${(x,c) => $1}"$0'),
           isSnippet: true,
           replacementSpan,
-          filterText: completion.name.replace("on", ""),
         };
-        this.logger.log(
-          `convertFastEventAttributes: ${JSON.stringify(
-            completion
-          )}, ${JSON.stringify(converted)}`
-        );
-        return converted;
       }
       return completion;
     });

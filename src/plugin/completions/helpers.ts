@@ -2,6 +2,7 @@
 
 import { LineAndCharacter } from "typescript";
 import { TemplateContext } from "typescript-template-language-service-decorator";
+import { replaceTemplateStringBinding } from "../utils";
 import { CompletionTypeParams } from "./completions.types";
 
 // Unclosed tag, suggest any tag names
@@ -24,12 +25,13 @@ export function getCompletionType(
   position: LineAndCharacter
 ): CompletionTypeParams {
   const rawLine = context.rawText.split(/\n/g)[position.line];
+  const processedLine = replaceTemplateStringBinding(rawLine);
 
   {
     let tagname: string | false;
     if (
       ((tagname = suggestCustomElements(
-        rawLine.substring(0, position.character)
+        processedLine.substring(0, position.character)
       )),
         tagname)
     ) {
