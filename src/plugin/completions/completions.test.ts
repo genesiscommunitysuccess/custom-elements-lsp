@@ -1,8 +1,4 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
-import {
-  CompletionInfo,
-  LineAndCharacter,
-} from "typescript/lib/tsserverlibrary";
+import { CompletionInfo } from "typescript/lib/tsserverlibrary";
 import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
 import { getGDServiceFromStubbedResource } from "../../jest/global-data";
 import { buildServices, getLogger, html } from "../../jest/utils";
@@ -49,6 +45,16 @@ const globalDataAttributeAssersions = [
       description: "[attr] Aria",
     },
     name: "aria-label",
+    sortText: "z",
+  },
+  {
+    insertText: 'onclick=""',
+    kind: "parameter",
+    kindModifiers: "event-attribute",
+    labelDetails: {
+      description: "[attr] Event",
+    },
+    name: "onclick",
     sortText: "z",
   },
 ];
