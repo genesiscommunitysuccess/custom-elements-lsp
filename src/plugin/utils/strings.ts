@@ -30,6 +30,15 @@ export function getWholeTextReplcaementSpan(
 ): TextSpan {
   const replacementSpan = { start: context.toOffset(position), length: 0 };
   while (context.text[replacementSpan.start] !== " ") {
+    if (
+      replacementSpan.start >= context.text.length ||
+      replacementSpan.start < 0
+    ) {
+      throw new Error("Span out of bounds in context.text");
+    }
+    if (replacementSpan.start === 0) {
+      return replacementSpan;
+    }
     replacementSpan.start -= 1;
     replacementSpan.length += 1;
   }
