@@ -45,7 +45,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
           replacementSpan
         );
         entries = entries.concat(
-          this.addElementEventCompletions(entries, replacementSpan, params)
+          this.addElementEventCompletions(replacementSpan, params)
         );
         this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;
@@ -58,13 +58,12 @@ export class FASTCompletionsService implements PartialCompletionsService {
   }
 
   private addElementEventCompletions(
-    completions: CompletionEntry[],
     replacementSpan: TextSpan,
     tagName: string
   ): CompletionEntry[] {
     return this.services.customElements
       .getCEEvents(tagName)
-      .map(({ name, type, referenceClass }) => ({
+      .map(({ name, referenceClass }) => ({
         name: `@${name}`,
         insertText: `@${name}="\${(x, c) => $1}"$0`,
         kind: ScriptElementKind.parameterElement,
@@ -78,7 +77,6 @@ export class FASTCompletionsService implements PartialCompletionsService {
       }));
   }
 
-  // TODO: Need to account for events from the manifest too
   private convertFastEventAttributes(
     completions: CompletionEntry[],
     replacementSpan: TextSpan
