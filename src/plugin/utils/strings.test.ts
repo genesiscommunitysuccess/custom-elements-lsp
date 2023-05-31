@@ -74,7 +74,6 @@ describe("getWholeTextReplcaementSpan", () => {
 
   for (const [name, [position, context], expected] of testCases) {
     it("Happy path: " + name, () => {
-      debugger;
       expect(getWholeTextReplcaementSpan(position, context)).toEqual(expected);
     });
   }
@@ -92,7 +91,6 @@ describe("getWholeTextReplcaementSpan", () => {
     it("Unhappy path: " + name, () => {
       let e;
       try {
-        debugger;
         const res = getWholeTextReplcaementSpan(position, context);
         console.log(res);
       } catch (error) {
