@@ -1,7 +1,9 @@
 // TODO: Unit tests!
 
-import { LineAndCharacter } from "typescript";
+import { CompletionEntry, LineAndCharacter } from "typescript";
 import { TemplateContext } from "typescript-template-language-service-decorator";
+import { ScriptElementKind } from "typescript/lib/tsserverlibrary";
+import { GlobalAttrType } from "../global-data/global-data.types";
 import { replaceTemplateStringBinding } from "../utils";
 import { CompletionTypeParams } from "./completions.types";
 
@@ -53,4 +55,75 @@ export function getCompletionType(
     key: "none",
     params: undefined,
   };
+}
+
+export function constructGlobalAriaCompletion(name: string): CompletionEntry {
+  return {
+    name,
+    insertText: `${name}=""`,
+    kind: ScriptElementKind.parameterElement,
+    kindModifiers: "aria-attribute",
+    sortText: "z",
+    labelDetails: {
+      description: "[attr] Aria",
+    },
+  };
+}
+
+export function constructGlobalEventCompletion(name: string): CompletionEntry {
+  return {
+    name,
+    insertText: `${name}=""`,
+    kind: ScriptElementKind.parameterElement,
+    kindModifiers: "event-attribute",
+    sortText: "z",
+    labelDetails: {
+      description: "[attr] Event",
+    },
+  };
+}
+
+export function constructGlobalAttrCompletion(
+  name: string,
+  type: GlobalAttrType
+): CompletionEntry {
+  switch (type) {
+    case "string":
+      return {
+        name,
+        insertText: `${name}=""`,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "global-attribute",
+        sortText: "m",
+        labelDetails: {
+          description: "[attr] Global",
+          detail: " string",
+        },
+      };
+    case "boolean":
+      return {
+        name,
+        insertText: name,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "global-attribute",
+        sortText: "m",
+        labelDetails: {
+          description: "[attr] Global",
+          detail: " boolean",
+        },
+      };
+    case "wildcard":
+      return {
+        name,
+        insertText: name.replace("*", '$1="${$2}"$0'),
+        isSnippet: true,
+        kind: ScriptElementKind.parameterElement,
+        kindModifiers: "global-attribute",
+        sortText: "m",
+        labelDetails: {
+          description: "[attr] Global",
+          detail: " string",
+        },
+      };
+  }
 }

@@ -6,7 +6,13 @@ import {
 } from "typescript/lib/tsserverlibrary";
 import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
-import { CompletionCtx, CompletionsService } from "./";
+import {
+  CompletionCtx,
+  CompletionsService,
+  constructGlobalAriaCompletion,
+  constructGlobalAttrCompletion,
+  constructGlobalEventCompletion,
+} from "./";
 
 /**
  * Base implementation of the CompletionsService.
@@ -66,44 +72,18 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         this.services.globalData
           .getAttributes()
           .map(
-            (name): CompletionEntry => ({
-              name,
-              insertText: `${name}=""`,
-              kind: ScriptElementKind.parameterElement,
-              kindModifiers: "global-attribute",
-              sortText: "m",
-              labelDetails: {
-                description: "[attr] Global",
-              },
-            })
+            ([name, type]): CompletionEntry =>
+              constructGlobalAttrCompletion(name, type)
           )
           .concat(
-            this.services.globalData.getAriaAttributes().map(
-              (name): CompletionEntry => ({
-                name,
-                insertText: `${name}=""`,
-                kind: ScriptElementKind.parameterElement,
-                kindModifiers: "aria-attribute",
-                sortText: "z",
-                labelDetails: {
-                  description: "[attr] Aria",
-                },
-              })
-            )
+            this.services.globalData
+              .getAriaAttributes()
+              .map(constructGlobalAriaCompletion)
           )
           .concat(
-            this.services.globalData.getEvents().map(
-              (name): CompletionEntry => ({
-                name,
-                insertText: `${name}=""`,
-                kind: ScriptElementKind.parameterElement,
-                kindModifiers: "event-attribute",
-                sortText: "z",
-                labelDetails: {
-                  description: "[attr] Event",
-                },
-              })
-            )
+            this.services.globalData
+              .getEvents()
+              .map(constructGlobalEventCompletion)
           )
     );
 
