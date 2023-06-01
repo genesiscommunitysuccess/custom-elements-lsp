@@ -5,7 +5,8 @@
 			{
 				"name": "@genesiscommunitysuccess/custom-elements-lsp",
 				"srcRouteFromTSServer": "../../..",
-				"designSystemPrefix": "example"
+				"designSystemPrefix": "example",
+				"fastEnable": true
 			}
 		],
 		"pretty": true,

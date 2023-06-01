@@ -253,6 +253,12 @@
               }
             }
           ],
+          "events": [
+            {
+              "description": "on click with the avatar element as the detail.",
+              "name": "avatar-selected"
+            }
+          ],
           "attributes": [
             {
               "name": "avatar-src",

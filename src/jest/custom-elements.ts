@@ -29,6 +29,19 @@ export const getCEServiceFromStubbedResource = () => {
       { name: "colour", type: { text: "string" } },
       { name: "activated", type: { text: "boolean" } },
     ],
+    events: [
+      {
+        name: "event",
+        type: { text: "MouseEvent" },
+      },
+      {
+        name: "inherited",
+        type: { text: "MouseEvent" },
+        inheritedFrom: {
+          name: 'ParentElement'
+        }
+      },
+    ],
   });
 
   resource.data.set("no-attr", {

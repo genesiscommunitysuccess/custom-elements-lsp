@@ -13,13 +13,11 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
 
   private globalAttributes: string[] = [];
   private ariaAttributes: string[] = [];
+  private globalEvents: string[] = [];
 
   private init() {
-    this.globalAttributes = [
-      ...Object.values(GlobalAttributes),
-      ...Object.values(GlobalAttributesEvents),
-    ];
-
+    this.globalAttributes = [...Object.values(GlobalAttributes)];
+    this.globalEvents = [...Object.values(GlobalAttributesEvents)];
     this.ariaAttributes = [...Object.values(GlobalAriaAttributes)];
   }
 
@@ -29,5 +27,9 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
 
   getAriaAttributes(): string[] {
     return this.ariaAttributes;
+  }
+
+  getEvents(): string[] {
+    return this.globalEvents;
   }
 }

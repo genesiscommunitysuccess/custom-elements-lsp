@@ -2,6 +2,7 @@ import { Logger } from "typescript-template-language-service-decorator";
 import {
   CEInfo,
   CustomElementAttribute,
+  CustomElementEvent,
   CustomElementsResource,
   CustomElementsService,
   GetCEInfo,
@@ -22,7 +23,18 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     return definition.attributes.map((a) => ({
       name: a.name ?? a.fieldName,
       type: a.type?.text ?? "any",
-      referenceClass: a.inheritedFrom?.name ?? definition.name
+      referenceClass: a.inheritedFrom?.name ?? definition.name,
+    }));
+  }
+
+  getCEEvents(name: string): CustomElementEvent[] {
+    const definition = this.ceData.data.get(name);
+    if (!definition || !definition.events) return [];
+
+    return definition.events.map((a) => ({
+      name: a.name,
+      type: a.type?.text ?? a.description ?? 'any',
+      referenceClass: a.inheritedFrom?.name ?? definition.name,
     }));
   }
 

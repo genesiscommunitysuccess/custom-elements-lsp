@@ -171,3 +171,34 @@ describe("getCEInfo", () => {
     ]);
   });
 });
+
+describe("getCEEvents", () => {
+  it("Returns nothing for a unknown element", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEEvents("not-found");
+    expect(res).toEqual([]);
+  });
+
+  it("Returns nothing for a element with no events", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEEvents("no-attr");
+    expect(res).toEqual([]);
+  });
+
+  it("Returns its events, with the reference class being itself if it is not inherited", () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEEvents("custom-element");
+    expect(res).toEqual([
+      {
+        name: "event",
+        referenceClass: "CustomElement",
+        type: "MouseEvent",
+      },
+      {
+        name: "inherited",
+        referenceClass: "ParentElement",
+        type: "MouseEvent",
+      },
+    ]);
+  });
+});
