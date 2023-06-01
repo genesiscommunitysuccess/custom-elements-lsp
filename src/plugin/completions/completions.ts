@@ -85,6 +85,18 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
               .getEvents()
               .map(constructGlobalEventCompletion)
           )
+          .concat(
+            this.services.globalData.getEvents().map((name) => ({
+              name,
+              insertText: `${name}=""`,
+              kind: ScriptElementKind.parameterElement,
+              kindModifiers: "event-attribute",
+              sortText: "z",
+              labelDetails: {
+                description: "[attr] Event",
+              },
+            }))
+          )
     );
 
     return attrs
