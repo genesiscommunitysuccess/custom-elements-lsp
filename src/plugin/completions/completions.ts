@@ -6,7 +6,7 @@ import {
 } from "typescript/lib/tsserverlibrary";
 import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
-import { CompletionCtx, CompletionsService } from "./";
+import { completionAttrType, CompletionCtx, CompletionsService } from "./";
 
 /**
  * Base implementation of the CompletionsService.
@@ -49,7 +49,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return {
       ...completions,
-      isMemberCompletion: key === 'custom-element-attribute',
+      isMemberCompletion: key === "custom-element-attribute",
       entries: completions.entries.concat(baseEntries),
     };
   }
@@ -65,53 +65,62 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
       () =>
         this.services.globalData
           .getAttributes()
-          .map((name) => ({
-            name,
-            insertText: `${name}=""`,
-            kind: ScriptElementKind.parameterElement,
-            kindModifiers: "global-attribute",
-            sortText: "m",
-            labelDetails: {
-              description: "[attr] Global",
-            },
-          }))
-          .concat(
-            this.services.globalData.getAriaAttributes().map((name) => ({
+          .map(
+            (name): CompletionEntry => ({
               name,
               insertText: `${name}=""`,
               kind: ScriptElementKind.parameterElement,
-              kindModifiers: "aria-attribute",
-              sortText: "z",
+              kindModifiers: "global-attribute",
+              sortText: "m",
               labelDetails: {
-                description: "[attr] Aria",
+                description: "[attr] Global",
               },
-            }))
+            })
           )
           .concat(
-            this.services.globalData.getEvents().map((name) => ({
-              name,
-              insertText: `${name}=""`,
-              kind: ScriptElementKind.parameterElement,
-              kindModifiers: "event-attribute",
-              sortText: "z",
-              labelDetails: {
-                description: "[attr] Event",
-              },
-            }))
+            this.services.globalData.getAriaAttributes().map(
+              (name): CompletionEntry => ({
+                name,
+                insertText: `${name}=""`,
+                kind: ScriptElementKind.parameterElement,
+                kindModifiers: "aria-attribute",
+                sortText: "z",
+                labelDetails: {
+                  description: "[attr] Aria",
+                },
+              })
+            )
+          )
+          .concat(
+            this.services.globalData.getEvents().map(
+              (name): CompletionEntry => ({
+                name,
+                insertText: `${name}=""`,
+                kind: ScriptElementKind.parameterElement,
+                kindModifiers: "event-attribute",
+                sortText: "z",
+                labelDetails: {
+                  description: "[attr] Event",
+                },
+              })
+            )
           )
     );
 
     return attrs
-      .map(({ name, type, referenceClass }) => ({
-        name,
-        insertText: `${name}${type === "boolean" ? "" : '=""'}`,
-        kind: ScriptElementKind.parameterElement,
-        kindModifiers: "custom-element-attribute",
-        sortText: "a",
-        labelDetails: {
-          description: `[attr] ${referenceClass}`,
-        },
-      }))
+      .map(
+        ({ name, type, referenceClass }): CompletionEntry => ({
+          name,
+          insertText: `${name}${type === "boolean" ? "" : '=""'}`,
+          kind: ScriptElementKind.parameterElement,
+          kindModifiers: "custom-element-attribute",
+          sortText: "a",
+          labelDetails: {
+            description: `[attr] ${referenceClass}`,
+            detail: ` ${type}`,
+          },
+        })
+      )
       .concat(globalAttrs);
   }
 
