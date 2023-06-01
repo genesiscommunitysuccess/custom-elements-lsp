@@ -12,16 +12,16 @@ const rootTemplate = html`
 
     <h1>
       ${(x) =>
-    x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : ""}
+        x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : ""}
     </h1>
 
-    <person-avatar fullInfoDisabled>
+    <person-avatar>
       <h1 slot="title">Matt</h1>
     </person-avatar>
 
-    <person-avatar></person-avatar>
+    <person-avatar fullInfoDisabled></person-avatar>
 
-    <person-avatar fullInfoDisabled invalidAttr>
+    <person-avatar ?fullInfoDisabled="${(_) => true}" invalidAttr>
       <h1 slot="title">Full info disabled</h1>
     </person-avatar>
 
