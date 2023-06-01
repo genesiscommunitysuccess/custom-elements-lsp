@@ -6,7 +6,7 @@ import {
 } from "typescript/lib/tsserverlibrary";
 import { getStore } from "../utils/kvstore";
 import { Services } from "../utils/services.type";
-import { completionAttrType, CompletionCtx, CompletionsService } from "./";
+import { CompletionCtx, CompletionsService } from "./";
 
 /**
  * Base implementation of the CompletionsService.

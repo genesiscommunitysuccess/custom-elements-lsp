@@ -12,7 +12,6 @@ import {
 import { getWholeTextReplcaementSpan } from "../utils";
 import { Services } from "../utils/services.type";
 import { CompletionCtx, PartialCompletionsService } from "./completions.types";
-import { completionAttrType } from "./helpers";
 
 /**
  * If Microsoft FAST config is enabled then this service will provide
