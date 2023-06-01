@@ -65,7 +65,6 @@ export function constructGlobalAriaCompletion(name: string): CompletionEntry {
     name,
     insertText: `${name}=""`,
     kind: ScriptElementKind.parameterElement,
-    kindModifiers: "aria-attribute",
     sortText: "z",
     labelDetails: {
       description: "[attr] Aria",
@@ -78,10 +77,10 @@ export function constructGlobalEventCompletion(name: string): CompletionEntry {
     name,
     insertText: `${name}=""`,
     kind: ScriptElementKind.parameterElement,
-    kindModifiers: "event-attribute",
     sortText: "z",
     labelDetails: {
       description: "[attr] Event",
+      detail: " event",
     },
   };
 }
@@ -96,7 +95,6 @@ export function constructGlobalAttrCompletion(
         name,
         insertText: `${name}=""`,
         kind: ScriptElementKind.parameterElement,
-        kindModifiers: "global-attribute",
         sortText: "m",
         labelDetails: {
           description: "[attr] Global",
@@ -108,7 +106,6 @@ export function constructGlobalAttrCompletion(
         name,
         insertText: name,
         kind: ScriptElementKind.parameterElement,
-        kindModifiers: "global-attribute",
         sortText: "m",
         labelDetails: {
           description: "[attr] Global",
@@ -121,7 +118,6 @@ export function constructGlobalAttrCompletion(
         insertText: name.replace("*", '$1="${$2}"$0'),
         isSnippet: true,
         kind: ScriptElementKind.parameterElement,
-        kindModifiers: "global-attribute",
         sortText: "m",
         labelDetails: {
           description: "[attr] Global",

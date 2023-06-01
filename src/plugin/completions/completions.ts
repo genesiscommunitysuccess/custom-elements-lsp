@@ -93,7 +93,6 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
           name,
           insertText: `${name}${type === "boolean" ? "" : '=""'}`,
           kind: ScriptElementKind.parameterElement,
-          kindModifiers: "custom-element-attribute",
           sortText: "a",
           labelDetails: {
             description: `[attr] ${referenceClass}`,
@@ -111,7 +110,6 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         name: name,
         insertText: `${name}></${name}>`,
         kind: ScriptElementKind.typeElement,
-        kindModifiers: "custom-element",
         sortText: "custom-element",
         labelDetails: {
           description: path,

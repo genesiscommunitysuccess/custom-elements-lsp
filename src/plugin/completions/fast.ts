@@ -90,7 +90,6 @@ export class FASTCompletionsService implements PartialCompletionsService {
           name: `@${name}`,
           insertText: `@${name}="\${(x, c) => $1}"$0`,
           kind: ScriptElementKind.parameterElement,
-          kindModifiers: "custom-element-event",
           sortText: "f",
           labelDetails: {
             description: `[attr] ${referenceClass}`,
@@ -131,7 +130,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     replacementSpan: TextSpan
   ): CompletionEntry[] {
     return completions.map((completion) => {
-      if (completion.kindModifiers === "event-attribute") {
+      if (completion?.labelDetails?.detail?.includes('event')) {
         return {
           ...completion,
           name: completion.name.replace("on", "@"),

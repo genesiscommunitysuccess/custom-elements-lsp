@@ -21,7 +21,6 @@ const globalDataAttributeAssersions = [
     insertText: 'data-$1="${$2}"$0',
     isSnippet: true,
     kind: "parameter",
-    kindModifiers: "global-attribute",
     labelDetails: {
       description: "[attr] Global",
       detail: " string",
@@ -32,7 +31,6 @@ const globalDataAttributeAssersions = [
   {
     insertText: 'class=""',
     kind: "parameter",
-    kindModifiers: "global-attribute",
     labelDetails: {
       description: "[attr] Global",
       detail: " string",
@@ -43,7 +41,6 @@ const globalDataAttributeAssersions = [
   {
     insertText: "autofocus",
     kind: "parameter",
-    kindModifiers: "global-attribute",
     labelDetails: {
       description: "[attr] Global",
       detail: " boolean",
@@ -54,7 +51,6 @@ const globalDataAttributeAssersions = [
   {
     insertText: 'aria-label=""',
     kind: "parameter",
-    kindModifiers: "aria-attribute",
     labelDetails: {
       description: "[attr] Aria",
     },
@@ -64,9 +60,9 @@ const globalDataAttributeAssersions = [
   {
     insertText: 'onclick=""',
     kind: "parameter",
-    kindModifiers: "event-attribute",
     labelDetails: {
       description: "[attr] Event",
+      detail: " event",
     },
     name: "onclick",
     sortText: "z",
@@ -118,7 +114,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "custom-element></custom-element>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
         labelDetails: {
@@ -128,7 +123,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "no-attr></no-attr>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
         labelDetails: {
@@ -157,7 +151,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "custom-element></custom-element>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
         labelDetails: {
@@ -167,7 +160,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "no-attr></no-attr>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
         labelDetails: {
@@ -196,7 +188,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: 'colour=""',
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " string",
@@ -207,7 +198,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "activated",
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " boolean",
@@ -238,7 +228,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: 'colour=""',
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " string",
@@ -249,7 +238,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "activated",
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " boolean",
@@ -280,7 +268,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: 'colour=""',
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " string",
@@ -291,7 +278,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "activated",
         kind: "parameter",
-        kindModifiers: "custom-element-attribute",
         labelDetails: {
           description: "[attr] CustomElement",
           detail: " boolean",
@@ -340,7 +326,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "custom-element></custom-element>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "custom-element",
         sortText: "custom-element",
         labelDetails: {
@@ -350,7 +335,6 @@ describe("getCompletionsAtPosition", () => {
       {
         insertText: "no-attr></no-attr>",
         kind: "type",
-        kindModifiers: "custom-element",
         name: "no-attr",
         sortText: "custom-element",
         labelDetails: {

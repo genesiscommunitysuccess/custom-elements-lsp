@@ -110,7 +110,6 @@ describe("constructGlobalAriaCompletion", () => {
     expect(constructGlobalAriaCompletion("test")).toEqual({
       insertText: 'test=""',
       kind: "parameter",
-      kindModifiers: "aria-attribute",
       labelDetails: {
         description: "[attr] Aria",
       },
@@ -125,9 +124,9 @@ describe("constructGlobalEventCompletion", () => {
     expect(constructGlobalEventCompletion("test")).toEqual({
       insertText: 'test=""',
       kind: "parameter",
-      kindModifiers: "event-attribute",
       labelDetails: {
         description: "[attr] Event",
+        detail: " event",
       },
       name: "test",
       sortText: "z",
@@ -140,7 +139,6 @@ describe("constructGlobalAttrCompletion", () => {
     expect(constructGlobalAttrCompletion("test", "string")).toEqual({
       insertText: 'test=""',
       kind: "parameter",
-      kindModifiers: "global-attribute",
       labelDetails: {
         description: "[attr] Global",
         detail: " string",
@@ -154,7 +152,6 @@ describe("constructGlobalAttrCompletion", () => {
     expect(constructGlobalAttrCompletion("test", "boolean")).toEqual({
       insertText: "test",
       kind: "parameter",
-      kindModifiers: "global-attribute",
       labelDetails: {
         description: "[attr] Global",
         detail: " boolean",
@@ -169,7 +166,6 @@ describe("constructGlobalAttrCompletion", () => {
       insertText: 'test-$1="${$2}"$0',
       isSnippet: true,
       kind: "parameter",
-      kindModifiers: "global-attribute",
       labelDetails: {
         description: "[attr] Global",
         detail: " string",
