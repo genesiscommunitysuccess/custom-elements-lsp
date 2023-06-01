@@ -1,7 +1,12 @@
 import { TemplateContext } from "typescript-template-language-service-decorator";
 import { LineAndCharacter } from "typescript/lib/tsserverlibrary";
 import { html } from "../../jest/utils";
-import { getCompletionType } from "./helpers";
+import {
+  constructGlobalAriaCompletion,
+  constructGlobalAttrCompletion,
+  constructGlobalEventCompletion,
+  getCompletionType,
+} from "./helpers";
 
 describe("getCompletionType", () => {
   const tests: [string, [TemplateContext, LineAndCharacter], any][] = [
@@ -98,4 +103,79 @@ describe("getCompletionType", () => {
       expect(result).toEqual(expected);
     });
   }
+});
+
+describe("constructGlobalAriaCompletion", () => {
+  it("returns CompletionEntry", () => {
+    expect(constructGlobalAriaCompletion("test")).toEqual({
+      insertText: 'test=""',
+      kind: "parameter",
+      kindModifiers: "aria-attribute",
+      labelDetails: {
+        description: "[attr] Aria",
+      },
+      name: "test",
+      sortText: "z",
+    });
+  });
+});
+
+describe("constructGlobalEventCompletion", () => {
+  it("returns CompletionEntry", () => {
+    expect(constructGlobalEventCompletion("test")).toEqual({
+      insertText: 'test=""',
+      kind: "parameter",
+      kindModifiers: "event-attribute",
+      labelDetails: {
+        description: "[attr] Event",
+      },
+      name: "test",
+      sortText: "z",
+    });
+  });
+});
+
+describe("constructGlobalAttrCompletion", () => {
+  it("returns CompletionEntry for type string", () => {
+    expect(constructGlobalAttrCompletion("test", "string")).toEqual({
+      insertText: 'test=""',
+      kind: "parameter",
+      kindModifiers: "global-attribute",
+      labelDetails: {
+        description: "[attr] Global",
+        detail: " string",
+      },
+      name: "test",
+      sortText: "m",
+    });
+  });
+
+  it("returns CompletionEntry for type boolean", () => {
+    expect(constructGlobalAttrCompletion("test", "boolean")).toEqual({
+      insertText: "test",
+      kind: "parameter",
+      kindModifiers: "global-attribute",
+      labelDetails: {
+        description: "[attr] Global",
+        detail: " boolean",
+      },
+      name: "test",
+      sortText: "m",
+    });
+  });
+
+  it("returns CompletionEntry for type wildcard", () => {
+    expect(constructGlobalAttrCompletion("test-*", "wildcard")).toEqual({
+      insertText: 'test-$1="${$2}"$0',
+      isSnippet: true,
+      kind: "parameter",
+      kindModifiers: "global-attribute",
+      labelDetails: {
+        description: "[attr] Global",
+        detail: " string",
+      },
+      name: "test-*",
+      sortText: "m",
+    });
+  });
 });

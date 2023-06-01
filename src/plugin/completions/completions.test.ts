@@ -18,11 +18,13 @@ const getCompletionsService = (
 
 const globalDataAttributeAssersions = [
   {
-    insertText: 'data-*=""',
+    insertText: 'data-$1="${$2}"$0',
+    isSnippet: true,
     kind: "parameter",
     kindModifiers: "global-attribute",
     labelDetails: {
       description: "[attr] Global",
+      detail: " string",
     },
     name: "data-*",
     sortText: "m",
@@ -33,8 +35,20 @@ const globalDataAttributeAssersions = [
     kindModifiers: "global-attribute",
     labelDetails: {
       description: "[attr] Global",
+      detail: " string",
     },
     name: "class",
+    sortText: "m",
+  },
+  {
+    insertText: "autofocus",
+    kind: "parameter",
+    kindModifiers: "global-attribute",
+    labelDetails: {
+      description: "[attr] Global",
+      detail: " boolean",
+    },
+    name: "autofocus",
     sortText: "m",
   },
   {

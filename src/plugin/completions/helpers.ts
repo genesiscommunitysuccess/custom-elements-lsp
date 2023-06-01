@@ -1,8 +1,11 @@
 // TODO: Unit tests!
 
-import { CompletionEntry, LineAndCharacter } from "typescript";
 import { TemplateContext } from "typescript-template-language-service-decorator";
-import { ScriptElementKind } from "typescript/lib/tsserverlibrary";
+import {
+  CompletionEntry,
+  LineAndCharacter,
+  ScriptElementKind,
+} from "typescript/lib/tsserverlibrary";
 import { GlobalAttrType } from "../global-data/global-data.types";
 import { replaceTemplateStringBinding } from "../utils";
 import { CompletionTypeParams } from "./completions.types";
