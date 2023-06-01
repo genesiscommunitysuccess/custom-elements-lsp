@@ -27,7 +27,7 @@ export const getCEServiceFromStubbedResource = () => {
     customElement: true,
     attributes: [
       { name: "colour", type: { text: "string" } },
-      { name: "activated", type: { text: "boolean" } },
+      { name: "activated", type: { text: "boolean" }, deprecated: "true" },
     ],
     events: [
       {
@@ -38,8 +38,8 @@ export const getCEServiceFromStubbedResource = () => {
         name: "inherited",
         type: { text: "MouseEvent" },
         inheritedFrom: {
-          name: 'ParentElement'
-        }
+          name: "ParentElement",
+        },
       },
     ],
   });

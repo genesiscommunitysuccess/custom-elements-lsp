@@ -194,16 +194,18 @@ describe("getCompletionsAtPosition", () => {
         },
         name: "colour",
         sortText: "a",
+        kindModifiers: "",
       },
       {
         insertText: "activated",
         kind: "parameter",
         labelDetails: {
-          description: "[attr] CustomElement",
+          description: "(deprecated) [attr] CustomElement",
           detail: " boolean",
         },
         name: "activated",
         sortText: "a",
+        kindModifiers: "deprecated",
       },
       ...globalDataAttributeAssersions,
     ]);
@@ -234,16 +236,18 @@ describe("getCompletionsAtPosition", () => {
         },
         name: "colour",
         sortText: "a",
+        kindModifiers: "",
       },
       {
         insertText: "activated",
         kind: "parameter",
         labelDetails: {
-          description: "[attr] CustomElement",
+          description: "(deprecated) [attr] CustomElement",
           detail: " boolean",
         },
         name: "activated",
         sortText: "a",
+        kindModifiers: "deprecated",
       },
       ...globalDataAttributeAssersions,
     ]);
@@ -274,16 +278,18 @@ describe("getCompletionsAtPosition", () => {
         },
         name: "colour",
         sortText: "a",
+        kindModifiers: "",
       },
       {
         insertText: "activated",
         kind: "parameter",
         labelDetails: {
-          description: "[attr] CustomElement",
+          description: "(deprecated) [attr] CustomElement",
           detail: " boolean",
         },
         name: "activated",
         sortText: "a",
+        kindModifiers: "deprecated",
       },
       ...globalDataAttributeAssersions,
     ]);
