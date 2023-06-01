@@ -12,7 +12,7 @@ const rootTemplate = html`
 
     <h1>
       ${(x) =>
-        x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : ""}
+    x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : ""}
     </h1>
 
     <person-avatar>

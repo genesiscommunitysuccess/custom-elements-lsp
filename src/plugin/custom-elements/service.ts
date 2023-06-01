@@ -24,6 +24,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
       name: a.name ?? a.fieldName,
       type: a.type?.text ?? "any",
       referenceClass: a.inheritedFrom?.name ?? definition.name,
+      deprecated: a.deprecated === "true",
     }));
   }
 
@@ -33,7 +34,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
 
     return definition.events.map((a) => ({
       name: a.name,
-      type: a.type?.text ?? a.description ?? 'any',
+      type: a.type?.text ?? a.description ?? "any",
       referenceClass: a.inheritedFrom?.name ?? definition.name,
     }));
   }

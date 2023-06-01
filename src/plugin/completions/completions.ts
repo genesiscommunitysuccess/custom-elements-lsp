@@ -89,15 +89,17 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return attrs
       .map(
-        ({ name, type, referenceClass }): CompletionEntry => ({
+        ({ name, type, referenceClass, deprecated }): CompletionEntry => ({
           name,
           insertText: `${name}${type === "boolean" ? "" : '=""'}`,
           kind: ScriptElementKind.parameterElement,
           sortText: "a",
           labelDetails: {
-            description: `[attr] ${referenceClass}`,
+            description:
+              (deprecated ? "(deprecated) " : "") + `[attr] ${referenceClass}`,
             detail: ` ${type}`,
           },
+          kindModifiers: deprecated ? "deprecated" : "",
         })
       )
       .concat(globalAttrs);

@@ -279,6 +279,15 @@
               "default": "false",
               "description": "Boolean attribute to disable the full info section entirely.",
               "fieldName": "fullInfoDisabled"
+            },
+            {
+              "name": "unused",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\"",
+              "deprecated": "true",
+              "fieldName": "unused"
             }
           ],
           "superclass": {
