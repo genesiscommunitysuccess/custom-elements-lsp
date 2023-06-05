@@ -160,7 +160,8 @@ export class DiagnosticsService {
     occurrence: number;
   }): number {
     if (occurrence < 1) {
-      return -2;
+      const INVALID_OCCURRENCE_CODE = -2;
+      return INVALID_OCCURRENCE_CODE;
     }
     const rawText = context.rawText;
     let countdown = occurrence;
@@ -172,7 +173,7 @@ export class DiagnosticsService {
         return -1;
       }
       stringIndex = nextOccurrenceIndex + tagName.length + 1;
-      countdown--;
+      countdown -= 1;
     }
 
     return stringIndex;

@@ -7,7 +7,7 @@ export class Counter extends FASTElement {
   @attr({ attribute: 'display-text' }) displayText: string | undefined;
 
   increment() {
-    this.count++;
+    this.count += 1;
   }
 
   connectedCallback(): void {
