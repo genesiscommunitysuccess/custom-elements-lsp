@@ -1,17 +1,13 @@
-import { CompletionInfo, LineAndCharacter } from "typescript";
+import parse from 'node-html-parser';
+import { CompletionInfo, LineAndCharacter } from 'typescript';
+import { Diagnostic } from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
   TemplateLanguageService,
-} from "typescript-template-language-service-decorator";
-import { Diagnostic } from "typescript/lib/tsserverlibrary";
-import { LanguageServiceLogger } from "./utils";
-
-import parse from "node-html-parser";
-import { DiagnosticsService } from "./diagnostics";
-import {
-  getCompletionType,
-  PartialCompletionsService,
-} from "./completions";
+} from 'typescript-template-language-service-decorator';
+import { getCompletionType, PartialCompletionsService } from './completions';
+import { DiagnosticsService } from './diagnostics';
+import { LanguageServiceLogger } from './utils';
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
@@ -19,7 +15,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     private diagnostics: DiagnosticsService,
     private completions: PartialCompletionsService[]
   ) {
-    logger.log("Setting up customelements class");
+    logger.log('Setting up customelements class');
   }
 
   getSyntacticDiagnostics(context: TemplateContext): Diagnostic[] {
@@ -31,7 +27,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     const root = parse(context.text);
     this.logger.log(`getCompletionsAtPosition: root: ${root.toString()}`);
 
-    const elementList = root.querySelectorAll("*");
+    const elementList = root.querySelectorAll('*');
 
     this.diagnostics
       .getUnknownCETag(context, elementList)
@@ -44,24 +40,19 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     return diagnostics;
   }
 
-  getCompletionsAtPosition(
-    context: TemplateContext,
-    position: LineAndCharacter
-  ): CompletionInfo {
+  getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
     const typeAndParam = getCompletionType(context, position);
-    this.logger.log(
-      `getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`
-    );
+    this.logger.log(`getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`);
 
     return this.completions.reduce(
       (acum: CompletionInfo, service) =>
         service.getCompletionsAtPosition
           ? service.getCompletionsAtPosition(acum, {
-            context,
-            position,
-            typeAndParam,
-          })
+              context,
+              position,
+              typeAndParam,
+            })
           : acum,
       {
         isGlobalCompletion: false,

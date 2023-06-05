@@ -1,5 +1,4 @@
-import { Logger } from "typescript-template-language-service-decorator";
-
+import { Logger } from 'typescript-template-language-service-decorator';
 
 let instance: KVStore;
 
@@ -13,7 +12,7 @@ let instance: KVStore;
  */
 class KVStore {
   constructor(private logger: Logger) {
-    this.logger.log("Setting up KVStore");
+    this.logger.log('Setting up KVStore');
   }
 
   private store = new Map<string, unknown>();

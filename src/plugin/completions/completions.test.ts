@@ -1,11 +1,11 @@
-import { CompletionInfo } from "typescript/lib/tsserverlibrary";
-import { getCEServiceFromStubbedResource } from "../../jest/custom-elements";
-import { getGDServiceFromStubbedResource } from "../../jest/global-data";
-import { buildServices, getLogger, html } from "../../jest/utils";
-import { CustomElementsService } from "../custom-elements/custom-elements.types";
-import { GlobalDataService } from "../global-data/global-data.types";
-import { CoreCompletionsServiceImpl } from "./completions";
-import { getCompletionType } from "./helpers";
+import { CompletionInfo } from 'typescript/lib/tsserverlibrary';
+import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
+import { getGDServiceFromStubbedResource } from '../../jest/global-data';
+import { buildServices, getLogger, html } from '../../jest/utils';
+import { CustomElementsService } from '../custom-elements/custom-elements.types';
+import { GlobalDataService } from '../global-data/global-data.types';
+import { CoreCompletionsServiceImpl } from './completions';
+import { getCompletionType } from './helpers';
 
 const getCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
@@ -20,52 +20,52 @@ const globalDataAttributeAssersions = [
   {
     insertText: 'data-$1="${$2}"$0',
     isSnippet: true,
-    kind: "parameter",
+    kind: 'parameter',
     labelDetails: {
-      description: "[attr] Global",
-      detail: " string",
+      description: '[attr] Global',
+      detail: ' string',
     },
-    name: "data-*",
-    sortText: "m",
+    name: 'data-*',
+    sortText: 'm',
   },
   {
     insertText: 'class=""',
-    kind: "parameter",
+    kind: 'parameter',
     labelDetails: {
-      description: "[attr] Global",
-      detail: " string",
+      description: '[attr] Global',
+      detail: ' string',
     },
-    name: "class",
-    sortText: "m",
+    name: 'class',
+    sortText: 'm',
   },
   {
-    insertText: "autofocus",
-    kind: "parameter",
+    insertText: 'autofocus',
+    kind: 'parameter',
     labelDetails: {
-      description: "[attr] Global",
-      detail: " boolean",
+      description: '[attr] Global',
+      detail: ' boolean',
     },
-    name: "autofocus",
-    sortText: "m",
+    name: 'autofocus',
+    sortText: 'm',
   },
   {
     insertText: 'aria-label=""',
-    kind: "parameter",
+    kind: 'parameter',
     labelDetails: {
-      description: "[attr] Aria",
+      description: '[attr] Aria',
     },
-    name: "aria-label",
-    sortText: "z",
+    name: 'aria-label',
+    sortText: 'z',
   },
   {
     insertText: 'onclick=""',
-    kind: "parameter",
+    kind: 'parameter',
     labelDetails: {
-      description: "[attr] Event",
-      detail: " event",
+      description: '[attr] Event',
+      detail: ' event',
     },
-    name: "onclick",
-    sortText: "z",
+    name: 'onclick',
+    sortText: 'z',
   },
 ];
 
@@ -76,8 +76,8 @@ const baseCompletionInfo: CompletionInfo = {
   entries: [],
 };
 
-describe("getCompletionsAtPosition", () => {
-  it("Returns no completions if we are in a blank template", () => {
+describe('getCompletionsAtPosition', () => {
+  it('Returns no completions if we are in a blank template', () => {
     const service = getCompletionsService();
     const context = html``;
     const position = {
@@ -95,9 +95,11 @@ describe("getCompletionsAtPosition", () => {
     expect(completions.entries).toHaveLength(0);
   });
 
-  it("Returns completions for the custom element tags if inside of an opening tag", () => {
+  it('Returns completions for the custom element tags if inside of an opening tag', () => {
     const service = getCompletionsService();
-    const context = html`<`;
+    const context = html`
+      <
+    `;
     const position = {
       line: 0,
       character: 1,
@@ -112,27 +114,27 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "custom-element></custom-element>",
-        kind: "type",
-        name: "custom-element",
-        sortText: "custom-element",
+        insertText: 'custom-element></custom-element>',
+        kind: 'type',
+        name: 'custom-element',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "src/components/avatar/avatar.ts",
+          description: 'src/components/avatar/avatar.ts',
         },
       },
       {
-        insertText: "no-attr></no-attr>",
-        kind: "type",
-        name: "no-attr",
-        sortText: "custom-element",
+        insertText: 'no-attr></no-attr>',
+        kind: 'type',
+        name: 'no-attr',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "pkg",
+          description: 'pkg',
         },
       },
     ]);
   });
 
-  it("Returns completions for the custom element tags if inside of an opening with an incomplete custom element", () => {
+  it('Returns completions for the custom element tags if inside of an opening with an incomplete custom element', () => {
     const service = getCompletionsService();
     const context = html`<custom-eleme`;
     const position = {
@@ -149,27 +151,27 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "custom-element></custom-element>",
-        kind: "type",
-        name: "custom-element",
-        sortText: "custom-element",
+        insertText: 'custom-element></custom-element>',
+        kind: 'type',
+        name: 'custom-element',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "src/components/avatar/avatar.ts",
+          description: 'src/components/avatar/avatar.ts',
         },
       },
       {
-        insertText: "no-attr></no-attr>",
-        kind: "type",
-        name: "no-attr",
-        sortText: "custom-element",
+        insertText: 'no-attr></no-attr>',
+        kind: 'type',
+        name: 'no-attr',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "pkg",
+          description: 'pkg',
         },
       },
     ]);
   });
 
-  it("Returns attribute completions when past a valid custom element name which has defined attributes", () => {
+  it('Returns attribute completions when past a valid custom element name which has defined attributes', () => {
     const service = getCompletionsService();
     const context = html`<custom-element `;
     const position = {
@@ -187,31 +189,31 @@ describe("getCompletionsAtPosition", () => {
     expect(completions.entries).toEqual([
       {
         insertText: 'colour=""',
-        kind: "parameter",
+        kind: 'parameter',
         labelDetails: {
-          description: "[attr] CustomElement",
-          detail: " string",
+          description: '[attr] CustomElement',
+          detail: ' string',
         },
-        name: "colour",
-        sortText: "a",
-        kindModifiers: "",
+        name: 'colour',
+        sortText: 'a',
+        kindModifiers: '',
       },
       {
-        insertText: "activated",
-        kind: "parameter",
+        insertText: 'activated',
+        kind: 'parameter',
         labelDetails: {
-          description: "(deprecated) [attr] CustomElement",
-          detail: " boolean",
+          description: '(deprecated) [attr] CustomElement',
+          detail: ' boolean',
         },
-        name: "activated",
-        sortText: "a",
-        kindModifiers: "deprecated",
+        name: 'activated',
+        sortText: 'a',
+        kindModifiers: 'deprecated',
       },
       ...globalDataAttributeAssersions,
     ]);
   });
 
-  it("Returns attribute completions when writing an attribute", () => {
+  it('Returns attribute completions when writing an attribute', () => {
     const service = getCompletionsService();
     const context = html`<custom-element col`;
     const position = {
@@ -229,33 +231,35 @@ describe("getCompletionsAtPosition", () => {
     expect(completions.entries).toEqual([
       {
         insertText: 'colour=""',
-        kind: "parameter",
+        kind: 'parameter',
         labelDetails: {
-          description: "[attr] CustomElement",
-          detail: " string",
+          description: '[attr] CustomElement',
+          detail: ' string',
         },
-        name: "colour",
-        sortText: "a",
-        kindModifiers: "",
+        name: 'colour',
+        sortText: 'a',
+        kindModifiers: '',
       },
       {
-        insertText: "activated",
-        kind: "parameter",
+        insertText: 'activated',
+        kind: 'parameter',
         labelDetails: {
-          description: "(deprecated) [attr] CustomElement",
-          detail: " boolean",
+          description: '(deprecated) [attr] CustomElement',
+          detail: ' boolean',
         },
-        name: "activated",
-        sortText: "a",
-        kindModifiers: "deprecated",
+        name: 'activated',
+        sortText: 'a',
+        kindModifiers: 'deprecated',
       },
       ...globalDataAttributeAssersions,
     ]);
   });
 
-  it("Returns attribute completions when writing an attribute inside of a finished tag", () => {
+  it('Returns attribute completions when writing an attribute inside of a finished tag', () => {
     const service = getCompletionsService();
-    const context = html`<custom-element colour="red"></custom-element>`;
+    const context = html`
+      <custom-element colour="red"></custom-element>
+    `;
     const position = {
       line: 0,
       character: 28,
@@ -271,31 +275,31 @@ describe("getCompletionsAtPosition", () => {
     expect(completions.entries).toEqual([
       {
         insertText: 'colour=""',
-        kind: "parameter",
+        kind: 'parameter',
         labelDetails: {
-          description: "[attr] CustomElement",
-          detail: " string",
+          description: '[attr] CustomElement',
+          detail: ' string',
         },
-        name: "colour",
-        sortText: "a",
-        kindModifiers: "",
+        name: 'colour',
+        sortText: 'a',
+        kindModifiers: '',
       },
       {
-        insertText: "activated",
-        kind: "parameter",
+        insertText: 'activated',
+        kind: 'parameter',
         labelDetails: {
-          description: "(deprecated) [attr] CustomElement",
-          detail: " boolean",
+          description: '(deprecated) [attr] CustomElement',
+          detail: ' boolean',
         },
-        name: "activated",
-        sortText: "a",
-        kindModifiers: "deprecated",
+        name: 'activated',
+        sortText: 'a',
+        kindModifiers: 'deprecated',
       },
       ...globalDataAttributeAssersions,
     ]);
   });
 
-  it("Returns only the global attribute completions when we try and complete attributes on a custom element with no attributes", () => {
+  it('Returns only the global attribute completions when we try and complete attributes on a custom element with no attributes', () => {
     const service = getCompletionsService();
     const context = html`<no-attr `;
     const position = {
@@ -313,7 +317,7 @@ describe("getCompletionsAtPosition", () => {
     expect(completions.entries).toEqual([...globalDataAttributeAssersions]);
   });
 
-  it("Returns name completions when we try and complete attributes on an unknown custom element", () => {
+  it('Returns name completions when we try and complete attributes on an unknown custom element', () => {
     const service = getCompletionsService();
     const context = html`<unknown-element `;
     const position = {
@@ -330,21 +334,21 @@ describe("getCompletionsAtPosition", () => {
 
     expect(completions.entries).toEqual([
       {
-        insertText: "custom-element></custom-element>",
-        kind: "type",
-        name: "custom-element",
-        sortText: "custom-element",
+        insertText: 'custom-element></custom-element>',
+        kind: 'type',
+        name: 'custom-element',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "src/components/avatar/avatar.ts",
+          description: 'src/components/avatar/avatar.ts',
         },
       },
       {
-        insertText: "no-attr></no-attr>",
-        kind: "type",
-        name: "no-attr",
-        sortText: "custom-element",
+        insertText: 'no-attr></no-attr>',
+        kind: 'type',
+        name: 'no-attr',
+        sortText: 'custom-element',
         labelDetails: {
-          description: "pkg",
+          description: 'pkg',
         },
       },
     ]);

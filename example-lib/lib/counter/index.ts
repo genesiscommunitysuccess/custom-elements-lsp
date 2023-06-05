@@ -1,2 +1,2 @@
-export * from "./counter";
-export * from "./counter.template";
+export * from './counter';
+export * from './counter.template';

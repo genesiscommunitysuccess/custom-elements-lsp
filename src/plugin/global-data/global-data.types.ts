@@ -1,4 +1,4 @@
-export type GlobalAttrType = "string" | "boolean" | "wildcard";
+export type GlobalAttrType = 'string' | 'boolean' | 'wildcard';
 
 export interface GlobalDataService {
   getAttributes(): [string, GlobalAttrType][];

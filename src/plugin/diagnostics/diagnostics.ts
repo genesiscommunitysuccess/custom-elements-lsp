@@ -1,14 +1,11 @@
-import { HTMLElement } from "node-html-parser";
-import {
-  Logger,
-  TemplateContext,
-} from "typescript-template-language-service-decorator";
-import { Diagnostic, DiagnosticCategory } from "typescript/lib/tsserverlibrary";
-import { Services } from "../utils/services.type";
+import { HTMLElement } from 'node-html-parser';
+import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
+import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
+import { Services } from '../utils/services.type';
 
 export class DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
-    logger.log("Setting up Diagnostics");
+    logger.log('Setting up Diagnostics');
   }
 
   /**
@@ -19,18 +16,11 @@ export class DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parseR` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  getUnknownCETag(
-    context: TemplateContext,
-    elementList: HTMLElement[]
-  ): Diagnostic[] {
+  getUnknownCETag(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
 
-    const customElementTags = elementList.filter((elem) =>
-      elem.tagName.includes("-")
-    );
-    this.logger.log(
-      `getUnknownCETag: customElementTags: ${customElementTags.length}`
-    );
+    const customElementTags = elementList.filter((elem) => elem.tagName.includes('-'));
+    this.logger.log(`getUnknownCETag: customElementTags: ${customElementTags.length}`);
 
     const ceNames = this.services.customElements.getCENames();
     const invalidCETags = customElementTags
@@ -50,7 +40,7 @@ export class DiagnosticsService {
       .flat()
       .map((tagAndLine) => {
         const { line, tag } = tagAndLine;
-        const regex = new RegExp(`<${tag}[>\\s]`, "g");
+        const regex = new RegExp(`<${tag}[>\\s]`, 'g');
         const matchesCount = line.match(regex)?.length ?? 0;
 
         return Array(matchesCount)
@@ -88,19 +78,12 @@ export class DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  getInvalidCEAttribute(
-    context: TemplateContext,
-    elementList: HTMLElement[]
-  ): Diagnostic[] {
+  getInvalidCEAttribute(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
     const ceNames = this.services.customElements.getCENames();
 
     const tagsAndAttrs = elementList
-      .filter(
-        (elem) =>
-          elem.tagName.includes("-") &&
-          ceNames.includes(elem.tagName.toLowerCase())
-      )
+      .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
         attrs: Object.keys(elem.attributes),
@@ -135,14 +118,12 @@ export class DiagnosticsService {
       .flat();
 
     invalidAttr.forEach((attr) => {
-      this.logger.log(
-        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`
-      );
+      this.logger.log(`getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`);
     });
 
     const errorAttrs = invalidAttr
-      .filter(({ attr }) => !attr.startsWith(":")) // TODO: FUI-1193
-      .filter(({ attr }) => attr.replaceAll("x", "").length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
+      .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
+      .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
 
     return errorAttrs.map(({ tagName, occurrence, attr }) => {
       const attrSearchOffset = this.getPositionOfNthTagEnd({

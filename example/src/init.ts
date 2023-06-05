@@ -1,6 +1,6 @@
-import { registerComponents } from "./components";
+import { registerComponents } from './components';
 
-const app = document.querySelector<HTMLDivElement>("#app")!;
+const app = document.querySelector<HTMLDivElement>('#app')!;
 
 registerComponents();
 

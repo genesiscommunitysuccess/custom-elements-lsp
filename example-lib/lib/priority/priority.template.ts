@@ -1,13 +1,11 @@
-import { html } from "@microsoft/fast-element";
-import { PrioritySelector, priorityTypes } from "./priority";
+import { html } from '@microsoft/fast-element';
+import { PrioritySelector, priorityTypes } from './priority';
 
-const defaultText = "Update";
+const defaultText = 'Update';
 
 export const prioritySelectorTemplate = html<PrioritySelector>`
   <template>
     <div>Priority : ${(x) => priorityTypes[x.count]}.</div>
-    <button @click=${(x) => x.increment()}>
-      ${(x) => x.displayText ?? defaultText}
-    </button>
+    <button @click=${(x) => x.increment()}>${(x) => x.displayText ?? defaultText}</button>
   </template>
 `;
