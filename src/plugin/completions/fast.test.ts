@@ -35,7 +35,7 @@ describe("convertFastEventAttributes", () => {
     },
   ];
 
-  it("Doesn't change any non label details detail event completions", () => {
+  it("Doesn't change any non labelDetails detail event completions", () => {
     const entries: CompletionEntry[] = [...baseEntries];
     const replacementSpan: TextSpan = { start: 0, length: 2 };
 
@@ -47,7 +47,7 @@ describe("convertFastEventAttributes", () => {
     expect(res).toEqual(entries);
   });
 
-  it("Changes only label details detail events completions to the FAST binding snippet", () => {
+  it("Changes only labelDetails detail events completions to the FAST binding snippet", () => {
     const entries: CompletionEntry[] = [
       ...baseEntries,
       {
