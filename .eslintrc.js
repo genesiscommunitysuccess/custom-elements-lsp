@@ -12,6 +12,7 @@ module.exports = {
     '.eslintrc.js',
     '**/dist/**/*',
     '**/public/**/*',
+    '**/out/**/*',
   ],
   settings: {
     'import/resolver': {
