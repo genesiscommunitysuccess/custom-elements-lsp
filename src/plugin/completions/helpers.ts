@@ -1,14 +1,14 @@
 // TODO: Unit tests!
 
-import { TemplateContext } from "typescript-template-language-service-decorator";
 import {
   CompletionEntry,
   LineAndCharacter,
   ScriptElementKind,
-} from "typescript/lib/tsserverlibrary";
-import { GlobalAttrType } from "../global-data/global-data.types";
-import { replaceTemplateStringBinding } from "../utils";
-import { CompletionTypeParams } from "./completions.types";
+} from 'typescript/lib/tsserverlibrary';
+import { TemplateContext } from 'typescript-template-language-service-decorator';
+import { GlobalAttrType } from '../global-data/global-data.types';
+import { replaceTemplateStringBinding } from '../utils';
+import { CompletionTypeParams } from './completions.types';
 
 // Unclosed tag, suggest any tag names
 export const suggestTags = (line: string) => unfinishedTag.test(line);
@@ -17,7 +17,7 @@ export const suggestTags = (line: string) => unfinishedTag.test(line);
 export const suggestCustomElements = (line: string) => {
   if (!unfinishedCustomElement.test(line)) return false;
   const lastTag = line.split(/</).pop() as string;
-  return lastTag.split(" ")[0];
+  return lastTag.split(' ')[0];
 };
 
 const unfinishedTag = /<[^>]*$/;
@@ -35,13 +35,10 @@ export function getCompletionType(
   {
     let tagname: string | false;
     if (
-      ((tagname = suggestCustomElements(
-        processedLine.substring(0, position.character)
-      )),
-        tagname)
+      ((tagname = suggestCustomElements(processedLine.substring(0, position.character))), tagname)
     ) {
       return {
-        key: "custom-element-attribute",
+        key: 'custom-element-attribute',
         params: tagname,
       };
     }
@@ -49,13 +46,13 @@ export function getCompletionType(
 
   if (suggestTags(rawLine)) {
     return {
-      key: "custom-element-name",
+      key: 'custom-element-name',
       params: undefined,
     };
   }
 
   return {
-    key: "none",
+    key: 'none',
     params: undefined,
   };
 }
@@ -65,9 +62,9 @@ export function constructGlobalAriaCompletion(name: string): CompletionEntry {
     name,
     insertText: `${name}=""`,
     kind: ScriptElementKind.parameterElement,
-    sortText: "z",
+    sortText: 'z',
     labelDetails: {
-      description: "[attr] Aria",
+      description: '[attr] Aria',
     },
   };
 }
@@ -77,51 +74,48 @@ export function constructGlobalEventCompletion(name: string): CompletionEntry {
     name,
     insertText: `${name}=""`,
     kind: ScriptElementKind.parameterElement,
-    sortText: "z",
+    sortText: 'z',
     labelDetails: {
-      description: "[attr] Event",
-      detail: " event",
+      description: '[attr] Event',
+      detail: ' event',
     },
   };
 }
 
-export function constructGlobalAttrCompletion(
-  name: string,
-  type: GlobalAttrType
-): CompletionEntry {
+export function constructGlobalAttrCompletion(name: string, type: GlobalAttrType): CompletionEntry {
   switch (type) {
-    case "string":
+    case 'string':
       return {
         name,
         insertText: `${name}=""`,
         kind: ScriptElementKind.parameterElement,
-        sortText: "m",
+        sortText: 'm',
         labelDetails: {
-          description: "[attr] Global",
-          detail: " string",
+          description: '[attr] Global',
+          detail: ' string',
         },
       };
-    case "boolean":
+    case 'boolean':
       return {
         name,
         insertText: name,
         kind: ScriptElementKind.parameterElement,
-        sortText: "m",
+        sortText: 'm',
         labelDetails: {
-          description: "[attr] Global",
-          detail: " boolean",
+          description: '[attr] Global',
+          detail: ' boolean',
         },
       };
-    case "wildcard":
+    case 'wildcard':
       return {
         name,
-        insertText: name.replace("*", '$1="${$2}"$0'),
+        insertText: name.replace('*', '$1="${$2}"$0'),
         isSnippet: true,
         kind: ScriptElementKind.parameterElement,
-        sortText: "m",
+        sortText: 'm',
         labelDetails: {
-          description: "[attr] Global",
-          detail: " string",
+          description: '[attr] Global',
+          detail: ' string',
         },
       };
   }

@@ -1,17 +1,14 @@
 import {
-  Logger,
-  TemplateContext,
-} from "typescript-template-language-service-decorator";
-import {
   CompletionEntry,
   CompletionInfo,
   LineAndCharacter,
   ScriptElementKind,
   TextSpan,
-} from "typescript/lib/tsserverlibrary";
-import { getWholeTextReplcaementSpan } from "../utils";
-import { Services } from "../utils/services.type";
-import { CompletionCtx, PartialCompletionsService } from "./completions.types";
+} from 'typescript/lib/tsserverlibrary';
+import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
+import { getWholeTextReplcaementSpan } from '../utils';
+import { Services } from '../utils/services.type';
+import { CompletionCtx, PartialCompletionsService } from './completions.types';
 
 /**
  * If Microsoft FAST config is enabled then this service will provide
@@ -26,7 +23,7 @@ import { CompletionCtx, PartialCompletionsService } from "./completions.types";
  */
 export class FASTCompletionsService implements PartialCompletionsService {
   constructor(private logger: Logger, private services: Services) {
-    this.logger.log("Setting up FAST Enhancement Completions Service");
+    this.logger.log('Setting up FAST Enhancement Completions Service');
   }
 
   getCompletionsAtPosition(
@@ -38,13 +35,8 @@ export class FASTCompletionsService implements PartialCompletionsService {
     let entries = completions.entries;
 
     switch (key) {
-      case "custom-element-attribute":
-        entries = this.getUpdatedAttributeEntries(
-          entries,
-          position,
-          context,
-          params
-        );
+      case 'custom-element-attribute':
+        entries = this.getUpdatedAttributeEntries(entries, position, context, params);
         this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;
     }
@@ -62,10 +54,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     tagName: string
   ): CompletionEntry[] {
     const replacementSpan = getWholeTextReplcaementSpan(position, context);
-    const withConvertedEvents = this.convertFastEventAttributes(
-      completions,
-      replacementSpan
-    );
+    const withConvertedEvents = this.convertFastEventAttributes(completions, replacementSpan);
     const withBooleanBindings = this.addDynamicBooleanBindings(
       withConvertedEvents,
       replacementSpan
@@ -84,19 +73,17 @@ export class FASTCompletionsService implements PartialCompletionsService {
     tagName: string
   ): CompletionEntry[] {
     return completions.concat(
-      this.services.customElements
-        .getCEEvents(tagName)
-        .map(({ name, referenceClass }) => ({
-          name: `@${name}`,
-          insertText: `@${name}="\${(x, c) => $1}"$0`,
-          kind: ScriptElementKind.parameterElement,
-          sortText: "f",
-          labelDetails: {
-            description: `[attr] ${referenceClass}`,
-          },
-          isSnippet: true,
-          replacementSpan,
-        }))
+      this.services.customElements.getCEEvents(tagName).map(({ name, referenceClass }) => ({
+        name: `@${name}`,
+        insertText: `@${name}="\${(x, c) => $1}"$0`,
+        kind: ScriptElementKind.parameterElement,
+        sortText: 'f',
+        labelDetails: {
+          description: `[attr] ${referenceClass}`,
+        },
+        isSnippet: true,
+        replacementSpan,
+      }))
     );
   }
 
@@ -107,7 +94,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     return completions
       .map((completion) => {
         const completionInArr = [completion];
-        if (completion?.labelDetails?.detail?.includes("boolean")) {
+        if (completion?.labelDetails?.detail?.includes('boolean')) {
           completionInArr.push({
             ...completion,
             name: `?${completion.name}`,
@@ -116,7 +103,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
             replacementSpan,
             labelDetails: {
               ...completion.labelDetails,
-              detail: " boolean binding",
+              detail: ' boolean binding',
             },
           });
         }
@@ -133,10 +120,8 @@ export class FASTCompletionsService implements PartialCompletionsService {
       if (completion?.labelDetails?.detail?.includes('event')) {
         return {
           ...completion,
-          name: completion.name.replace("on", "@"),
-          insertText: completion.insertText
-            ?.replace("on", "@")
-            .replace('""', '"${(x,c) => $1}"$0'),
+          name: completion.name.replace('on', '@'),
+          insertText: completion.insertText?.replace('on', '@').replace('""', '"${(x,c) => $1}"$0'),
           isSnippet: true,
           replacementSpan,
         };

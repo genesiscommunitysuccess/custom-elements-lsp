@@ -1,15 +1,15 @@
-import { attr, customElement, FASTElement } from "@microsoft/fast-element";
-import { themeStyles } from "./theme.style";
-import { themeTemplate } from "./theme.template";
+import { attr, customElement, FASTElement } from '@microsoft/fast-element';
+import { themeStyles } from './theme.style';
+import { themeTemplate } from './theme.template';
 
 @customElement({
-  name: "theme-picker",
+  name: 'theme-picker',
   template: themeTemplate,
-  styles: themeStyles
+  styles: themeStyles,
 })
 export class ThemePicker extends FASTElement {
-  @attr foreground: string = "0078D4";
-  @attr background: string = "808080";
+  @attr foreground: string = '0078D4';
+  @attr background: string = '808080';
 
   // @internal
   fgInput: HTMLInputElement | null = null;

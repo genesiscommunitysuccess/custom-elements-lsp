@@ -1,13 +1,13 @@
-import { customElement } from "@microsoft/fast-element";
-import { Counter } from "../counter";
-import { prioritySelectorTemplate } from "./priority.template";
+import { customElement } from '@microsoft/fast-element';
+import { Counter } from '../counter';
+import { prioritySelectorTemplate } from './priority.template';
 
 // Contrived inheritance example
 
-export const priorityTypes = ["low", "medium", "high"] as const;
+export const priorityTypes = ['low', 'medium', 'high'] as const;
 
 @customElement({
-  name: "priority-selector",
+  name: 'priority-selector',
   template: prioritySelectorTemplate,
 })
 export class PrioritySelector extends Counter {

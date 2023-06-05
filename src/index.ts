@@ -1,3 +1,3 @@
-import { init } from "./plugin";
+import { init } from './plugin';
 
 export = init;

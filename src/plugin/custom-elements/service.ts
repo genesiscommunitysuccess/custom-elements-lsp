@@ -1,4 +1,4 @@
-import { Logger } from "typescript-template-language-service-decorator";
+import { Logger } from 'typescript-template-language-service-decorator';
 import {
   CEInfo,
   CustomElementAttribute,
@@ -6,14 +6,13 @@ import {
   CustomElementsResource,
   CustomElementsService,
   GetCEInfo,
-} from "./custom-elements.types";
+} from './custom-elements.types';
 
-const PARSE_PATH_REGEXP =
-  /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;
+const PARSE_PATH_REGEXP = /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;
 
 export class CustomElementsServiceImpl implements CustomElementsService {
   constructor(private logger: Logger, private ceData: CustomElementsResource) {
-    logger.log("Setting up CustomElementsServiceImpl");
+    logger.log('Setting up CustomElementsServiceImpl');
   }
 
   getCEAttributes(name: string): CustomElementAttribute[] {
@@ -22,9 +21,9 @@ export class CustomElementsServiceImpl implements CustomElementsService {
 
     return definition.attributes.map((a) => ({
       name: a.name ?? a.fieldName,
-      type: a.type?.text ?? "any",
+      type: a.type?.text ?? 'any',
       referenceClass: a.inheritedFrom?.name ?? definition.name,
-      deprecated: a.deprecated === "true",
+      deprecated: a.deprecated === 'true',
     }));
   }
 
@@ -34,7 +33,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
 
     return definition.events.map((a) => ({
       name: a.name,
-      type: a.type?.text ?? a.description ?? "any",
+      type: a.type?.text ?? a.description ?? 'any',
       referenceClass: a.inheritedFrom?.name ?? definition.name,
     }));
   }
@@ -65,7 +64,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     if (getFullPath) {
       return path;
     }
-    let matches = path.match(PARSE_PATH_REGEXP);
+    const matches = path.match(PARSE_PATH_REGEXP);
     if (matches === null) {
       return path;
     }

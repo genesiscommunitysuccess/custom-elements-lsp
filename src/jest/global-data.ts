@@ -1,6 +1,6 @@
-import { GlobalDataRepository } from "../plugin/global-data/global-data.types";
-import { GlobalDataServiceImpl } from "../plugin/global-data/service";
-import { getLogger } from "./utils";
+import { GlobalDataRepository } from '../plugin/global-data/global-data.types';
+import { GlobalDataServiceImpl } from '../plugin/global-data/service';
+import { getLogger } from './utils';
 
 /**
  * Returns a real `GlobalDataServiceImpl` using a stubbed `GlobalDataRepository`
@@ -10,16 +10,16 @@ export const getGDServiceFromStubbedResource = () => {
   const resource: GlobalDataRepository = {
     getAttributes() {
       return [
-        ["data-*", "wildcard"],
-        ["class", "string"],
-        ["autofocus", "boolean"],
+        ['data-*', 'wildcard'],
+        ['class', 'string'],
+        ['autofocus', 'boolean'],
       ];
     },
     getAriaAttributes() {
-      return ["aria-label"];
+      return ['aria-label'];
     },
     getEvents() {
-      return ["onclick"];
+      return ['onclick'];
     },
   };
 

@@ -1,11 +1,8 @@
-import {
-  Logger,
-  TemplateContext,
-} from "typescript-template-language-service-decorator";
-import { GlobalDataRepositoryImpl } from "../plugin/global-data/repository";
-import { GlobalDataServiceImpl } from "../plugin/global-data/service";
-import { Services } from "../plugin/utils/services.type";
-import { getCEServiceFromTestJsonResource } from "./custom-elements";
+import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
+import { GlobalDataRepositoryImpl } from '../plugin/global-data/repository';
+import { GlobalDataServiceImpl } from '../plugin/global-data/service';
+import { Services } from '../plugin/utils/services.type';
+import { getCEServiceFromTestJsonResource } from './custom-elements';
 
 const constructLogger = (debugLog: boolean = false): Logger => ({
   log: (msg: string) => {
@@ -14,10 +11,7 @@ const constructLogger = (debugLog: boolean = false): Logger => ({
 });
 
 export const getGlobalDataService = () =>
-  new GlobalDataServiceImpl(
-    getLogger(),
-    new GlobalDataRepositoryImpl(getLogger())
-  );
+  new GlobalDataServiceImpl(getLogger(), new GlobalDataRepositoryImpl(getLogger()));
 
 export const buildServices = (overrides: Partial<Services>): Services => ({
   customElements: getCEServiceFromTestJsonResource({}),
@@ -31,17 +25,17 @@ export const buildServices = (overrides: Partial<Services>): Services => ({
  * variable is set to `1`. Use via `npm run test:unit:verbose`.
  */
 export function getLogger() {
-  const debugLog = process.env.TEST_LOG === "1";
+  const debugLog = process.env.TEST_LOG === '1';
   return constructLogger(debugLog);
 }
 
 const toOffset =
   (rawText: string) =>
-    ({ line, character }: { line: number; character: number }) =>
-      rawText
-        .split(/\n/g)
-        .slice(0, line)
-        .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
+  ({ line, character }: { line: number; character: number }) =>
+    rawText
+      .split(/\n/g)
+      .slice(0, line)
+      .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
 
 /**
  * Tagged template literal which is converted to TemplateContext
@@ -51,19 +45,15 @@ export const html = (
   strings: TemplateStringsArray,
   ...values: ((...args: any[]) => any)[]
 ): TemplateContext => {
-  const rawText = String.raw({ raw: strings }, ...values) ?? "";
+  const rawText = String.raw({ raw: strings }, ...values) ?? '';
 
   return {
     typescript: jest.fn() as any,
-    fileName: "test.ts",
-    text:
-      String.raw(
-        { raw: strings },
-        ...values.map((v) => "x".repeat(v.toString().length))
-      ) ?? "",
+    fileName: 'test.ts',
+    text: String.raw({ raw: strings }, ...values.map((v) => 'x'.repeat(v.toString().length))) ?? '',
     rawText,
     node: {
-      getSourceFile: () => "test.ts",
+      getSourceFile: () => 'test.ts',
     } as any,
     toOffset: toOffset(rawText),
     toPosition: jest.fn(),

@@ -1,18 +1,14 @@
-import { Logger } from "typescript-template-language-service-decorator";
-import {
-  CompletionEntry,
-  CompletionInfo,
-  ScriptElementKind,
-} from "typescript/lib/tsserverlibrary";
-import { getStore } from "../utils/kvstore";
-import { Services } from "../utils/services.type";
+import { CompletionEntry, CompletionInfo, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
+import { Logger } from 'typescript-template-language-service-decorator';
+import { getStore } from '../utils/kvstore';
+import { Services } from '../utils/services.type';
 import {
   CompletionCtx,
   CompletionsService,
   constructGlobalAriaCompletion,
   constructGlobalAttrCompletion,
   constructGlobalEventCompletion,
-} from "./";
+} from './';
 
 /**
  * Base implementation of the CompletionsService.
@@ -23,7 +19,7 @@ import {
  */
 export class CoreCompletionsServiceImpl implements CompletionsService {
   constructor(private logger: Logger, private services: Services) {
-    logger.log("Setting up Completions Service");
+    logger.log('Setting up Completions Service');
   }
 
   getCompletionsAtPosition(
@@ -35,11 +31,11 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
     let baseEntries: CompletionEntry[] = [];
 
     switch (key) {
-      case "custom-element-name":
+      case 'custom-element-name':
         baseEntries = this.getTagCompletions();
         break;
 
-      case "custom-element-attribute":
+      case 'custom-element-attribute':
         if (!this.services.customElements.customElementKnown(params)) {
           baseEntries = this.getTagCompletions();
           break;
@@ -47,7 +43,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         baseEntries = this.getAttributeCompletions(params);
         break;
 
-      case "none":
+      case 'none':
       default:
         // No suggestions
         break;
@@ -55,51 +51,35 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return {
       ...completions,
-      isMemberCompletion: key === "custom-element-attribute",
+      isMemberCompletion: key === 'custom-element-attribute',
       entries: completions.entries.concat(baseEntries),
     };
   }
 
   private getAttributeCompletions(tagName: string): CompletionEntry[] {
     const attrs = this.services.customElements.getCEAttributes(tagName);
-    this.logger.log(
-      `custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`
-    );
+    this.logger.log(`custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
 
-    const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd(
-      "global-attributes",
-      () =>
-        this.services.globalData
-          .getAttributes()
-          .map(
-            ([name, type]): CompletionEntry =>
-              constructGlobalAttrCompletion(name, type)
-          )
-          .concat(
-            this.services.globalData
-              .getAriaAttributes()
-              .map(constructGlobalAriaCompletion)
-          )
-          .concat(
-            this.services.globalData
-              .getEvents()
-              .map(constructGlobalEventCompletion)
-          )
+    const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd('global-attributes', () =>
+      this.services.globalData
+        .getAttributes()
+        .map(([name, type]): CompletionEntry => constructGlobalAttrCompletion(name, type))
+        .concat(this.services.globalData.getAriaAttributes().map(constructGlobalAriaCompletion))
+        .concat(this.services.globalData.getEvents().map(constructGlobalEventCompletion))
     );
 
     return attrs
       .map(
         ({ name, type, referenceClass, deprecated }): CompletionEntry => ({
           name,
-          insertText: `${name}${type === "boolean" ? "" : '=""'}`,
+          insertText: `${name}${type === 'boolean' ? '' : '=""'}`,
           kind: ScriptElementKind.parameterElement,
-          sortText: "a",
+          sortText: 'a',
           labelDetails: {
-            description:
-              (deprecated ? "(deprecated) " : "") + `[attr] ${referenceClass}`,
+            description: (deprecated ? '(deprecated) ' : '') + `[attr] ${referenceClass}`,
             detail: ` ${type}`,
           },
-          kindModifiers: deprecated ? "deprecated" : "",
+          kindModifiers: deprecated ? 'deprecated' : '',
         })
       )
       .concat(globalAttrs);
@@ -112,7 +92,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         name: name,
         insertText: `${name}></${name}>`,
         kind: ScriptElementKind.typeElement,
-        sortText: "custom-element",
+        sortText: 'custom-element',
         labelDetails: {
           description: path,
         },

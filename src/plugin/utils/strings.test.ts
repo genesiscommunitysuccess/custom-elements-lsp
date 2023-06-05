@@ -1,32 +1,21 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
-import { LineAndCharacter, TextSpan } from "typescript/lib/tsserverlibrary";
-import { html } from "../../jest/utils";
-import {
-  getWholeTextReplcaementSpan,
-  replaceTemplateStringBinding,
-} from "./strings";
+import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
+import { TemplateContext } from 'typescript-template-language-service-decorator';
+import { html } from '../../jest/utils';
+import { getWholeTextReplcaementSpan, replaceTemplateStringBinding } from './strings';
 
-describe("replaceTemplateStringBinding", () => {
+describe('replaceTemplateStringBinding', () => {
   const testCases: [string, [string], string][] = [
-    ["Empty string", [""], ""],
-    [
-      "Returns input string if it doesn't contain any template bindings",
-      ["test ${}"],
-      "test ${}",
-    ],
-    [
-      "Returns input string the template binding is empty",
-      ["test=${}"],
-      "test=${}",
-    ],
+    ['Empty string', [''], ''],
+    ["Returns input string if it doesn't contain any template bindings", ['test ${}'], 'test ${}'],
+    ['Returns input string the template binding is empty', ['test=${}'], 'test=${}'],
     [
       "Replaces template binding content with 'y' of the same length",
-      ["test=\"${_ => 'hello'}\""],
+      ['test="${_ => \'hello\'}"'],
       'test="${yyyyyyyyyyyy}"',
     ],
     [
-      "Replaces multiple template bindings",
-      ["test=\"${_ => 'hello'}\" test=\"${_ => 'hello'}\""],
+      'Replaces multiple template bindings',
+      ['test="${_ => \'hello\'}" test="${_ => \'hello\'}"'],
       'test="${yyyyyyyyyyyy}" test="${yyyyyyyyyyyy}"',
     ],
   ];
@@ -38,57 +27,90 @@ describe("replaceTemplateStringBinding", () => {
   }
 });
 
-describe("getWholeTextReplcaementSpan", () => {
+describe('getWholeTextReplcaementSpan', () => {
   const testCases: [string, [LineAndCharacter, TemplateContext], TextSpan][] = [
     [
-      "Returns the span of a string with the cursor in it",
-      [{ line: 0, character: 4 }, html` test`],
-      { start: 1, length: 3 },
+      'Returns the span of a string with the cursor in it',
+      [
+        { line: 1, character: 13 },
+        html`
+          test
+        `,
+      ],
+      { start: 11, length: 3 },
     ],
     [
-      "Returns the span of a string that contains a symbol character @",
-      [{ line: 0, character: 5 }, html` @test`],
-      { start: 1, length: 4 },
+      'Returns the span of a string that contains a symbol character @',
+      [
+        { line: 1, character: 14 },
+        html`
+          @test
+        `,
+      ],
+      { start: 11, length: 4 },
     ],
     [
-      "Returns the span of a string that contains a symbol character ?",
-      [{ line: 0, character: 2 }, html` ?test`],
-      { start: 1, length: 1 },
+      'Returns the span of a string that contains a symbol character ?',
+      [
+        { line: 1, character: 11 },
+        html`
+          ?test
+        `,
+      ],
+      { start: 11, length: 1 },
     ],
     [
-      "Returns the span of a string that contains a symbol character :",
-      [{ line: 0, character: 5 }, html` :test`],
-      { start: 1, length: 4 },
+      'Returns the span of a string that contains a symbol character :',
+      [
+        { line: 1, character: 14 },
+        html`
+          :test
+        `,
+      ],
+      { start: 11, length: 4 },
     ],
     [
-      "Returns the span of a string accounting for a white space boundary",
-      [{ line: 0, character: 8 }, html` test again`],
-      { start: 6, length: 2 },
+      'Returns the span of a string accounting for a white space boundary',
+      [
+        { line: 1, character: 17 },
+        html`
+          test again
+        `,
+      ],
+      { start: 16, length: 2 },
     ],
     [
-      "Returns the starting at index 0 if there is no white space preceding the cursor",
-      [{ line: 0, character: 8 }, html`testagain`],
+      'Returns the starting at index 0 if there is no white space preceding the cursor',
+      [
+        { line: 0, character: 8 },
+        // eslint-disable-next-line
+        html`testagain`,
+      ],
       { start: 0, length: 8 },
     ],
   ];
 
   for (const [name, [position, context], expected] of testCases) {
-    it("Happy path: " + name, () => {
+    it('Happy path: ' + name, () => {
       expect(getWholeTextReplcaementSpan(position, context)).toEqual(expected);
     });
   }
 
-  const unhappyCases: [string, [LineAndCharacter, TemplateContext], string][] =
+  const unhappyCases: [string, [LineAndCharacter, TemplateContext], string][] = [
     [
+      "Index out of bounds if position isn't in context",
       [
-        "Index out of bounds if position isn't in context",
-        [{ line: 0, character: 500 }, html` test`],
-        "Span out of bounds in context.text",
+        { line: 0, character: 500 },
+        html`
+          test
+        `,
       ],
-    ];
+      'Span out of bounds in context.text',
+    ],
+  ];
 
   for (const [name, [position, context], expected] of unhappyCases) {
-    it("Unhappy path: " + name, () => {
+    it('Unhappy path: ' + name, () => {
       let e;
       try {
         const res = getWholeTextReplcaementSpan(position, context);

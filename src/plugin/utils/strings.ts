@@ -1,5 +1,5 @@
-import { TemplateContext } from "typescript-template-language-service-decorator";
-import { LineAndCharacter, TextSpan } from "typescript/lib/tsserverlibrary";
+import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
+import { TemplateContext } from 'typescript-template-language-service-decorator';
 
 /**
  * Replace the content of a attribute binding in a template string interpolation region with `y`.
@@ -14,7 +14,7 @@ import { LineAndCharacter, TextSpan } from "typescript/lib/tsserverlibrary";
  */
 export function replaceTemplateStringBinding(line: string): string {
   return line.replace(/="\${(.+?)}"/g, (...args) => {
-    return '="${' + "y".repeat(args[1].length) + '}"';
+    return '="${' + 'y'.repeat(args[1].length) + '}"';
   });
 }
 
@@ -29,12 +29,9 @@ export function getWholeTextReplcaementSpan(
   context: TemplateContext
 ): TextSpan {
   const replacementSpan = { start: context.toOffset(position), length: 0 };
-  while (context.text[replacementSpan.start] !== " ") {
-    if (
-      replacementSpan.start >= context.text.length ||
-      replacementSpan.start < 0
-    ) {
-      throw new Error("Span out of bounds in context.text");
+  while (context.text[replacementSpan.start] !== ' ') {
+    if (replacementSpan.start >= context.text.length || replacementSpan.start < 0) {
+      throw new Error('Span out of bounds in context.text');
     }
     if (replacementSpan.start === 0) {
       return replacementSpan;

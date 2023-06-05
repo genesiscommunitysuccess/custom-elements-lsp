@@ -1,4 +1,4 @@
-import { CompilerHost } from "typescript/lib/tsserverlibrary";
+import { CompilerHost } from 'typescript/lib/tsserverlibrary';
 
 export interface IO {
   readFile(path: string): string | undefined;
@@ -10,26 +10,19 @@ export interface IO {
  * const dir = ts.createCompilerHost({}).getCurrentDirectory();
  */
 export class TypescriptCompilerIOService implements IO {
-  constructor(
-    private compilerHost: CompilerHost,
-    private projectRootOffset: string
-  ) {
+  constructor(private compilerHost: CompilerHost, private projectRootOffset: string) {
     console.log(
       `[CE] offset: ${
         this.projectRootOffset
       }, dir: ${compilerHost.getCurrentDirectory()}, $HOME: ${compilerHost.getEnvironmentVariable?.(
-        "HOME"
+        'HOME'
       )}, default lib location: ${compilerHost.getDefaultLibLocation?.()}`
     );
   }
 
   readFile(path: string): string | undefined {
     return this.compilerHost.readFile(
-      this.compilerHost.getDefaultLibLocation?.() +
-        "/" +
-        this.projectRootOffset +
-        "/" +
-        path
+      this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/' + path
     );
   }
 }
