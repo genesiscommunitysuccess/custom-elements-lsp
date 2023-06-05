@@ -34,7 +34,7 @@ describe('getPositionOfNthTagEnd', () => {
         'c-e',
         1,
       ],
-      4,
+      15,
     ],
     [
       'the end of the first occurrence if requested',
@@ -46,7 +46,7 @@ describe('getPositionOfNthTagEnd', () => {
         'c-e',
         1,
       ],
-      4,
+      15,
     ],
     [
       'the end of the second occurrence if requested',
@@ -58,7 +58,7 @@ describe('getPositionOfNthTagEnd', () => {
         'c-e',
         2,
       ],
-      15,
+      37,
     ],
     [
       'the end of the third occurrence if requested',
@@ -71,7 +71,7 @@ describe('getPositionOfNthTagEnd', () => {
         'c-e',
         3,
       ],
-      26,
+      59,
     ],
     [
       'the end of an occurrence in the middle',
@@ -84,7 +84,7 @@ describe('getPositionOfNthTagEnd', () => {
         'c-e',
         2,
       ],
-      15,
+      37,
     ],
   ];
 
@@ -144,7 +144,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 32,
+        start: 43,
       },
       {
         category: 0,
@@ -152,7 +152,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 7,
         messageText: 'Unknown custom element: test-ce',
-        start: 66,
+        start: 79,
       },
     ]);
   });
@@ -176,7 +176,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
-        start: 32,
+        start: 43,
       },
       {
         category: 0,
@@ -184,7 +184,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 82,
+        start: 95,
       },
     ]);
   });
@@ -208,7 +208,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 23,
+        start: 43,
       },
       {
         category: 0,
@@ -216,7 +216,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 48,
+        start: 79,
       },
     ]);
   });
@@ -241,7 +241,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 32,
+        start: 43,
       },
       {
         category: 0,
@@ -249,7 +249,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 57,
+        start: 79,
       },
       {
         category: 0,
@@ -257,7 +257,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
-        start: 91,
+        start: 115,
       },
     ]);
   });
@@ -293,7 +293,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 5,
         messageText: 'Unknown custom element: no-at',
-        start: 94,
+        start: 107,
       },
     ]);
   });
@@ -312,7 +312,7 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 5,
         messageText: 'Unknown custom element: no-at',
-        start: 11,
+        start: 18,
       },
     ]);
   });
@@ -385,7 +385,7 @@ describe('getInvalidCEAttribute', () => {
         file: 'test.ts',
         length: 11,
         messageText: 'Unknown attribute: invalidattr for custom element no-attr',
-        start: 68,
+        start: 79,
       },
       {
         category: 1,
@@ -393,7 +393,7 @@ describe('getInvalidCEAttribute', () => {
         file: 'test.ts',
         length: 11,
         messageText: 'Unknown attribute: alsoinvalid for custom element custom-element',
-        start: 160,
+        start: 149,
       },
     ]);
   });

@@ -32,60 +32,59 @@ describe('getWholeTextReplcaementSpan', () => {
     [
       'Returns the span of a string with the cursor in it',
       [
-        { line: 0, character: 4 },
+        { line: 1, character: 13 },
         html`
           test
         `,
       ],
-      { start: 1, length: 3 },
+      { start: 11, length: 3 },
     ],
     [
       'Returns the span of a string that contains a symbol character @',
       [
-        { line: 0, character: 5 },
+        { line: 1, character: 14 },
         html`
           @test
         `,
       ],
-      { start: 1, length: 4 },
+      { start: 11, length: 4 },
     ],
     [
       'Returns the span of a string that contains a symbol character ?',
       [
-        { line: 0, character: 2 },
+        { line: 1, character: 11 },
         html`
           ?test
         `,
       ],
-      { start: 1, length: 1 },
+      { start: 11, length: 1 },
     ],
     [
       'Returns the span of a string that contains a symbol character :',
       [
-        { line: 0, character: 5 },
+        { line: 1, character: 14 },
         html`
           :test
         `,
       ],
-      { start: 1, length: 4 },
+      { start: 11, length: 4 },
     ],
     [
       'Returns the span of a string accounting for a white space boundary',
       [
-        { line: 0, character: 8 },
+        { line: 1, character: 17 },
         html`
           test again
         `,
       ],
-      { start: 6, length: 2 },
+      { start: 16, length: 2 },
     ],
     [
       'Returns the starting at index 0 if there is no white space preceding the cursor',
       [
         { line: 0, character: 8 },
-        html`
-          testagain
-        `,
+        // eslint-disable-next-line
+        html`testagain`,
       ],
       { start: 0, length: 8 },
     ],

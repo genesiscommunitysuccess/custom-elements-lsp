@@ -72,7 +72,7 @@ describe('getCompletionType', () => {
         html`
           <
         `,
-        { line: 0, character: 1 },
+        { line: 1, character: 11 },
       ],
       { key: 'custom-element-name', params: undefined },
     ],
@@ -119,7 +119,7 @@ describe('getCompletionType', () => {
           <ce-elem></ce-elem>
           <cus-elem attr="value"></cus-elem>
         `,
-        { line: 0, character: 41 },
+        { line: 2, character: 32 },
       ],
       { key: 'custom-element-attribute', params: 'cus-elem' },
     ],

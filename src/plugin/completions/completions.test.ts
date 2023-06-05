@@ -101,8 +101,8 @@ describe('getCompletionsAtPosition', () => {
       <
     `;
     const position = {
-      line: 0,
-      character: 1,
+      line: 1,
+      character: 6,
     };
     const typeAndParam = getCompletionType(context, position);
 
@@ -261,8 +261,8 @@ describe('getCompletionsAtPosition', () => {
       <custom-element colour="red"></custom-element>
     `;
     const position = {
-      line: 0,
-      character: 28,
+      line: 1,
+      character: 34,
     };
     const typeAndParam = getCompletionType(context, position);
 
