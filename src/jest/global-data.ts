@@ -9,7 +9,11 @@ import { getLogger } from "./utils";
 export const getGDServiceFromStubbedResource = () => {
   const resource: GlobalDataRepository = {
     getAttributes() {
-      return ["data-*", "class"];
+      return [
+        ["data-*", "wildcard"],
+        ["class", "string"],
+        ["autofocus", "boolean"],
+      ];
     },
     getAriaAttributes() {
       return ["aria-label"];

@@ -32,6 +32,9 @@ export class Avatar extends FASTElement {
   /** Boolean attribute to disable the full info section entirely. */
   @attr({ mode: "boolean" }) fullInfoDisabled: boolean = false;
 
+  /** @deprecated */
+  @attr unused: string = "";
+
   avatarSelected() {
     this.$emit("avatar-selected", this);
   }

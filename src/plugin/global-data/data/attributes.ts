@@ -1,33 +1,37 @@
+import { GlobalAttrType } from "../global-data.types";
+
 // Misc
-export const ACCESSKEY = "accesskey";
-export const AUTOCAPITALIZE = "autocapitalize";
-export const AUTOFOCUS = "autofocus";
-export const CLASS = "class";
-export const CONTENTEDITABLE = "contenteditable";
-export const CONTEXTMENU = "contextmenu";
-export const DATA = "data-";
-export const DIR = "dir";
-export const DRAGGABLE = "draggable";
-export const ENTERKEYHINT = "enterkeyhint";
-export const EXPORTPARTS = "exportparts";
-export const HIDDEN = "hidden";
-export const ID = "id";
-export const INERT = "inert";
-export const INPUTMODE = "inputmode";
-export const IS = "is";
-export const ITEMID = "itemid";
-export const ITEMPROP = "itemprop";
-export const ITEMREF = "itemref";
-export const ITEMSCOPE = "itemscope";
-export const ITEMTYPE = "itemtype";
-export const LANG = "lang";
-export const NONCE = "nonce";
-export const PART = "part";
-export const POPOVER = "popover";
-export const SLOT = "slot";
-export const SPELLCHECK = "spellcheck";
-export const STYLE = "style";
-export const TABINDEX = "tabindex";
-export const TITLE = "title";
-export const TRANSLATE = "translate";
-export const VIRTUALKEYBOARDPOLICY = "virtualkeyboardpolicy";
+export const GLOBAL_ATTR: { [x in string]: GlobalAttrType } = {
+  accesskey: "string",
+  autocapitalize: "string",
+  autofocus: "boolean",
+  class: "string",
+  contenteditable: "string",
+  contextmenu: "string",
+  "data-*": "wildcard",
+  dir: "string",
+  draggable: "string",
+  enterkeyhint: "string",
+  exportparts: "string",
+  hidden: "string", // string to allow you to set hidden="until-found"
+  id: "string",
+  inert: "boolean",
+  inputmode: "string",
+  is: "string",
+  itemid: "string",
+  itemprop: "string",
+  itemref: "string",
+  itemscope: "string",
+  itemtype: "string",
+  lang: "string",
+  nonce: "string",
+  part: "string",
+  popover: "string",
+  slot: "string",
+  spellcheck: "string",
+  style: "string",
+  tabindex: "string",
+  title: "string",
+  translate: "string",
+  virtualkeyboardpolicy: "string",
+};

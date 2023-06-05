@@ -32,11 +32,10 @@ describe("convertFastEventAttributes", () => {
       name: "test-again",
       kind: ScriptElementKind.unknown,
       sortText: "",
-      kindModifiers: "hi",
     },
   ];
 
-  it("Doesn't change any non 'event-attribute' completions", () => {
+  it("Doesn't change any non label details detail event completions", () => {
     const entries: CompletionEntry[] = [...baseEntries];
     const replacementSpan: TextSpan = { start: 0, length: 2 };
 
@@ -48,40 +47,7 @@ describe("convertFastEventAttributes", () => {
     expect(res).toEqual(entries);
   });
 
-  it("Changes only 'event-attribute' completions to the FAST binding snippet", () => {
-    const entries: CompletionEntry[] = [
-      ...baseEntries,
-      {
-        name: "onclick",
-        kind: ScriptElementKind.unknown,
-        sortText: "",
-        kindModifiers: "event-attribute",
-      },
-    ];
-    const replacementSpan: TextSpan = { start: 0, length: 2 };
-
-    const service = getFASTCompletionsService();
-    const res = (service as any).convertFastEventAttributes(
-      entries,
-      replacementSpan
-    );
-    expect(res).toEqual([
-      ...baseEntries,
-      {
-        isSnippet: true,
-        kind: "",
-        kindModifiers: "event-attribute",
-        name: "@click",
-        replacementSpan: {
-          length: 2,
-          start: 0,
-        },
-        sortText: "",
-      },
-    ]);
-  });
-
-  it("Updates the insert text to a snippet if set as inserting empty quotes", () => {
+  it("Changes only label details detail events completions to the FAST binding snippet", () => {
     const entries: CompletionEntry[] = [
       ...baseEntries,
       {
@@ -89,7 +55,9 @@ describe("convertFastEventAttributes", () => {
         insertText: 'onclick=""',
         kind: ScriptElementKind.unknown,
         sortText: "",
-        kindModifiers: "event-attribute",
+        labelDetails: {
+          detail: " event",
+        },
       },
     ];
     const replacementSpan: TextSpan = { start: 0, length: 2 };
@@ -105,11 +73,52 @@ describe("convertFastEventAttributes", () => {
         insertText: '@click="${(x,c) => $1}"$0',
         isSnippet: true,
         kind: "",
-        kindModifiers: "event-attribute",
         name: "@click",
         replacementSpan: {
           length: 2,
           start: 0,
+        },
+        sortText: "",
+        labelDetails: {
+          detail: " event",
+        },
+      },
+    ]);
+  });
+
+  it("Updates the insert text to a snippet if set as inserting empty quotes", () => {
+    const entries: CompletionEntry[] = [
+      ...baseEntries,
+      {
+        name: "onclick",
+        insertText: 'onclick=""',
+        kind: ScriptElementKind.unknown,
+        sortText: "",
+        labelDetails: {
+          detail: " event",
+        },
+      },
+    ];
+    const replacementSpan: TextSpan = { start: 0, length: 2 };
+
+    const service = getFASTCompletionsService();
+    const res = (service as any).convertFastEventAttributes(
+      entries,
+      replacementSpan
+    );
+    expect(res).toEqual([
+      ...baseEntries,
+      {
+        insertText: '@click="${(x,c) => $1}"$0',
+        isSnippet: true,
+        kind: "",
+        name: "@click",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        labelDetails: {
+          detail: " event",
         },
         sortText: "",
       },
@@ -122,6 +131,7 @@ describe("addElementEventCompletions", () => {
     const service = getFASTCompletionsService();
     const replacementSpan: TextSpan = { start: 0, length: 2 };
     const res = (service as any).addElementEventCompletions(
+      [],
       replacementSpan,
       "no-attr"
     );
@@ -132,6 +142,7 @@ describe("addElementEventCompletions", () => {
     const service = getFASTCompletionsService();
     const replacementSpan: TextSpan = { start: 0, length: 2 };
     const res = (service as any).addElementEventCompletions(
+      [],
       replacementSpan,
       "custom-element"
     );
@@ -140,7 +151,6 @@ describe("addElementEventCompletions", () => {
         insertText: '@event="${(x, c) => $1}"$0',
         isSnippet: true,
         kind: "parameter",
-        kindModifiers: "custom-element-event",
         labelDetails: {
           description: "[attr] CustomElement",
         },
@@ -155,7 +165,166 @@ describe("addElementEventCompletions", () => {
         insertText: '@inherited="${(x, c) => $1}"$0',
         isSnippet: true,
         kind: "parameter",
-        kindModifiers: "custom-element-event",
+        labelDetails: {
+          description: "[attr] ParentElement",
+        },
+        name: "@inherited",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: "f",
+      },
+    ]);
+  });
+});
+
+describe("addDynamicBooleanBindings", () => {
+  const baseEntries: CompletionEntry[] = [
+    {
+      name: "test",
+      kind: ScriptElementKind.unknown,
+      sortText: "",
+    },
+  ];
+
+  it("Does not add any fast snippets if no existing completions are booleans", () => {
+    const service = getFASTCompletionsService();
+    const replacementSpan: TextSpan = { start: 0, length: 2 };
+    const res = (service as any).addDynamicBooleanBindings(
+      [...baseEntries],
+      replacementSpan
+    );
+    expect(res).toEqual(baseEntries);
+  });
+
+  it("Adds a fast syntax dynamic binding for a boolean entry", () => {
+    const service = getFASTCompletionsService();
+    const replacementSpan: TextSpan = { start: 0, length: 2 };
+    const booleanEntry: CompletionEntry = {
+      name: "boolean-attr",
+      kind: ScriptElementKind.unknown,
+      sortText: "",
+      labelDetails: {
+        detail: "boolean",
+      },
+    };
+
+    const res = (service as any).addDynamicBooleanBindings(
+      [...baseEntries, booleanEntry],
+      replacementSpan
+    );
+
+    expect(res).toEqual([
+      ...baseEntries,
+      booleanEntry,
+      {
+        insertText: '?boolean-attr="${(x) => $1}"$0',
+        isSnippet: true,
+        kind: "",
+        labelDetails: {
+          detail: " boolean binding",
+        },
+        name: "?boolean-attr",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: "",
+      },
+    ]);
+  });
+});
+
+describe("getUpdatedAttributeEntries", () => {
+  it("Returns the CompletionEntry with updated events to match fast and element events and boolean bindings added", () => {
+    const service = getFASTCompletionsService();
+
+    const position = { line: 0, character: 2 };
+    const context = html`<custom-elem hi=`;
+    const tagName = "custom-element";
+    const baseEntries: CompletionEntry[] = [
+      {
+        name: "onclick",
+        insertText: 'onclick=""',
+        kind: ScriptElementKind.unknown,
+        sortText: "",
+        labelDetails: {
+          detail: " event",
+        },
+      },
+      {
+        name: "boolean-attr",
+        kind: ScriptElementKind.unknown,
+        sortText: "",
+        labelDetails: {
+          detail: "boolean",
+        },
+      },
+    ];
+
+    const res = (service as any).getUpdatedAttributeEntries(
+      baseEntries,
+      position,
+      context,
+      tagName
+    );
+
+    expect(res).toEqual([
+      {
+        insertText: '@click="${(x,c) => $1}"$0',
+        isSnippet: true,
+        kind: "",
+        name: "@click",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        labelDetails: {
+          detail: " event",
+        },
+        sortText: "",
+      },
+      {
+        kind: "",
+        labelDetails: {
+          detail: "boolean",
+        },
+        name: "boolean-attr",
+        sortText: "",
+      },
+      {
+        insertText: '?boolean-attr="${(x) => $1}"$0',
+        isSnippet: true,
+        kind: "",
+        labelDetails: {
+          detail: " boolean binding",
+        },
+        name: "?boolean-attr",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: "",
+      },
+      {
+        insertText: '@event="${(x, c) => $1}"$0',
+        isSnippet: true,
+        kind: "parameter",
+        labelDetails: {
+          description: "[attr] CustomElement",
+        },
+        name: "@event",
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: "f",
+      },
+      {
+        insertText: '@inherited="${(x, c) => $1}"$0',
+        isSnippet: true,
+        kind: "parameter",
         labelDetails: {
           description: "[attr] ParentElement",
         },
@@ -186,80 +355,32 @@ describe("getCompletionsAtPosition", () => {
       typeAndParam: { key: "none", params: undefined },
     };
 
+    const spy = jest.spyOn(service as any, "getUpdatedAttributeEntries");
+
     const res = service.getCompletionsAtPosition(baseCompletionInfo, ctx);
     expect(res).toEqual(baseCompletionInfo);
+    expect(spy).toHaveBeenCalledTimes(0);
   });
 
-  it("Returns the CompletionInfo with updated events to match fast and element events added", () => {
+  it("Alters the entries via getUpdatedAttributeEntries if the completion context is attribute", () => {
     const service = getFASTCompletionsService();
     const ctx: CompletionCtx = {
-      position: { line: 0, character: 2 },
-      context: html`<custom-elem hi=`,
+      position: { line: 0, character: 0 },
+      context: html``,
       typeAndParam: {
         key: "custom-element-attribute",
         params: "custom-element",
       },
     };
-    const completionInfo: CompletionInfo = {
-      ...baseCompletionInfo,
-      entries: [
-        {
-          name: "onclick",
-          insertText: 'onclick=""',
-          kind: ScriptElementKind.unknown,
-          sortText: "",
-          kindModifiers: "event-attribute",
-        },
-      ],
-    };
 
-    const res = service.getCompletionsAtPosition(completionInfo, ctx);
+    const spy = jest.spyOn(service as any, "getUpdatedAttributeEntries");
+    spy.mockReturnValue(["test"]);
+
+    const res = service.getCompletionsAtPosition(baseCompletionInfo, ctx);
     expect(res).toEqual({
       ...baseCompletionInfo,
-      entries: [
-        {
-          insertText: '@click="${(x,c) => $1}"$0',
-          isSnippet: true,
-          kind: "",
-          kindModifiers: "event-attribute",
-          name: "@click",
-          replacementSpan: {
-            length: 2,
-            start: 0,
-          },
-          sortText: "",
-        },
-        {
-          insertText: '@event="${(x, c) => $1}"$0',
-          isSnippet: true,
-          kind: "parameter",
-          kindModifiers: "custom-element-event",
-          labelDetails: {
-            description: "[attr] CustomElement",
-          },
-          name: "@event",
-          replacementSpan: {
-            length: 2,
-            start: 0,
-          },
-          sortText: "f",
-        },
-        {
-          insertText: '@inherited="${(x, c) => $1}"$0',
-          isSnippet: true,
-          kind: "parameter",
-          kindModifiers: "custom-element-event",
-          labelDetails: {
-            description: "[attr] ParentElement",
-          },
-          name: "@inherited",
-          replacementSpan: {
-            length: 2,
-            start: 0,
-          },
-          sortText: "f",
-        },
-      ],
+      entries: ["test"],
     });
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });

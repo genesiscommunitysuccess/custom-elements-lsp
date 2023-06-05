@@ -39,13 +39,11 @@ export class FASTCompletionsService implements PartialCompletionsService {
 
     switch (key) {
       case "custom-element-attribute":
-        const replacementSpan = getWholeTextReplcaementSpan(position, context);
-        entries = this.convertFastEventAttributes(
-          completions.entries,
-          replacementSpan
-        );
-        entries = entries.concat(
-          this.addElementEventCompletions(replacementSpan, params)
+        entries = this.getUpdatedAttributeEntries(
+          entries,
+          position,
+          context,
+          params
         );
         this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;
@@ -57,24 +55,74 @@ export class FASTCompletionsService implements PartialCompletionsService {
     };
   }
 
+  private getUpdatedAttributeEntries(
+    completions: CompletionEntry[],
+    position: LineAndCharacter,
+    context: TemplateContext,
+    tagName: string
+  ): CompletionEntry[] {
+    const replacementSpan = getWholeTextReplcaementSpan(position, context);
+    const withConvertedEvents = this.convertFastEventAttributes(
+      completions,
+      replacementSpan
+    );
+    const withBooleanBindings = this.addDynamicBooleanBindings(
+      withConvertedEvents,
+      replacementSpan
+    );
+    const withElementsEvents = this.addElementEventCompletions(
+      withBooleanBindings,
+      replacementSpan,
+      tagName
+    );
+    return withElementsEvents;
+  }
+
   private addElementEventCompletions(
+    completions: CompletionEntry[],
     replacementSpan: TextSpan,
     tagName: string
   ): CompletionEntry[] {
-    return this.services.customElements
-      .getCEEvents(tagName)
-      .map(({ name, referenceClass }) => ({
-        name: `@${name}`,
-        insertText: `@${name}="\${(x, c) => $1}"$0`,
-        kind: ScriptElementKind.parameterElement,
-        kindModifiers: "custom-element-event",
-        sortText: "f",
-        labelDetails: {
-          description: `[attr] ${referenceClass}`,
-        },
-        isSnippet: true,
-        replacementSpan,
-      }));
+    return completions.concat(
+      this.services.customElements
+        .getCEEvents(tagName)
+        .map(({ name, referenceClass }) => ({
+          name: `@${name}`,
+          insertText: `@${name}="\${(x, c) => $1}"$0`,
+          kind: ScriptElementKind.parameterElement,
+          sortText: "f",
+          labelDetails: {
+            description: `[attr] ${referenceClass}`,
+          },
+          isSnippet: true,
+          replacementSpan,
+        }))
+    );
+  }
+
+  private addDynamicBooleanBindings(
+    completions: CompletionEntry[],
+    replacementSpan: TextSpan
+  ): CompletionEntry[] {
+    return completions
+      .map((completion) => {
+        const completionInArr = [completion];
+        if (completion?.labelDetails?.detail?.includes("boolean")) {
+          completionInArr.push({
+            ...completion,
+            name: `?${completion.name}`,
+            insertText: `?${completion.name}="\${(x) => $1}"$0`,
+            isSnippet: true,
+            replacementSpan,
+            labelDetails: {
+              ...completion.labelDetails,
+              detail: " boolean binding",
+            },
+          });
+        }
+        return completionInArr;
+      })
+      .flat();
   }
 
   private convertFastEventAttributes(
@@ -82,7 +130,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     replacementSpan: TextSpan
   ): CompletionEntry[] {
     return completions.map((completion) => {
-      if (completion.kindModifiers === "event-attribute") {
+      if (completion?.labelDetails?.detail?.includes('event')) {
         return {
           ...completion,
           name: completion.name.replace("on", "@"),
