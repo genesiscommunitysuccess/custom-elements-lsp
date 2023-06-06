@@ -1,5 +1,5 @@
 import { customElement, FASTElement, html, observable } from '@microsoft/fast-element';
-import { Avatar } from './components/avatar/avatar';
+import { attrSrc, Avatar, propertySrc } from './components/avatar/avatar';
 
 const rootTemplate = html`
   <template @avatar-selected=${(x, c) => x.avatarSelected(c.event)}>
@@ -11,7 +11,10 @@ const rootTemplate = html`
       <h1 slot="title">Matt</h1>
     </person-avatar>
 
-    <person-avatar fullInfoDisabled></person-avatar>
+    <person-avatar
+      :avatarSrc="${(x) => propertySrc}"
+      avatar-src="${(x) => attrSrc}"
+    ></person-avatar>
 
     <person-avatar ?fullInfoDisabled="${(_) => true}" invalidAttr>
       <h1 slot="title">Full info disabled</h1>
