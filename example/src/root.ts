@@ -16,6 +16,8 @@ const rootTemplate = html`
       avatar-src="${(x) => attrSrc}"
     ></person-avatar>
 
+    <priority-selector></priority-selector>
+
     <person-avatar ?fullInfoDisabled="${(_) => true}" invalidAttr>
       <h1 slot="title">Full info disabled</h1>
     </person-avatar>

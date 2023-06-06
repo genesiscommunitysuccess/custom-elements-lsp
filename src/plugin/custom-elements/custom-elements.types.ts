@@ -1,4 +1,4 @@
-import { CustomElementDeclaration } from 'custom-elements-manifest';
+import { CustomElementDeclaration, Privacy } from 'custom-elements-manifest';
 
 // RAW DATA
 export interface CustomElementsResource {
@@ -16,6 +16,7 @@ export interface CustomElementsService {
   getCEAttributes(name: string): CustomElementAttribute[];
   getCEEvents(name: string): CustomElementEvent[];
   getCEInfo(config: GetCEInfo): CEInfo[];
+  getCEMembers(name: string): CustomElementMember[];
   getCENames(): string[];
 }
 
@@ -39,4 +40,9 @@ export type CustomElementEvent = {
   name: string;
   type: string;
   referenceClass?: string;
+};
+
+export type CustomElementMember = CustomElementAttribute & {
+  isStatic?: boolean;
+  privacy?: Privacy;
 };
