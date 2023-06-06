@@ -125,7 +125,7 @@ describe('addElementEventCompletions', () => {
     expect(res.length).toBe(0);
   });
 
-  it("Doesn't return any completions if the custom element doesn't have any events", () => {
+  it('Returns any events concatenated onto the input array with the input replacementSpan', () => {
     const service = getFASTCompletionsService();
     const replacementSpan: TextSpan = { start: 0, length: 2 };
     const res = (service as any).addElementEventCompletions([], replacementSpan, 'custom-element');
@@ -157,6 +157,39 @@ describe('addElementEventCompletions', () => {
           start: 0,
         },
         sortText: 'f',
+      },
+    ]);
+  });
+});
+
+describe('addElementMembers', () => {
+  it("Doesn't return any completions if the custom element doesn't have any members", () => {
+    const service = getFASTCompletionsService();
+    const replacementSpan: TextSpan = { start: 0, length: 2 };
+    const res = (service as any).addElementMembers([], replacementSpan, 'no-attr');
+    expect(res.length).toBe(0);
+  });
+
+  it('Returns any properties concatenated onto the input array with the input replacement span, and the correct modifiers', () => {
+    const service = getFASTCompletionsService();
+    const replacementSpan: TextSpan = { start: 0, length: 2 };
+    const res = (service as any).addElementMembers([], replacementSpan, 'custom-element');
+    expect(res).toEqual([
+      {
+        insertText: ':member="${(x) => $1}"$0',
+        isSnippet: true,
+        kind: 'parameter',
+        kindModifiers: 'public,static,deprecated',
+        labelDetails: {
+          description: '(deprecated) [prop] ParentElement',
+          detail: ' string',
+        },
+        name: ':member',
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: 'c',
       },
     ]);
   });
@@ -314,6 +347,22 @@ describe('getUpdatedAttributeEntries', () => {
           start: 0,
         },
         sortText: 'f',
+      },
+      {
+        insertText: ':member="${(x) => $1}"$0',
+        isSnippet: true,
+        kind: 'parameter',
+        kindModifiers: 'public,static,deprecated',
+        labelDetails: {
+          description: '(deprecated) [prop] ParentElement',
+          detail: ' string',
+        },
+        name: ':member',
+        replacementSpan: {
+          length: 2,
+          start: 0,
+        },
+        sortText: 'c',
       },
     ]);
   });
