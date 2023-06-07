@@ -1,7 +1,7 @@
 import { CompletionEntry, CompletionInfo, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';
 import { getStore } from '../utils/kvstore';
-import { Services } from '../utils/services.type';
+import { Services } from '../utils/services.types';
 import {
   CompletionCtx,
   CompletionsService,

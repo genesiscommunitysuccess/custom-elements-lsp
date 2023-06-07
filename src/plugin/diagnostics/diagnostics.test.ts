@@ -3,103 +3,25 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { DiagnosticsService } from './diagnostics';
+import { CoreDiagnosticsServiceImpl } from './diagnostics';
 
 const getDiagnosticsService = (ce: CustomElementsService) =>
-  new DiagnosticsService(getLogger(), buildServices({ customElements: ce }));
+  new CoreDiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
-describe('getPositionOfNthTagEnd', () => {
-  const tests: [string, [TemplateContext, string, number], any][] = [
-    ['-2 for an invalid occurrence', [html``, 'a', 0], -2],
-    ['-1 for empty string', [html``, 'a', 1], -1],
-    [
-      '-1 if the occurrence is too high',
-      [
-        html`
-          <c-e></c-e>
-        `,
-        'c-e',
-        2,
-      ],
-      -1,
-    ],
-    [
-      'the end of the first and only occurrence',
-      [
-        html`
-          <c-e></c-e>
-        `,
-        'c-e',
-        1,
-      ],
-      15,
-    ],
-    [
-      'the end of the first occurrence if requested',
-      [
-        html`
-          <c-e></c-e>
-          <c-e></c-e>
-        `,
-        'c-e',
-        1,
-      ],
-      15,
-    ],
-    [
-      'the end of the second occurrence if requested',
-      [
-        html`
-          <c-e></c-e>
-          <c-e></c-e>
-        `,
-        'c-e',
-        2,
-      ],
-      37,
-    ],
-    [
-      'the end of the third occurrence if requested',
-      [
-        html`
-          <c-e></c-e>
-          <c-e></c-e>
-          <c-e></c-e>
-        `,
-        'c-e',
-        3,
-      ],
-      59,
-    ],
-    [
-      'the end of an occurrence in the middle',
-      [
-        html`
-          <c-e></c-e>
-          <c-e></c-e>
-          <c-e></c-e>
-        `,
-        'c-e',
-        2,
-      ],
-      37,
-    ],
-  ];
-
-  for (const [name, [context, tagName, occurrence], expected] of tests) {
+describe('getDiagnosticsService', () => {
+  it('collates diagnostic info from methods in the class', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    it(name, () => {
-      // Need to use `as any` because the function is private.
-      const result = (service as any).getPositionOfNthTagEnd({
-        context,
-        tagName,
-        occurrence,
-      });
-      expect(result).toEqual(expected);
-    });
-  }
+    const context = html``;
+    const root = parse(context.text);
+    const unknownTagSpy = jest.spyOn(service as any, 'getUnknownCETag');
+    const unknownCEAttributeSpy = jest.spyOn(service as any, 'getInvalidCEAttribute');
+    const result = service.getSemanticDiagnostics({ context, diagnostics: [], root });
+    expect(result.length).toEqual(0);
+    expect(unknownTagSpy).toHaveBeenCalledTimes(1);
+    expect(unknownCEAttributeSpy).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('getUnknownCETag', () => {
@@ -107,7 +29,7 @@ describe('getUnknownCETag', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -121,7 +43,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -136,7 +58,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -168,7 +90,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -200,7 +122,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -233,7 +155,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -271,7 +193,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -285,7 +207,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -304,7 +226,7 @@ describe('getUnknownCETag', () => {
       <template><no-at test-attr="test"></no-at></template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -323,7 +245,7 @@ describe('getInvalidCEAttribute', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -337,7 +259,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -349,7 +271,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -363,7 +285,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -377,7 +299,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -409,7 +331,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -423,7 +345,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 });

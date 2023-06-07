@@ -1,7 +1,7 @@
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { GlobalDataRepositoryImpl } from '../plugin/global-data/repository';
 import { GlobalDataServiceImpl } from '../plugin/global-data/service';
-import { Services } from '../plugin/utils/services.type';
+import { Services } from '../plugin/utils/services.types';
 import { getCEServiceFromTestJsonResource } from './custom-elements';
 
 const constructLogger = (debugLog: boolean = false): Logger => ({

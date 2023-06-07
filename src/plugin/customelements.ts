@@ -1,43 +1,48 @@
 import parse from 'node-html-parser';
-import { CompletionInfo, LineAndCharacter } from 'typescript';
-import { Diagnostic } from 'typescript/lib/tsserverlibrary';
+import { CompletionInfo, Diagnostic, LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
-import { DiagnosticsService } from './diagnostics';
+import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { LanguageServiceLogger } from './utils';
 
+/**
+ * Handles calls from the TypeScript language server and delegates them to
+ * arrays of services assigned during initialization.
+ *
+ * @remarks For every method this class implements from TemplateLanguageService
+ * it will be called from the LSP at the appropriate time and pass back required
+ * information that the LSP client then can use to interact with the user.
+ *
+ * We decouple logic for different custom element dialects such as Microsoft FAST
+ * into their own classes, this class will run the API calls through all of the
+ * passed classes as a pipeline where appropriate.
+ */
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private diagnostics: DiagnosticsService,
+    private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[]
   ) {
     logger.log('Setting up customelements class');
   }
 
-  getSyntacticDiagnostics(context: TemplateContext): Diagnostic[] {
+  getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
+    this.logger.log(`getSyntacticDiagnostics: ${sourceFile.fileName}`);
 
     const diagnostics: Diagnostic[] = [];
-
-    this.logger.log(`getSyntacticDiagnostics: ${sourceFile.fileName}`);
     const root = parse(context.text);
-    this.logger.log(`getCompletionsAtPosition: root: ${root.toString()}`);
 
-    const elementList = root.querySelectorAll('*');
-
-    this.diagnostics
-      .getUnknownCETag(context, elementList)
-      .forEach((diag) => diagnostics.push(diag));
-
-    this.diagnostics
-      .getInvalidCEAttribute(context, elementList)
-      .forEach((diag) => diagnostics.push(diag));
-
-    return diagnostics;
+    return this.diagnostics.reduce(
+      (acum: Diagnostic[], service) =>
+        service.getSemanticDiagnostics
+          ? service.getSemanticDiagnostics({ context, diagnostics: acum, root })
+          : acum,
+      diagnostics
+    );
   }
 
   getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {
