@@ -2,9 +2,9 @@ import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { Services } from '../utils/services.types';
-import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
+import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
 
-export class DiagnosticsServiceImpl implements PartialDiagnosticsService {
+export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
     logger.log('Setting up Diagnostics');
   }

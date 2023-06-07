@@ -6,13 +6,13 @@ import {
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
-import { DiagnosticsServiceImpl } from './diagnostics';
+import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { LanguageServiceLogger } from './utils';
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private diagnostics: DiagnosticsServiceImpl,
+    private diagnostics: CoreDiagnosticsServiceImpl,
     private completions: PartialCompletionsService[]
   ) {
     logger.log('Setting up customelements class');

@@ -3,10 +3,10 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { DiagnosticsServiceImpl } from './diagnostics';
+import { CoreDiagnosticsServiceImpl } from './diagnostics';
 
 const getDiagnosticsService = (ce: CustomElementsService) =>
-  new DiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
+  new CoreDiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
