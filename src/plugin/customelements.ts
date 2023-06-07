@@ -18,7 +18,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     logger.log('Setting up customelements class');
   }
 
-  getSyntacticDiagnostics(context: TemplateContext): Diagnostic[] {
+  getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
 
     const diagnostics: Diagnostic[] = [];
