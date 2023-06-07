@@ -1,8 +1,10 @@
+import { ClassField } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
 import {
   CEInfo,
   CustomElementAttribute,
   CustomElementEvent,
+  CustomElementMember,
   CustomElementsResource,
   CustomElementsService,
   GetCEInfo,
@@ -12,7 +14,23 @@ const PARSE_PATH_REGEXP = /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/)
 
 export class CustomElementsServiceImpl implements CustomElementsService {
   constructor(private logger: Logger, private ceData: CustomElementsResource) {
-    logger.log('Setting up CustomElementsServiceImpl');
+    this.logger.log('Setting up CustomElementsServiceImpl');
+  }
+
+  getCEMembers(name: string): CustomElementMember[] {
+    const definition = this.ceData.data.get(name);
+    if (!definition || !definition.members) return [];
+
+    const classFields = definition.members.filter((m) => m.kind === 'field') as ClassField[];
+
+    return classFields.map((f) => ({
+      name: f.name,
+      type: f.type?.text ?? 'any',
+      referenceClass: f.inheritedFrom?.name ?? definition.name,
+      deprecated: f.deprecated !== undefined,
+      isStatic: f.static,
+      privacy: f.privacy,
+    }));
   }
 
   getCEAttributes(name: string): CustomElementAttribute[] {

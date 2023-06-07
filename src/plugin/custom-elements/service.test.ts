@@ -209,3 +209,32 @@ describe('getCEEvents', () => {
     ]);
   });
 });
+
+describe('getCEMembers', () => {
+  it('Returns nothing for a unknown element', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEMembers('not-found');
+    expect(res).toEqual([]);
+  });
+
+  it('Returns nothing for a element with no members', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEMembers('no-attr');
+    expect(res).toEqual([]);
+  });
+
+  it('Returns its field members (skipping methods) with correct reference class and other modifiers', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEMembers('custom-element');
+    expect(res).toEqual([
+      {
+        deprecated: true,
+        isStatic: true,
+        name: 'member',
+        privacy: 'public',
+        referenceClass: 'ParentElement',
+        type: 'string',
+      },
+    ]);
+  });
+});

@@ -42,6 +42,20 @@ export const getCEServiceFromStubbedResource = () => {
         },
       },
     ],
+    members: [
+      { kind: 'method', name: 'method' },
+      {
+        kind: 'field',
+        name: 'member',
+        inheritedFrom: {
+          name: 'ParentElement',
+        },
+        type: { text: 'string' },
+        static: true,
+        privacy: 'public',
+        deprecated: 'reason',
+      },
+    ],
   });
 
   resource.data.set('no-attr', {

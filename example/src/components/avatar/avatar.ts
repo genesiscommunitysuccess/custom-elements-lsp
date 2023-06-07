@@ -5,6 +5,12 @@ import { avatarTemplate } from './avatar.template';
 const defaultAvatarSrc =
   'https://avataaars.io/?avatarStyle=Circle&topType=LongHairStraight&accessoriesType=Blank&hairColor=BrownDark&facialHairType=Blank&clotheType=BlazerShirt&eyeType=Default&eyebrowType=Default&mouthType=Default&skinColor=Light';
 
+export const attrSrc =
+  'https://avataaars.io/?avatarStyle=Circle&topType=LongHairNotTooLong&accessoriesType=Blank&hairColor=PastelPink&facialHairType=BeardMedium&facialHairColor=BrownDark&clotheType=BlazerShirt&eyeType=Dizzy&eyebrowType=Default&mouthType=Default&skinColor=Light';
+
+export const propertySrc =
+  'https://avataaars.io/?avatarStyle=Circle&topType=NoHair&accessoriesType=Prescription01&facialHairType=BeardLight&facialHairColor=Platinum&clotheType=BlazerShirt&eyeType=Hearts&eyebrowType=RaisedExcitedNatural&mouthType=Default&skinColor=Light';
+
 /**
  * Avatar class to display information about a person.
  * @remarks

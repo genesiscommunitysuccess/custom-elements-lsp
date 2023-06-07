@@ -64,7 +64,32 @@ export class FASTCompletionsService implements PartialCompletionsService {
       replacementSpan,
       tagName
     );
-    return withElementsEvents;
+    const withElementMembers = this.addElementMembers(withElementsEvents, replacementSpan, tagName);
+    return withElementMembers;
+  }
+
+  private addElementMembers(
+    completions: CompletionEntry[],
+    replacementSpan: TextSpan,
+    tagName: string
+  ): CompletionEntry[] {
+    return completions.concat(
+      this.services.customElements
+        .getCEMembers(tagName)
+        .map(({ name, referenceClass, deprecated, type, privacy, isStatic }) => ({
+          name: `:${name}`,
+          insertText: `:${name}="\${(x) => $1}"$0`,
+          kind: ScriptElementKind.parameterElement,
+          sortText: 'c',
+          labelDetails: {
+            description: (deprecated ? '(deprecated) ' : '') + `[prop] ${referenceClass}`,
+            detail: ` ${type}`,
+          },
+          isSnippet: true,
+          replacementSpan,
+          kindModifiers: privacy + (isStatic ? ',static' : '') + (deprecated ? ',deprecated' : ''),
+        }))
+    );
   }
 
   private addElementEventCompletions(
