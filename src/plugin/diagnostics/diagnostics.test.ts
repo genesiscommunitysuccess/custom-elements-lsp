@@ -10,6 +10,20 @@ const getDiagnosticsService = (ce: CustomElementsService) =>
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
+describe('getDiagnosticsService', () => {
+  it('collates diagnostic info from methods in the class', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html``;
+    const root = parse(context.text);
+    const unknownTagSpy = jest.spyOn(service as any, 'getUnknownCETag');
+    const unknownCEAttributeSpy = jest.spyOn(service as any, 'getInvalidCEAttribute');
+    const result = service.getSemanticDiagnostics({ context, diagnostics: [], root });
+    expect(result.length).toEqual(0);
+    expect(unknownTagSpy).toHaveBeenCalledTimes(1);
+    expect(unknownCEAttributeSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
 describe('getUnknownCETag', () => {
   it('No diagnostics for an empty template', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
