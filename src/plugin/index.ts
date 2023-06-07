@@ -9,9 +9,11 @@ import { CustomElementsServiceImpl } from './custom-elements/service';
 import { CustomElementsLanguageService } from './customelements';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
+import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { LanguageServiceLogger, TypescriptCompilerIOService } from './utils';
 import { Services } from './utils/services.types';
+import { FASTDiagnosticsService } from './diagnostics/fast';
 
 const USE_BYPASS = false;
 
@@ -72,20 +74,21 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreCompletionsServiceImpl(logger, services),
     ];
 
+    const diagnostics: PartialDiagnosticsService[] = [
+      new CoreDiagnosticsServiceImpl(logger, services),
+    ];
+
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
       completions.push(new FASTCompletionsService(logger, services));
+      diagnostics.push(new FASTDiagnosticsService(logger, services));
     }
 
     return decorateWithTemplateLanguageService(
       ts,
       info.languageService,
       info.project,
-      new CustomElementsLanguageService(
-        logger,
-        new CoreDiagnosticsServiceImpl(logger, services),
-        completions
-      ),
+      new CustomElementsLanguageService(logger, diagnostics, completions),
       {
         tags: ['html'], // Could add for css too
         enableForStringWithSubstitutions: true,

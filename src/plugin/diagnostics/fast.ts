@@ -16,7 +16,7 @@ import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
  */
 export class FASTDiagnosticsService implements PartialDiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
-    this.logger.log('Setting up FAST Enhancement Completions Service');
+    this.logger.log('Setting up FAST Enhancement Diagnostics Service');
   }
 
   getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {

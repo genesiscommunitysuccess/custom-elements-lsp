@@ -6,13 +6,13 @@ import {
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
-import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { LanguageServiceLogger } from './utils';
+import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private diagnostics: CoreDiagnosticsServiceImpl,
+    private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[]
   ) {
     logger.log('Setting up customelements class');
@@ -25,11 +25,13 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     const diagnostics: Diagnostic[] = [];
     const root = parse(context.text);
 
-    return this.diagnostics.getSemanticDiagnostics({
-      diagnostics,
-      root,
-      context,
-    });
+    return this.diagnostics.reduce(
+      (acum: Diagnostic[], service) =>
+        service.getSemanticDiagnostics
+          ? service.getSemanticDiagnostics({ context, diagnostics: acum, root })
+          : acum,
+      diagnostics
+    );
   }
 
   getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {
