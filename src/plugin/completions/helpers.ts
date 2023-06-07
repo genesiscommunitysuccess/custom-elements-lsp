@@ -17,26 +17,26 @@ export const suggestTags = (line: string) => unfinishedTag.test(line);
 export const suggestCustomElements = (line: string) => {
   if (!unfinishedCustomElement.test(line)) return false;
   const lastTag = line.split(/</).pop() as string;
-  return lastTag.split(' ')[0];
+  return lastTag.split(' ')[0].trim();
 };
 
 const unfinishedTag = /<[^>]*$/;
 
 // Like an unfinished tag, but with a hyphen
-const unfinishedCustomElement = /<.+-[^>]*$/;
+const unfinishedCustomElement = /<.+-[^>]*$/m;
 
 export function getCompletionType(
   context: TemplateContext,
   position: LineAndCharacter
 ): CompletionTypeParams {
   const rawLine = context.rawText.split(/\n/g)[position.line];
-  const processedLine = replaceTemplateStringBinding(rawLine);
+  const processedLine = replaceTemplateStringBinding(
+    context.rawText.substring(0, context.toOffset(position))
+  );
 
   {
     let tagname: string | false;
-    if (
-      ((tagname = suggestCustomElements(processedLine.substring(0, position.character))), tagname)
-    ) {
+    if (((tagname = suggestCustomElements(processedLine)), tagname)) {
       return {
         key: 'custom-element-attribute',
         params: tagname,

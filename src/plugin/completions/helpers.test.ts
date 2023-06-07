@@ -113,13 +113,23 @@ describe('getCompletionType', () => {
       { key: 'custom-element-attribute', params: 'cus-elem' },
     ],
     [
-      'Key "custom-element-attribute" and gets custom element when curso is inside of a fully closed element',
+      'Key "custom-element-attribute" and gets custom element when cursor is inside of a fully closed element',
       [
         html`
           <ce-elem></ce-elem>
           <cus-elem attr="value"></cus-elem>
         `,
         { line: 2, character: 32 },
+      ],
+      { key: 'custom-element-attribute', params: 'cus-elem' },
+    ],
+    [
+      'Key "custom-element-attribute" and gets custom element when cursor is on the next line to an opening tag',
+      [
+        html`
+          <cus-elem
+          `,
+        { line: 2, character: 2 },
       ],
       { key: 'custom-element-attribute', params: 'cus-elem' },
     ],

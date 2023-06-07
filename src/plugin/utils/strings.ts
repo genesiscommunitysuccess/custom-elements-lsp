@@ -13,8 +13,8 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
  * ````
  */
 export function replaceTemplateStringBinding(line: string): string {
-  return line.replace(/="\${(.+?)}"/g, (...args) => {
-    return '="${' + 'y'.repeat(args[1].length) + '}"';
+  return line.replace(/\${(.+?)}/g, (...args) => {
+    return '${' + 'y'.repeat(args[1].length) + '}';
   });
 }
 
