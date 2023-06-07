@@ -1,3 +1,5 @@
+The [Genesis Global](https://genesis.global) Community Success initiative is committed to open-sourcing select technologies that we believe the open-source community would benefit from.
+
 # Custom Elements LSP Plugin
 
 ## Plugin Setup and Usage
