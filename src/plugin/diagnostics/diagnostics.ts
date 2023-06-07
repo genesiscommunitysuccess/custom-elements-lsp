@@ -3,6 +3,7 @@ import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
+import { getPositionOfNthOccuranceEnd } from '../utils';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
@@ -59,18 +60,16 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           .map((_, i) => ({
             ...tagAndLine,
             column:
-              this.getPositionOfNthTagEnd({
-                context: {
-                  rawText: line,
-                },
-                tagName: tag,
+              getPositionOfNthOccuranceEnd({
+                rawText: line,
+                substring: `<${tag}`,
                 occurrence: i + 1,
               }) - tag.length,
           }));
       })
       .flat();
 
-    return tagsWithLocations.map(({ line, tag, row, column }) => ({
+    return tagsWithLocations.map(({ tag, row, column }) => ({
       category: DiagnosticCategory.Warning,
       code: 0,
       file: sourceFile,
@@ -140,10 +139,10 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
 
     return errorAttrs.map(({ tagName, occurrence, attr }) => {
-      const attrSearchOffset = this.getPositionOfNthTagEnd({
-        tagName,
+      const attrSearchOffset = getPositionOfNthOccuranceEnd({
+        substring: `<${tagName}`,
         occurrence,
-        context,
+        rawText: context.rawText,
       });
 
       const attrStart = context.rawText.indexOf(attr, attrSearchOffset);
@@ -157,39 +156,5 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         messageText: `Unknown attribute: ${attr} for custom element ${tagName}`,
       };
     });
-  }
-
-  /**
-   * Get the index in a string of the end of a substring tag name, at a given occurrence
-   */
-  private getPositionOfNthTagEnd({
-    context,
-    tagName,
-    occurrence,
-  }: {
-    context: {
-      rawText: string;
-    };
-    tagName: string;
-    occurrence: number;
-  }): number {
-    if (occurrence < 1) {
-      const INVALID_OCCURRENCE_CODE = -2;
-      return INVALID_OCCURRENCE_CODE;
-    }
-    const rawText = context.rawText;
-    let countdown = occurrence;
-    let stringIndex = 0;
-
-    while (countdown > 0) {
-      const nextOccurrenceIndex = rawText.indexOf(`<${tagName}`, stringIndex);
-      if (nextOccurrenceIndex === -1) {
-        return -1;
-      }
-      stringIndex = nextOccurrenceIndex + tagName.length + 1;
-      countdown -= 1;
-    }
-
-    return stringIndex;
   }
 }

@@ -6,7 +6,7 @@ import {
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
-import { getWholeTextReplcaementSpan } from '../utils';
+import { getWholeTextReplacementSpan } from '../utils';
 import { Services } from '../utils/services.types';
 import { CompletionCtx, PartialCompletionsService } from './completions.types';
 
@@ -53,7 +53,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     context: TemplateContext,
     tagName: string
   ): CompletionEntry[] {
-    const replacementSpan = getWholeTextReplcaementSpan(position, context);
+    const replacementSpan = getWholeTextReplacementSpan(position, context);
     const withConvertedEvents = this.convertFastEventAttributes(completions, replacementSpan);
     const withBooleanBindings = this.addDynamicBooleanBindings(
       withConvertedEvents,

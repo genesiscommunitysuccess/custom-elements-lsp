@@ -1,14 +1,25 @@
 import parse from 'node-html-parser';
-import { CompletionInfo, LineAndCharacter } from 'typescript';
-import { Diagnostic } from 'typescript/lib/tsserverlibrary';
+import { CompletionInfo, Diagnostic, LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
-import { LanguageServiceLogger } from './utils';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
+import { LanguageServiceLogger } from './utils';
 
+/**
+ * Handles calls from the TypeScript language server and delegates them to
+ * arrays of services assigned during initialization.
+ *
+ * @remarks For every method this class implements from TemplateLanguageService
+ * it will be called from the LSP at the appropriate time and pass back required
+ * information that the LSP client then can use to interact with the user.
+ *
+ * We decouple logic for different custom element dialects such as Microsoft FAST
+ * into their own classes, this class will run the API calls through all of the
+ * passed classes as a pipeline where appropriate.
+ */
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,

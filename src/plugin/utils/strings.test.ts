@@ -1,7 +1,11 @@
 import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { html } from '../../jest/utils';
-import { getWholeTextReplcaementSpan, replaceTemplateStringBinding } from './strings';
+import {
+  getWholeTextReplacementSpan,
+  replaceTemplateStringBinding,
+  getPositionOfNthOccuranceEnd,
+} from './strings';
 
 describe('replaceTemplateStringBinding', () => {
   const testCases: [string, [string], string][] = [
@@ -83,6 +87,8 @@ describe('getWholeTextReplcaementSpan', () => {
       'Returns the starting at index 0 if there is no white space preceding the cursor',
       [
         { line: 0, character: 8 },
+        // Formatters will try and spread html`testagain` onto a seperate line so you'll
+        // have to manually fix that if you use a formatter
         // eslint-disable-next-line
         html`testagain`,
       ],
@@ -92,7 +98,7 @@ describe('getWholeTextReplcaementSpan', () => {
 
   for (const [name, [position, context], expected] of testCases) {
     it('Happy path: ' + name, () => {
-      expect(getWholeTextReplcaementSpan(position, context)).toEqual(expected);
+      expect(getWholeTextReplacementSpan(position, context)).toEqual(expected);
     });
   }
 
@@ -113,12 +119,102 @@ describe('getWholeTextReplcaementSpan', () => {
     it('Unhappy path: ' + name, () => {
       let e;
       try {
-        const res = getWholeTextReplcaementSpan(position, context);
+        const res = getWholeTextReplacementSpan(position, context);
         console.log(res);
       } catch (error) {
         e = error;
       }
       expect((e as any).message).toEqual(expected);
+    });
+  }
+});
+
+describe('getPositionOfNthTagEnd', () => {
+  const tests: [string, [TemplateContext, string, number], any][] = [
+    ['-2 for an invalid occurrence', [html``, 'a', 0], -2],
+    ['-1 for empty string', [html``, 'a', 1], -1],
+    [
+      '-1 if the occurrence is too high',
+      [
+        html`
+          <c-e></c-e>
+        `,
+        'c-e',
+        2,
+      ],
+      -1,
+    ],
+    [
+      'the end of the first and only occurrence',
+      [
+        html`
+          <c-e></c-e>
+        `,
+        'c-e',
+        1,
+      ],
+      15,
+    ],
+    [
+      'the end of the first occurrence if requested',
+      [
+        html`
+          <c-e></c-e>
+          <c-e></c-e>
+        `,
+        'c-e',
+        1,
+      ],
+      15,
+    ],
+    [
+      'the end of the second occurrence if requested',
+      [
+        html`
+          <c-e></c-e>
+          <c-e></c-e>
+        `,
+        'c-e',
+        2,
+      ],
+      37,
+    ],
+    [
+      'the end of the third occurrence if requested',
+      [
+        html`
+          <c-e></c-e>
+          <c-e></c-e>
+          <c-e></c-e>
+        `,
+        'c-e',
+        3,
+      ],
+      59,
+    ],
+    [
+      'the end of an occurrence in the middle',
+      [
+        html`
+          <c-e></c-e>
+          <c-e></c-e>
+          <c-e></c-e>
+        `,
+        'c-e',
+        2,
+      ],
+      37,
+    ],
+  ];
+
+  for (const [name, [context, tagName, occurrence], expected] of tests) {
+    it(name, () => {
+      const result = getPositionOfNthOccuranceEnd({
+        rawText: context.rawText,
+        substring: `<${tagName}`,
+        occurrence,
+      });
+      expect(result).toEqual(expected);
     });
   }
 });

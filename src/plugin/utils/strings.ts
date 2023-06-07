@@ -24,7 +24,7 @@ export function replaceTemplateStringBinding(line: string): string {
  * VSCode doesn't account for characters such as "`@`" when matching on the completions returned by the LSP, meaning a string such as `@cl` will not show `@click` as an option in VSCode.
  * We can force it to account for the character by manually returning a `ReplacementSpan`. This points from the first non-space character behind the cursor, to the cursor.
  */
-export function getWholeTextReplcaementSpan(
+export function getWholeTextReplacementSpan(
   position: LineAndCharacter,
   context: TemplateContext
 ): TextSpan {
@@ -42,4 +42,41 @@ export function getWholeTextReplcaementSpan(
   replacementSpan.start += 1;
   replacementSpan.length -= 1;
   return replacementSpan;
+}
+
+/**
+ * Get the index in a string of the end of a substring, at a given occurrence
+ *
+ * @example
+ * ```
+ * fn({rawText: `hi hi`, substring: 'hi', occurrence: 1}) -> 2
+ * fn({rawText: `hi hi`, substring: 'hi', occurrence: 2}) -> 5
+ * ```
+ */
+export function getPositionOfNthOccuranceEnd({
+  rawText,
+  substring,
+  occurrence,
+}: {
+  rawText: string;
+  substring: string;
+  occurrence: number;
+}): number {
+  if (occurrence < 1) {
+    const INVALID_OCCURRENCE_CODE = -2;
+    return INVALID_OCCURRENCE_CODE;
+  }
+  let countdown = occurrence;
+  let stringIndex = 0;
+
+  while (countdown > 0) {
+    const nextOccurrenceIndex = rawText.indexOf(substring, stringIndex);
+    if (nextOccurrenceIndex === -1) {
+      return -1;
+    }
+    stringIndex = nextOccurrenceIndex + substring.length;
+    countdown -= 1;
+  }
+
+  return stringIndex;
 }
