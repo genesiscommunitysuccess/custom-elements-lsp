@@ -1,7 +1,7 @@
 import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
-import { Services } from '../utils/services.type';
+import { Services } from '../utils/services.types';
 
 export class DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {

@@ -11,7 +11,7 @@ import { DiagnosticsService } from './diagnostics';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { LanguageServiceLogger, TypescriptCompilerIOService } from './utils';
-import { Services } from './utils/services.type';
+import { Services } from './utils/services.types';
 
 const USE_BYPASS = false;
 

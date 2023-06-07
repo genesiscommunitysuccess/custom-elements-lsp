@@ -7,7 +7,7 @@ import {
 } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { getWholeTextReplcaementSpan } from '../utils';
-import { Services } from '../utils/services.type';
+import { Services } from '../utils/services.types';
 import { CompletionCtx, PartialCompletionsService } from './completions.types';
 
 /**
