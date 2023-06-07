@@ -25,7 +25,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
    * in the cache. Return as warnings due to the fact that the custom element may be defined,
    * but not in the cache
    * @param context - TemplateContext from the template language service
-   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parseR` **not** the standard DOM API.
+   * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
   private getUnknownCETag(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
