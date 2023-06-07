@@ -7,7 +7,7 @@ import { FASTCompletionsService } from './completions/fast';
 import { CustomElementsAnalyzerManifestParser } from './custom-elements/repository';
 import { CustomElementsServiceImpl } from './custom-elements/service';
 import { CustomElementsLanguageService } from './customelements';
-import { DiagnosticsService } from './diagnostics';
+import { DiagnosticsServiceImpl } from './diagnostics';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { LanguageServiceLogger, TypescriptCompilerIOService } from './utils';
@@ -83,7 +83,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       info.project,
       new CustomElementsLanguageService(
         logger,
-        new DiagnosticsService(logger, services),
+        new DiagnosticsServiceImpl(logger, services),
         completions
       ),
       {

@@ -6,13 +6,13 @@ import {
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
-import { DiagnosticsService } from './diagnostics';
+import { DiagnosticsServiceImpl } from './diagnostics';
 import { LanguageServiceLogger } from './utils';
 
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
-    private diagnostics: DiagnosticsService,
+    private diagnostics: DiagnosticsServiceImpl,
     private completions: PartialCompletionsService[]
   ) {
     logger.log('Setting up customelements class');
@@ -20,24 +20,16 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
 
   getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
+    this.logger.log(`getSyntacticDiagnostics: ${sourceFile.fileName}`);
 
     const diagnostics: Diagnostic[] = [];
-
-    this.logger.log(`getSyntacticDiagnostics: ${sourceFile.fileName}`);
     const root = parse(context.text);
-    this.logger.log(`getCompletionsAtPosition: root: ${root.toString()}`);
 
-    const elementList = root.querySelectorAll('*');
-
-    this.diagnostics
-      .getUnknownCETag(context, elementList)
-      .forEach((diag) => diagnostics.push(diag));
-
-    this.diagnostics
-      .getInvalidCEAttribute(context, elementList)
-      .forEach((diag) => diagnostics.push(diag));
-
-    return diagnostics;
+    return this.diagnostics.getSemanticDiagnostics({
+      diagnostics,
+      root,
+      context,
+    });
   }
 
   getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {

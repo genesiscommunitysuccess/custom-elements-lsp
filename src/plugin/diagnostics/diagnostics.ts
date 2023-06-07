@@ -2,10 +2,21 @@ import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { Services } from '../utils/services.types';
+import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
 
-export class DiagnosticsService {
+export class DiagnosticsServiceImpl implements PartialDiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
     logger.log('Setting up Diagnostics');
+  }
+
+  getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {
+    const { context, diagnostics: prevDiagnostics, root } = ctx;
+    const elementList = root.querySelectorAll('*');
+
+    const diagnostics = prevDiagnostics
+      .concat(this.getUnknownCETag(context, elementList))
+      .concat(this.getInvalidCEAttribute(context, elementList));
+    return diagnostics;
   }
 
   /**
@@ -16,7 +27,7 @@ export class DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parseR` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  getUnknownCETag(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
+  private getUnknownCETag(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
 
     const customElementTags = elementList.filter((elem) => elem.tagName.includes('-'));
@@ -78,7 +89,10 @@ export class DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  getInvalidCEAttribute(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
+  private getInvalidCEAttribute(
+    context: TemplateContext,
+    elementList: HTMLElement[]
+  ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
     const ceNames = this.services.customElements.getCENames();
 

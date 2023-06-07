@@ -3,10 +3,10 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { DiagnosticsService } from './diagnostics';
+import { DiagnosticsServiceImpl } from './diagnostics';
 
 const getDiagnosticsService = (ce: CustomElementsService) =>
-  new DiagnosticsService(getLogger(), buildServices({ customElements: ce }));
+  new DiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
@@ -107,7 +107,7 @@ describe('getUnknownCETag', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -121,7 +121,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -136,7 +136,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -168,7 +168,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -200,7 +200,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -233,7 +233,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -271,7 +271,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -285,7 +285,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -304,7 +304,7 @@ describe('getUnknownCETag', () => {
       <template><no-at test-attr="test"></no-at></template>
     `;
     const elementList = getElements(context);
-    const result = service.getUnknownCETag(context, elementList);
+    const result = (service as any).getUnknownCETag(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -323,7 +323,7 @@ describe('getInvalidCEAttribute', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -337,7 +337,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -349,7 +349,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -363,7 +363,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -377,7 +377,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -409,7 +409,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -423,7 +423,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = service.getInvalidCEAttribute(context, elementList);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 });
