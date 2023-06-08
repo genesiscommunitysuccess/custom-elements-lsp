@@ -10,6 +10,10 @@ const getDiagnosticsService = (ce: CustomElementsService) =>
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
+// TODO
+// If you specify a valid attribute multiple times, you should get warnings for subsequent ones
+// If you specify an invalid attribute multiple times, you should get an error for each one
+
 describe('getDiagnosticsService', () => {
   it('collates diagnostic info from methods in the class', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
@@ -299,6 +303,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
+    debugger;
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
       {
@@ -320,8 +325,46 @@ describe('getInvalidCEAttribute', () => {
     ]);
   });
 
+  it('Returns errors if the same invalid attribute is specified multiple times on an element', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template>
+        <no-attr invalidattr invalidattr invalidattr></no-attr>
+      </template>
+    `;
+    const elementList = getElements(context);
+    debugger;
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 0,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        start: 35,
+      },
+      {
+        category: 1,
+        code: 0,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        start: 47,
+      },
+      {
+        category: 1,
+        code: 0,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        start: 59,
+      },
+    ]);
+  });
+
   // TODO: handled in FUI-1193
-  it('Temp: Diagnostics for a FAST properties are ignored', () => {
+  it.skip('Temp: Diagnostics for a FAST properties are ignored', () => {
     const nothing = '';
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`

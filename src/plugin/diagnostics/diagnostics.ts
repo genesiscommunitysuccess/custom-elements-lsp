@@ -95,11 +95,23 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     const sourceFile = context.node.getSourceFile();
     const ceNames = this.services.customElements.getCENames();
 
+    // TODO: pull this out into a function
+    // We need this as the element.attributes doesn't contain duplicates
+    const parseAttrs = (rawAttrs: string): string[] =>
+      rawAttrs
+        .split(' ')
+        .map((x) => {
+          const attrRegex = /([\w-]+)(?:=.+)?/g;
+          const c = attrRegex.exec(x.trim());
+          return c?.[1];
+        })
+        .filter((x) => x) as string[];
+
     const tagsAndAttrs = elementList
       .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
-        attrs: Object.keys(elem.attributes),
+        attrs: parseAttrs(elem.rawAttrs),
       }));
 
     const occurrences: Map<string, number> = new Map();
@@ -109,43 +121,60 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       occurrences.set(tagAndAttrs.tagName, o + 1);
       return {
         ...tagAndAttrs,
-        occurrence: o + 1,
+        tagNameOccurrence: o + 1,
       };
     });
 
     withOccurrences.forEach((tagAndAttrs) => {
       this.logger.log(
-        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurrence}`
+        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.tagNameOccurrence}`
       );
     });
 
     const invalidAttr = withOccurrences
-      .map(({ tagName, occurrence, attrs }) => {
+      .map(({ tagName, tagNameOccurrence, attrs }) => {
+        const attrOccurences: Map<string, number> = new Map();
+
         const ceAttrs = this.services.customElements
           .getCEAttributes(tagName)
           .map(({ name }) => name);
+
         return attrs
           .filter((attr) => !ceAttrs.includes(attr))
-          .map((attr) => ({ tagName, occurrence, attr }));
+          .map((attr) => {
+            const o = attrOccurences.get(attr) || 0;
+            attrOccurences.set(attr, o + 1);
+            return { tagName, tagNameOccurrence, attr, attrOccurrence: o + 1 };
+          });
       })
       .flat();
 
     invalidAttr.forEach((attr) => {
-      this.logger.log(`getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`);
+      this.logger.log(
+        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.tagNameOccurrence}`
+      );
     });
 
     const errorAttrs = invalidAttr
       .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
 
-    return errorAttrs.map(({ tagName, occurrence, attr }) => {
-      const attrSearchOffset = getPositionOfNthOccuranceEnd({
+    return errorAttrs.map(({ tagName, tagNameOccurrence, attr, attrOccurrence }) => {
+      let searchOffset = getPositionOfNthOccuranceEnd({
         substring: `<${tagName}`,
-        occurrence,
+        occurrence: tagNameOccurrence,
         rawText: context.rawText,
       });
 
-      const attrStart = context.rawText.indexOf(attr, attrSearchOffset);
+      if (attrOccurrence > 1) {
+        searchOffset += getPositionOfNthOccuranceEnd({
+          substring: attr,
+          occurrence: attrOccurrence - 1,
+          rawText: context.rawText.substring(searchOffset),
+        });
+      }
+
+      const attrStart = context.rawText.indexOf(attr, searchOffset);
 
       return {
         category: DiagnosticCategory.Error,
