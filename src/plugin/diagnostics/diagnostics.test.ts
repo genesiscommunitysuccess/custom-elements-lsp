@@ -338,6 +338,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
+    debugger;
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
       {
