@@ -1,9 +1,21 @@
 import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
+import {
+  ATTIBUTE_CLASSIFICATION,
+  DiagnosticCtx,
+  DiagnosticsService,
+  InvalidAttrDefinition,
+  TagsWithAttrs,
+} from './diagnostics.types';
+import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
+import {
+  DEPRECATED_ATTRIBUTE,
+  DUPLICATE_ATTRIBUTE,
+  UNKNOWN_ATTRIBUTE,
+  UNKNOWN_CUSTOM_ELEMENT,
+} from '../constants/diagnostic-codes';
 import { Services } from '../utils/services.types';
-import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
-import { getPositionOfNthOccuranceEnd } from '../utils';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
@@ -71,7 +83,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
     return tagsWithLocations.map(({ tag, row, column }) => ({
       category: DiagnosticCategory.Warning,
-      code: 0,
+      code: UNKNOWN_CUSTOM_ELEMENT,
       file: sourceFile,
       start: context.toOffset({
         line: row,
@@ -99,62 +111,132 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
-        attrs: Object.keys(elem.attributes),
+        attrs: parseAttrNamesFromRawString(elem.rawAttrs),
       }));
 
     const occurrences: Map<string, number> = new Map();
-
-    const withOccurrences = tagsAndAttrs.map((tagAndAttrs) => {
+    const withOccurrences: TagsWithAttrs[] = tagsAndAttrs.map((tagAndAttrs) => {
       const o = occurrences.get(tagAndAttrs.tagName) || 0;
       occurrences.set(tagAndAttrs.tagName, o + 1);
       return {
         ...tagAndAttrs,
-        occurrence: o + 1,
+        tagNameOccurrence: o + 1,
       };
     });
 
-    withOccurrences.forEach((tagAndAttrs) => {
-      this.logger.log(
-        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.occurrence}`
-      );
-    });
+    const invalidAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
 
-    const invalidAttr = withOccurrences
-      .map(({ tagName, occurrence, attrs }) => {
-        const ceAttrs = this.services.customElements
-          .getCEAttributes(tagName)
-          .map(({ name }) => name);
-        return attrs
-          .filter((attr) => !ceAttrs.includes(attr))
-          .map((attr) => ({ tagName, occurrence, attr }));
-      })
-      .flat();
-
-    invalidAttr.forEach((attr) => {
-      this.logger.log(`getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.occurrence}`);
-    });
-
-    const errorAttrs = invalidAttr
+    const errorAttrs = invalidAttrs
       .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
 
-    return errorAttrs.map(({ tagName, occurrence, attr }) => {
-      const attrSearchOffset = getPositionOfNthOccuranceEnd({
-        substring: `<${tagName}`,
-        occurrence,
-        rawText: context.rawText,
-      });
+    return errorAttrs.map(
+      ({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
+        let searchOffset = getPositionOfNthOccuranceEnd({
+          substring: `<${tagName}`,
+          occurrence: tagNameOccurrence,
+          rawText: context.rawText,
+        });
 
-      const attrStart = context.rawText.indexOf(attr, attrSearchOffset);
+        if (attrOccurrence > 1) {
+          searchOffset += getPositionOfNthOccuranceEnd({
+            substring: attr,
+            occurrence: attrOccurrence - 1,
+            rawText: context.rawText.substring(searchOffset),
+          });
+        }
 
-      return {
-        category: DiagnosticCategory.Error,
-        code: 0,
-        file: sourceFile,
-        start: attrStart,
-        length: attr.length,
-        messageText: `Unknown attribute: ${attr} for custom element ${tagName}`,
-      };
-    });
+        const attrStart = context.rawText.indexOf(attr, searchOffset);
+
+        return this.buildAttributeDiagnosticMessage(
+          classification,
+          attr,
+          tagName,
+          sourceFile,
+          attrStart,
+          attr.length
+        );
+      }
+    );
+  }
+
+  private buildInvalidAttrDefinitions(tagsWithAttrs: TagsWithAttrs[]): InvalidAttrDefinition[] {
+    return tagsWithAttrs
+      .map(({ tagName, tagNameOccurrence, attrs }) => {
+        const attrOccurences: Map<string, number> = new Map();
+
+        const ceAttrs = this.services.customElements.getCEAttributes(tagName);
+        const attrMap = new Map(ceAttrs.map((ceAttr) => [ceAttr.name, ceAttr]));
+
+        return attrs
+          .map((attr) => {
+            let classification: ATTIBUTE_CLASSIFICATION = 'valid';
+            const occurr = attrOccurences.get(attr) || 0;
+            attrOccurences.set(attr, occurr + 1);
+            if (attrMap.get(attr)?.deprecated) {
+              classification = 'deprecated';
+            }
+            if (occurr >= 1) {
+              classification = 'duplicate';
+            }
+            if (!attrMap.has(attr)) {
+              classification = 'unknown';
+            }
+            return {
+              tagName,
+              tagNameOccurrence,
+              attr,
+              attrOccurrence: occurr + 1,
+              classification,
+            };
+          })
+          .filter(({ classification }) => classification !== 'valid');
+      })
+      .flat();
+  }
+
+  private buildAttributeDiagnosticMessage(
+    classification: ATTIBUTE_CLASSIFICATION,
+    attrName: string,
+    tagName: string,
+    file: ts.SourceFile,
+    start: number,
+    length: number
+  ): Diagnostic {
+    switch (classification) {
+      case 'valid':
+        throw new Error(
+          'buildAttributeDiagnosticMessage: cannot build message for valid attribute'
+        );
+      case 'unknown':
+        return {
+          category: DiagnosticCategory.Error,
+          code: UNKNOWN_ATTRIBUTE,
+          messageText: `Unknown attribute "${attrName}" for custom element "${tagName}"`,
+          file,
+          start,
+          length,
+        };
+      case 'duplicate':
+        return {
+          category: DiagnosticCategory.Warning,
+          code: DUPLICATE_ATTRIBUTE,
+          messageText: `Duplicate setting of attribute "${attrName}" which overrides the same attribute previously set on tag "${tagName}"`,
+          file,
+          start,
+          length,
+          reportsUnnecessary: {},
+        };
+      case 'deprecated':
+        return {
+          category: DiagnosticCategory.Warning,
+          code: DEPRECATED_ATTRIBUTE,
+          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for element ${tagName}`,
+          file,
+          start,
+          length,
+          reportsDeprecated: {},
+        };
+    }
   }
 }
