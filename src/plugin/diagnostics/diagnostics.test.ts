@@ -2,7 +2,11 @@ import parse from 'node-html-parser';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { buildServices, getLogger, html } from '../../jest/utils';
-import { DUPLICATE_ATTRIBUTE, UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
+import {
+  DEPRECATED_ATTRIBUTE,
+  DUPLICATE_ATTRIBUTE,
+  UNKNOWN_ATTRIBUTE,
+} from '../constants/diagnostic-codes';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { TagsWithAttrs } from './diagnostics.types';
@@ -11,10 +15,6 @@ const getDiagnosticsService = (ce: CustomElementsService) =>
   new CoreDiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
-
-// TODO
-// If you specify a valid attribute multiple times, you should get warnings for subsequent ones
-// If you specify an invalid attribute multiple times, you should get an error for each one
 
 describe('getDiagnosticsService', () => {
   it('collates diagnostic info from methods in the class', () => {
@@ -287,12 +287,37 @@ describe('getInvalidCEAttribute', () => {
       <template>
         <unknown-element></unknown-element>
         <no-attr></no-attr>
-        <custom-element activated colour="red"></custom-element>
+        <custom-element colour="red"></custom-element>
       </template>
     `;
     const elementList = getElements(context);
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
+  });
+
+  it('Diagnostics for valid but deprecated attributes', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template>
+        <unknown-element></unknown-element>
+        <no-attr></no-attr>
+        <custom-element activated colour="red"></custom-element>
+      </template>
+    `;
+    const elementList = getElements(context);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 9,
+        messageText:
+          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+        reportsDeprecated: {},
+        start: 114,
+      },
+    ]);
   });
 
   it('Diagnostics for invalid attributes on known custom elements', () => {
@@ -315,6 +340,16 @@ describe('getInvalidCEAttribute', () => {
         length: 11,
         messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 79,
+      },
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 9,
+        messageText:
+          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+        reportsDeprecated: {},
+        start: 126,
       },
       {
         category: 1,
@@ -374,6 +409,16 @@ describe('getInvalidCEAttribute', () => {
     const elementList = getElements(context);
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 9,
+        messageText:
+          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+        reportsDeprecated: {},
+        start: 55,
+      },
       {
         category: 0,
         code: 1002,
@@ -484,6 +529,29 @@ describe('buildAttributeDiagnosticMessage', () => {
       start: 5,
     });
   });
+
+  it('Returns an warning with DEPRECATED_ATTRIBUTE code for a deprecated classification', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildAttributeDiagnosticMessage(
+      'deprecated',
+      'attr',
+      'custom-element',
+      'test-file',
+      5,
+      10
+    );
+
+    expect(res).toEqual({
+      category: 0,
+      code: DEPRECATED_ATTRIBUTE,
+      file: 'test-file',
+      length: 10,
+      messageText:
+        'Attribute "attr" is marked as deprecated and may become invalid for element custom-element',
+      reportsDeprecated: {},
+      start: 5,
+    });
+  });
 });
 
 describe('buildInvalidAttrDefinitions', () => {
@@ -494,6 +562,29 @@ describe('buildInvalidAttrDefinitions', () => {
   });
 
   it('returns an empty array for a list that contains valid attributes only', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'custom-element',
+        attrs: ['colour'],
+        tagNameOccurrence: 0,
+      },
+      {
+        tagName: 'custom-element',
+        attrs: ['colour'],
+        tagNameOccurrence: 1,
+      },
+      {
+        tagName: 'no-attr',
+        attrs: [],
+        tagNameOccurrence: 0,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([]);
+  });
+
+  it('returns a warning if a deprecated attribute is specified', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const tagsWithAttrs: TagsWithAttrs[] = [
       {
@@ -513,7 +604,15 @@ describe('buildInvalidAttrDefinitions', () => {
       },
     ];
     const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
-    expect(res).toEqual([]);
+    expect(res).toEqual([
+      {
+        attr: 'activated',
+        attrOccurrence: 1,
+        classification: 'deprecated',
+        tagName: 'custom-element',
+        tagNameOccurrence: 0,
+      },
+    ]);
   });
 
   it('returns a warning for a tag which contain multiple of the same valid attribute', () => {
@@ -521,7 +620,7 @@ describe('buildInvalidAttrDefinitions', () => {
     const tagsWithAttrs: TagsWithAttrs[] = [
       {
         tagName: 'custom-element',
-        attrs: ['colour', 'activated', 'colour'],
+        attrs: ['colour', 'colour'],
         tagNameOccurrence: 0,
       },
       {
@@ -565,6 +664,13 @@ describe('buildInvalidAttrDefinitions', () => {
     ];
     const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
     expect(res).toEqual([
+      {
+        attr: 'activated',
+        attrOccurrence: 1,
+        classification: 'deprecated',
+        tagName: 'custom-element',
+        tagNameOccurrence: 0,
+      },
       {
         attr: 'unknown',
         attrOccurrence: 1,
