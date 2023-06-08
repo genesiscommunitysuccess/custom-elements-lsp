@@ -16,6 +16,8 @@ import {
   UNKNOWN_CUSTOM_ELEMENT,
 } from '../constants/diagnostic-codes';
 import { Services } from '../utils/services.types';
+import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
+import { getStore } from '../utils/kvstore';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
@@ -160,13 +162,35 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     );
   }
 
+  private buildGlobalAttributeArray(): [string, CustomElementAttribute][] {
+    const globalAttrWithAriaTuples = getStore(this.logger).TSUnsafeGetOrAdd(
+      'global-attribute-with-aria-tuplies',
+      () => {
+        const globalAttrTuples: [string, CustomElementAttribute][] = this.services.globalData
+          .getAttributes()
+          .map(([attr, type]) => [attr, { name: attr, type, deprecated: false }]);
+        const globalAttrAriaTuples: [string, CustomElementAttribute][] = this.services.globalData
+          .getAriaAttributes()
+          .map((attr) => [attr, { name: attr, type: 'string', deprecated: false }]);
+        return globalAttrTuples.concat(globalAttrAriaTuples);
+      }
+    );
+    return globalAttrWithAriaTuples;
+  }
+
   private buildInvalidAttrDefinitions(tagsWithAttrs: TagsWithAttrs[]): InvalidAttrDefinition[] {
     return tagsWithAttrs
       .map(({ tagName, tagNameOccurrence, attrs }) => {
         const attrOccurences: Map<string, number> = new Map();
 
         const ceAttrs = this.services.customElements.getCEAttributes(tagName);
-        const attrMap = new Map(ceAttrs.map((ceAttr) => [ceAttr.name, ceAttr]));
+        // Construct a map from tuples of [key, value] => [attrName, attrDef]
+        // concatenating this elements attributes with the global attributes
+        const attrMap = new Map(
+          ceAttrs
+            .map((ceAttr) => [ceAttr.name, ceAttr] as const)
+            .concat(this.buildGlobalAttributeArray())
+        );
 
         return attrs
           .map((attr) => {
@@ -179,7 +203,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
             if (occurr >= 1) {
               classification = 'duplicate';
             }
-            if (!attrMap.has(attr)) {
+            if (!(attrMap.has(attr) || attr.startsWith('data-'))) {
               classification = 'unknown';
             }
             return {

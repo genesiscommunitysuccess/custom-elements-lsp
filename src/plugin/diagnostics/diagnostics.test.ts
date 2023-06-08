@@ -1,6 +1,7 @@
 import parse from 'node-html-parser';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
+import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import {
   DEPRECATED_ATTRIBUTE,
@@ -8,11 +9,18 @@ import {
   UNKNOWN_ATTRIBUTE,
 } from '../constants/diagnostic-codes';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
+import { GlobalDataRepository } from '../global-data/global-data.types';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { TagsWithAttrs } from './diagnostics.types';
 
-const getDiagnosticsService = (ce: CustomElementsService) =>
-  new CoreDiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
+const getDiagnosticsService = (
+  ce: CustomElementsService,
+  gd: GlobalDataRepository = getGDServiceFromStubbedResource()
+) =>
+  new CoreDiagnosticsServiceImpl(
+    getLogger(),
+    buildServices({ customElements: ce, globalData: gd })
+  );
 
 const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
 
@@ -584,6 +592,32 @@ describe('buildInvalidAttrDefinitions', () => {
     expect(res).toEqual([]);
   });
 
+  it('returns an empty array for a list that contains only global and aria attributes', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'no-attr',
+        attrs: ['autofocus', 'class', 'aria-label'],
+        tagNameOccurrence: 0,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([]);
+  });
+
+  it('returns an empty array for any "data-*" attributes', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'no-attr',
+        attrs: ['data-test-id', 'data-test-id-2', 'data-foo', 'data-bar'],
+        tagNameOccurrence: 0,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([]);
+  });
+
   it('returns a warning if a deprecated attribute is specified', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const tagsWithAttrs: TagsWithAttrs[] = [
@@ -699,6 +733,47 @@ describe('buildInvalidAttrDefinitions', () => {
         tagName: 'custom-element',
         tagNameOccurrence: 1,
       },
+    ]);
+  });
+});
+
+describe('buildGlobalAttributeArray', () => {
+  it('returns tuple pairs for global and aria attributes, and stores in the cache', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildGlobalAttributeArray();
+    expect(res).toEqual([
+      [
+        'data-*',
+        {
+          deprecated: false,
+          name: 'data-*',
+          type: 'wildcard',
+        },
+      ],
+      [
+        'class',
+        {
+          deprecated: false,
+          name: 'class',
+          type: 'string',
+        },
+      ],
+      [
+        'autofocus',
+        {
+          deprecated: false,
+          name: 'autofocus',
+          type: 'boolean',
+        },
+      ],
+      [
+        'aria-label',
+        {
+          deprecated: false,
+          name: 'aria-label',
+          type: 'string',
+        },
+      ],
     ]);
   });
 });
