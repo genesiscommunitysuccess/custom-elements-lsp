@@ -66,7 +66,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -74,7 +74,7 @@ describe('getUnknownCETag', () => {
       },
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 7,
         messageText: 'Unknown custom element: test-ce',
@@ -98,7 +98,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
@@ -106,7 +106,7 @@ describe('getUnknownCETag', () => {
       },
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -130,7 +130,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -138,7 +138,7 @@ describe('getUnknownCETag', () => {
       },
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -163,7 +163,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -171,7 +171,7 @@ describe('getUnknownCETag', () => {
       },
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
@@ -179,7 +179,7 @@ describe('getUnknownCETag', () => {
       },
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
@@ -215,7 +215,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 5,
         messageText: 'Unknown custom element: no-at',
@@ -234,7 +234,7 @@ describe('getUnknownCETag', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 0,
+        code: 1000,
         file: 'test.ts',
         length: 5,
         messageText: 'Unknown custom element: no-at',
@@ -308,18 +308,18 @@ describe('getInvalidCEAttribute', () => {
     expect(result).toEqual([
       {
         category: 1,
-        code: 0,
+        code: 1001,
         file: 'test.ts',
         length: 11,
-        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 79,
       },
       {
         category: 1,
-        code: 0,
+        code: 1001,
         file: 'test.ts',
         length: 11,
-        messageText: 'Unknown attribute: alsoinvalid for custom element custom-element',
+        messageText: 'Unknown attribute "alsoinvalid" for custom element "custom-element"',
         start: 149,
       },
     ]);
@@ -333,32 +333,62 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    debugger;
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
-        code: 0,
+        code: 1001,
         file: 'test.ts',
         length: 11,
-        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 35,
       },
       {
         category: 1,
-        code: 0,
+        code: 1001,
         file: 'test.ts',
         length: 11,
-        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 47,
       },
       {
         category: 1,
-        code: 0,
+        code: 1001,
         file: 'test.ts',
         length: 11,
-        messageText: 'Unknown attribute: invalidattr for custom element no-attr',
+        messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 59,
+      },
+    ]);
+  });
+
+  it('Returns warnings for subsequent definitions of a valid attribute', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template>
+        <custom-element colour="red" activated colour="blue" activated></custom-element>
+      </template>
+    `;
+    const elementList = getElements(context);
+    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 6,
+        messageText:
+          'Duplicate setting of attribute "colour" which overrides the same attribute previously set on tag "custom-element"',
+        start: 65,
+      },
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 9,
+        messageText:
+          'Duplicate setting of attribute "activated" which overrides the same attribute previously set on tag "custom-element"',
+        start: 79,
       },
     ]);
   });

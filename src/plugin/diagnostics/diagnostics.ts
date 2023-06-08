@@ -4,6 +4,13 @@ import { Logger, TemplateContext } from 'typescript-template-language-service-de
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
 import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
+import {
+  DUPLICATE_ATTRIBUTE,
+  UNKNOWN_ATTRIBUTE,
+  UNKNOWN_CUSTOM_ELEMENT,
+} from '../constants/diagnostic-codes';
+
+type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
@@ -71,7 +78,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
     return tagsWithLocations.map(({ tag, row, column }) => ({
       category: DiagnosticCategory.Warning,
-      code: 0,
+      code: UNKNOWN_CUSTOM_ELEMENT,
       file: sourceFile,
       start: context.toOffset({
         line: row,
@@ -119,7 +126,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       );
     });
 
-    const invalidAttr = withOccurrences
+    const invalidAttrs = withOccurrences
       .map(({ tagName, tagNameOccurrence, attrs }) => {
         const attrOccurences: Map<string, number> = new Map();
 
@@ -128,50 +135,99 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           .map(({ name }) => name);
 
         return attrs
-          .filter((attr) => !ceAttrs.includes(attr))
           .map((attr) => {
-            const o = attrOccurences.get(attr) || 0;
-            attrOccurences.set(attr, o + 1);
-            return { tagName, tagNameOccurrence, attr, attrOccurrence: o + 1 };
-          });
+            let classification: ATTIBUTE_CLASSIFICATION = 'valid';
+            const occurr = attrOccurences.get(attr) || 0;
+            attrOccurences.set(attr, occurr + 1);
+            if (occurr >= 1) {
+              classification = 'duplicate';
+            }
+            if (!ceAttrs.includes(attr)) {
+              classification = 'unknown';
+            }
+            return {
+              tagName,
+              tagNameOccurrence,
+              attr,
+              attrOccurrence: occurr + 1,
+              classification,
+            };
+          })
+          .filter(({ classification }) => classification !== 'valid');
       })
       .flat();
 
-    invalidAttr.forEach((attr) => {
+    invalidAttrs.forEach((attr) => {
       this.logger.log(
         `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.tagNameOccurrence}`
       );
     });
 
-    const errorAttrs = invalidAttr
+    const errorAttrs = invalidAttrs
       .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
 
-    return errorAttrs.map(({ tagName, tagNameOccurrence, attr, attrOccurrence }) => {
-      let searchOffset = getPositionOfNthOccuranceEnd({
-        substring: `<${tagName}`,
-        occurrence: tagNameOccurrence,
-        rawText: context.rawText,
-      });
-
-      if (attrOccurrence > 1) {
-        searchOffset += getPositionOfNthOccuranceEnd({
-          substring: attr,
-          occurrence: attrOccurrence - 1,
-          rawText: context.rawText.substring(searchOffset),
+    return errorAttrs.map(
+      ({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
+        let searchOffset = getPositionOfNthOccuranceEnd({
+          substring: `<${tagName}`,
+          occurrence: tagNameOccurrence,
+          rawText: context.rawText,
         });
+
+        if (attrOccurrence > 1) {
+          searchOffset += getPositionOfNthOccuranceEnd({
+            substring: attr,
+            occurrence: attrOccurrence - 1,
+            rawText: context.rawText.substring(searchOffset),
+          });
+        }
+
+        const attrStart = context.rawText.indexOf(attr, searchOffset);
+
+        return this.buildAttributeDiagnosticMessage(
+          classification,
+          attr,
+          tagName,
+          sourceFile,
+          attrStart,
+          attr.length
+        );
       }
+    );
+  }
 
-      const attrStart = context.rawText.indexOf(attr, searchOffset);
-
-      return {
-        category: DiagnosticCategory.Error,
-        code: 0,
-        file: sourceFile,
-        start: attrStart,
-        length: attr.length,
-        messageText: `Unknown attribute: ${attr} for custom element ${tagName}`,
-      };
-    });
+  private buildAttributeDiagnosticMessage(
+    classification: ATTIBUTE_CLASSIFICATION,
+    attrName: string,
+    tagName: string,
+    file: ts.SourceFile,
+    start: number,
+    length: number
+  ): Diagnostic {
+    switch (classification) {
+      case 'valid':
+        throw new Error(
+          'buildAttributeDiagnosticMessage: cannot build message for valid attribute'
+        );
+      case 'unknown':
+        return {
+          category: DiagnosticCategory.Error,
+          code: UNKNOWN_ATTRIBUTE,
+          messageText: `Unknown attribute "${attrName}" for custom element "${tagName}"`,
+          file,
+          start,
+          length,
+        };
+      case 'duplicate':
+        return {
+          category: DiagnosticCategory.Warning,
+          code: DUPLICATE_ATTRIBUTE,
+          messageText: `Duplicate setting of attribute "${attrName}" which overrides the same attribute previously set on tag "${tagName}"`,
+          file,
+          start,
+          length,
+        };
+    }
   }
 }
