@@ -2,6 +2,7 @@ import parse from 'node-html-parser';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { buildServices, getLogger, html } from '../../jest/utils';
+import { DUPLICATE_ATTRIBUTE, UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 
@@ -409,7 +410,7 @@ describe('getInvalidCEAttribute', () => {
   });
 
   it('Diagnostics for a FAST ref() are ignored', () => {
-    const ref = (x: any) => () => '';
+    const ref = (_: any) => () => '';
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
       <template>
@@ -420,5 +421,63 @@ describe('getInvalidCEAttribute', () => {
     const elementList = getElements(context);
     const result = (service as any).getInvalidCEAttribute(context, elementList);
     expect(result.length).toEqual(0);
+  });
+});
+
+describe('buildAttributeDiagnosticMessage', () => {
+  it('Throws an error when trying to build a message for a valid attribute', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    let e;
+    try {
+      (service as any).buildAttributeDiagnosticMessage('valid');
+    } catch (error) {
+      e = error;
+    }
+    expect((e as any).message).toEqual(
+      'buildAttributeDiagnosticMessage: cannot build message for valid attribute'
+    );
+  });
+
+  it('Returns an error with UNKNOWN_ATTRIBUTE code for an unknown classification', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildAttributeDiagnosticMessage(
+      'unknown',
+      'attr',
+      'custom-element',
+      'test-file',
+      5,
+      10
+    );
+
+    expect(res).toEqual({
+      category: 1,
+      code: UNKNOWN_ATTRIBUTE,
+      file: 'test-file',
+      length: 10,
+      messageText: 'Unknown attribute "attr" for custom element "custom-element"',
+      start: 5,
+    });
+  });
+
+  it('Returns an warning with DUPLICATE_ATTRIBUTE code for a duplicate classification', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildAttributeDiagnosticMessage(
+      'duplicate',
+      'attr',
+      'custom-element',
+      'test-file',
+      5,
+      10
+    );
+
+    expect(res).toEqual({
+      category: 0,
+      code: DUPLICATE_ATTRIBUTE,
+      file: 'test-file',
+      length: 10,
+      messageText:
+        'Duplicate setting of attribute "attr" which overrides the same attribute previously set on tag "custom-element"',
+      start: 5,
+    });
   });
 });
