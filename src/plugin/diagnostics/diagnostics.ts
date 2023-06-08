@@ -3,7 +3,7 @@ import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
-import { getPositionOfNthOccuranceEnd } from '../utils';
+import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
@@ -95,23 +95,11 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     const sourceFile = context.node.getSourceFile();
     const ceNames = this.services.customElements.getCENames();
 
-    // TODO: pull this out into a function
-    // We need this as the element.attributes doesn't contain duplicates
-    const parseAttrs = (rawAttrs: string): string[] =>
-      rawAttrs
-        .split(' ')
-        .map((x) => {
-          const attrRegex = /([\w-]+)(?:=.+)?/g;
-          const c = attrRegex.exec(x.trim());
-          return c?.[1];
-        })
-        .filter((x) => x) as string[];
-
     const tagsAndAttrs = elementList
       .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
-        attrs: parseAttrs(elem.rawAttrs),
+        attrs: parseAttrNamesFromRawString(elem.rawAttrs),
       }));
 
     const occurrences: Map<string, number> = new Map();

@@ -80,3 +80,30 @@ export function getPositionOfNthOccuranceEnd({
 
   return stringIndex;
 }
+
+/**
+ * Takes a string of attributes and returns an array of attribute names
+ *
+ * @remarks The HTML node interface in use exposes a `.attributes` property,
+ * but this does not contain duplicate attributes. We need to be aware of duplicates
+ * for our use case so we need to parse it ourselves. This function will return
+ * an array of attribute names from a string of attributes, accounting for `@:?` symbols.
+ * We don't care about the values for our use case so they're ignored. Checking the semantic
+ * diagnostic that the value matches the type of the attribute is outside of the remit of this plugin.
+ *
+ * @example
+ * ```
+ * fn('testone testone="test" ?testone="${x => true}" :testone="${(x,c) => x.action()}"')
+ * -> ['testone', 'testone', '?testone', ':testone']
+ * ```
+ */
+export function parseAttrNamesFromRawString(rawString: string): string[] {
+  return replaceTemplateStringBinding(rawString)
+    .split(' ')
+    .map((token) => {
+      const attrRegex = /([\w-?:@]+)(?:=.+)?/g;
+      const regexExpArr = attrRegex.exec(token.trim());
+      return regexExpArr?.[1];
+    })
+    .filter((x) => x) as string[];
+}
