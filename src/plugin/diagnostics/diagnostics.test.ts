@@ -5,6 +5,7 @@ import { buildServices, getLogger, html } from '../../jest/utils';
 import { DUPLICATE_ATTRIBUTE, UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
+import { TagsWithAttrs } from './diagnostics.types';
 
 const getDiagnosticsService = (ce: CustomElementsService) =>
   new CoreDiagnosticsServiceImpl(getLogger(), buildServices({ customElements: ce }));
@@ -479,5 +480,116 @@ describe('buildAttributeDiagnosticMessage', () => {
         'Duplicate setting of attribute "attr" which overrides the same attribute previously set on tag "custom-element"',
       start: 5,
     });
+  });
+});
+
+describe('buildInvalidAttrDefinitions', () => {
+  it('returns an empty array for an empty input', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildInvalidAttrDefinitions([]);
+    expect(res).toEqual([]);
+  });
+
+  it('returns an empty array for a list that contains valid attributes only', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'custom-element',
+        attrs: ['colour', 'activated'],
+        tagNameOccurrence: 0,
+      },
+      {
+        tagName: 'custom-element',
+        attrs: ['colour'],
+        tagNameOccurrence: 1,
+      },
+      {
+        tagName: 'no-attr',
+        attrs: [],
+        tagNameOccurrence: 0,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([]);
+  });
+
+  it('returns a warning for a tag which contain multiple of the same valid attribute', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'custom-element',
+        attrs: ['colour', 'activated', 'colour'],
+        tagNameOccurrence: 0,
+      },
+      {
+        tagName: 'custom-element',
+        attrs: ['colour', 'colour'],
+        tagNameOccurrence: 1,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([
+      {
+        attr: 'colour',
+        attrOccurrence: 2,
+        classification: 'duplicate',
+        tagName: 'custom-element',
+        tagNameOccurrence: 0,
+      },
+      {
+        attr: 'colour',
+        attrOccurrence: 2,
+        classification: 'duplicate',
+        tagName: 'custom-element',
+        tagNameOccurrence: 1,
+      },
+    ]);
+  });
+
+  it('returns an error for every unknown attribute on every tag, accounting for duplicates', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const tagsWithAttrs: TagsWithAttrs[] = [
+      {
+        tagName: 'custom-element',
+        attrs: ['colour', 'activated', 'unknown', 'unknown'],
+        tagNameOccurrence: 0,
+      },
+      {
+        tagName: 'custom-element',
+        attrs: ['colour', 'colour', 'invalid'],
+        tagNameOccurrence: 1,
+      },
+    ];
+    const res = (service as any).buildInvalidAttrDefinitions(tagsWithAttrs);
+    expect(res).toEqual([
+      {
+        attr: 'unknown',
+        attrOccurrence: 1,
+        classification: 'unknown',
+        tagName: 'custom-element',
+        tagNameOccurrence: 0,
+      },
+      {
+        attr: 'unknown',
+        attrOccurrence: 2,
+        classification: 'unknown',
+        tagName: 'custom-element',
+        tagNameOccurrence: 0,
+      },
+      {
+        attr: 'colour',
+        attrOccurrence: 2,
+        classification: 'duplicate',
+        tagName: 'custom-element',
+        tagNameOccurrence: 1,
+      },
+      {
+        attr: 'invalid',
+        attrOccurrence: 1,
+        classification: 'unknown',
+        tagName: 'custom-element',
+        tagNameOccurrence: 1,
+      },
+    ]);
   });
 });

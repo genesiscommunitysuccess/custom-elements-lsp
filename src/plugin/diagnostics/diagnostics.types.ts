@@ -13,3 +13,18 @@ export interface DiagnosticsService {
 }
 
 export interface PartialDiagnosticsService extends Partial<DiagnosticsService> {}
+
+export type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate';
+
+export type TagsWithAttrs = {
+  tagName: string;
+  attrs: string[];
+  tagNameOccurrence: number;
+};
+export type InvalidAttrDefinition = {
+  tagName: string;
+  attr: string;
+  tagNameOccurrence: number;
+  attrOccurrence: number;
+  classification: ATTIBUTE_CLASSIFICATION;
+};

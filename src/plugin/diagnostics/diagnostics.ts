@@ -1,29 +1,20 @@
 import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
-import { Services } from '../utils/services.types';
-import { DiagnosticCtx, DiagnosticsService } from './diagnostics.types';
+import {
+  ATTIBUTE_CLASSIFICATION,
+  DiagnosticCtx,
+  DiagnosticsService,
+  InvalidAttrDefinition,
+  TagsWithAttrs,
+} from './diagnostics.types';
 import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import {
   DUPLICATE_ATTRIBUTE,
   UNKNOWN_ATTRIBUTE,
   UNKNOWN_CUSTOM_ELEMENT,
 } from '../constants/diagnostic-codes';
-
-type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate';
-
-type TagsWithAttrs = {
-  tagName: string;
-  attrs: string[];
-  tagNameOccurrence: number;
-};
-type InvalidAttrDefinition = {
-  tagName: string;
-  attr: string;
-  tagNameOccurrence: number;
-  attrOccurrence: number;
-  classification: ATTIBUTE_CLASSIFICATION;
-};
+import { Services } from '../utils/services.types';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
