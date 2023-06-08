@@ -17,6 +17,6 @@
     "@genesiscommunitysuccess/custom-elements-lsp": "file:..",
     "example-lib": "file:../example-lib",
     "typescript": "^4.4.3",
-    "vite": "4.3.8"
+    "vite": "^4.3.9"
   }
 }
