@@ -381,6 +381,7 @@ describe('getInvalidCEAttribute', () => {
         length: 6,
         messageText:
           'Duplicate setting of attribute "colour" which overrides the same attribute previously set on tag "custom-element"',
+        reportsUnnecessary: {},
         start: 65,
       },
       {
@@ -390,6 +391,7 @@ describe('getInvalidCEAttribute', () => {
         length: 9,
         messageText:
           'Duplicate setting of attribute "activated" which overrides the same attribute previously set on tag "custom-element"',
+        reportsUnnecessary: {},
         start: 79,
       },
     ]);
@@ -478,6 +480,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       length: 10,
       messageText:
         'Duplicate setting of attribute "attr" which overrides the same attribute previously set on tag "custom-element"',
+      reportsUnnecessary: {},
       start: 5,
     });
   });

@@ -10,6 +10,7 @@ import {
 } from './diagnostics.types';
 import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import {
+  DEPRECATED_ATTRIBUTE,
   DUPLICATE_ATTRIBUTE,
   UNKNOWN_ATTRIBUTE,
   UNKNOWN_CUSTOM_ELEMENT,
@@ -164,19 +165,21 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .map(({ tagName, tagNameOccurrence, attrs }) => {
         const attrOccurences: Map<string, number> = new Map();
 
-        const ceAttrs = this.services.customElements
-          .getCEAttributes(tagName)
-          .map(({ name }) => name);
+        const ceAttrs = this.services.customElements.getCEAttributes(tagName);
+        const attrMap = new Map(ceAttrs.map((ceAttr) => [ceAttr.name, ceAttr]));
 
         return attrs
           .map((attr) => {
             let classification: ATTIBUTE_CLASSIFICATION = 'valid';
             const occurr = attrOccurences.get(attr) || 0;
             attrOccurences.set(attr, occurr + 1);
+            if (attrMap.get(attr)?.deprecated) {
+              classification = 'deprecated';
+            }
             if (occurr >= 1) {
               classification = 'duplicate';
             }
-            if (!ceAttrs.includes(attr)) {
+            if (!attrMap.has(attr)) {
               classification = 'unknown';
             }
             return {
@@ -222,6 +225,17 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           file,
           start,
           length,
+          reportsUnnecessary: {},
+        };
+      case 'deprecated':
+        return {
+          category: DiagnosticCategory.Warning,
+          code: DEPRECATED_ATTRIBUTE,
+          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for element ${tagName}`,
+          file,
+          start,
+          length,
+          reportsDeprecated: {},
         };
     }
   }

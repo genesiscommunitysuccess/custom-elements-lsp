@@ -14,7 +14,7 @@ export interface DiagnosticsService {
 
 export interface PartialDiagnosticsService extends Partial<DiagnosticsService> {}
 
-export type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate';
+export type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate' | 'deprecated';
 
 export type TagsWithAttrs = {
   tagName: string;

@@ -25,6 +25,7 @@ const rootTemplate = html`
       invalidAttr
       invalidAttr
       invalidAttr
+      unused
     >
       <h1 slot="title">Full info disabled</h1>
     </person-avatar>
