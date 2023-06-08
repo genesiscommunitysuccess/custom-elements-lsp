@@ -5,6 +5,7 @@ import {
   getWholeTextReplacementSpan,
   replaceTemplateStringBinding,
   getPositionOfNthOccuranceEnd,
+  parseAttrNamesFromRawString,
 } from './strings';
 
 describe('replaceTemplateStringBinding', () => {
@@ -87,7 +88,7 @@ describe('getWholeTextReplcaementSpan', () => {
       'Returns the starting at index 0 if there is no white space preceding the cursor',
       [
         { line: 0, character: 8 },
-        // Formatters will try and spread html`testagain` onto a seperate line so you'll
+        // Formatters will try and spread html`testagain` onto a separate line so you'll
         // have to manually fix that if you use a formatter
         // eslint-disable-next-line
         html`testagain`,
@@ -215,6 +216,46 @@ describe('getPositionOfNthTagEnd', () => {
         occurrence,
       });
       expect(result).toEqual(expected);
+    });
+  }
+});
+
+describe('parseAttrNamesFromRawString', () => {
+  const testCases: [string, [string], string[]][] = [
+    ['Returns an empty array for an empty string', [''], []],
+    ['Returns the name of boolean attributes', ['testone test-two'], ['testone', 'test-two']],
+    [
+      'Returns the name multiple times if it is specified multiple times',
+      ['testone testone'],
+      ['testone', 'testone'],
+    ],
+    [
+      'Returns the name of attributes',
+      ['testone="test" test-two="test-again"'],
+      ['testone', 'test-two'],
+    ],
+    [
+      'Returns the name of attribute with binding',
+      ['testone="${x => x.doSomething()}"'],
+      ['testone'],
+    ],
+    [
+      'Returns the name of attributes that start with symbols : @ ?',
+      ['?testone="test" :test-two="test-again" @test-event="${(x,c) => x.event()}"'],
+      ['?testone', ':test-two', '@test-event'],
+    ],
+    [
+      'Can apply all rules at once and returns ',
+      [
+        'testone testone="test" ?testone="${x => true}" :testone="test-again" @testone="${(x,c) => x.event()}"',
+      ],
+      ['testone', 'testone', '?testone', ':testone', '@testone'],
+    ],
+  ];
+
+  for (const [name, [input], expected] of testCases) {
+    it(name, () => {
+      expect(parseAttrNamesFromRawString(input)).toEqual(expected);
     });
   }
 });

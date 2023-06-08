@@ -18,7 +18,15 @@ const rootTemplate = html`
 
     <priority-selector></priority-selector>
 
-    <person-avatar ?fullInfoDisabled="${(_) => true}" invalidAttr>
+    <person-avatar
+      ?fullInfoDisabled="${(_) => true}"
+      invalidAttr
+      invalidAttr
+      invalidAttr
+      invalidAttr
+      invalidAttr
+      unused
+    >
       <h1 slot="title">Full info disabled</h1>
     </person-avatar>
 
