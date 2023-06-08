@@ -12,6 +12,19 @@ import {
 
 type ATTIBUTE_CLASSIFICATION = 'valid' | 'unknown' | 'duplicate';
 
+type TagsWithAttrs = {
+  tagName: string;
+  attrs: string[];
+  tagNameOccurrence: number;
+};
+type InvalidAttrDefinition = {
+  tagName: string;
+  attr: string;
+  tagNameOccurrence: number;
+  attrOccurrence: number;
+  classification: ATTIBUTE_CLASSIFICATION;
+};
+
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
     logger.log('Setting up Diagnostics');
@@ -110,8 +123,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       }));
 
     const occurrences: Map<string, number> = new Map();
-
-    const withOccurrences = tagsAndAttrs.map((tagAndAttrs) => {
+    const withOccurrences: TagsWithAttrs[] = tagsAndAttrs.map((tagAndAttrs) => {
       const o = occurrences.get(tagAndAttrs.tagName) || 0;
       occurrences.set(tagAndAttrs.tagName, o + 1);
       return {
@@ -120,48 +132,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       };
     });
 
-    withOccurrences.forEach((tagAndAttrs) => {
-      this.logger.log(
-        `getInvalidCEAttribute: ${tagAndAttrs.tagName} - ${tagAndAttrs.attrs} - ${tagAndAttrs.tagNameOccurrence}`
-      );
-    });
-
-    const invalidAttrs = withOccurrences
-      .map(({ tagName, tagNameOccurrence, attrs }) => {
-        const attrOccurences: Map<string, number> = new Map();
-
-        const ceAttrs = this.services.customElements
-          .getCEAttributes(tagName)
-          .map(({ name }) => name);
-
-        return attrs
-          .map((attr) => {
-            let classification: ATTIBUTE_CLASSIFICATION = 'valid';
-            const occurr = attrOccurences.get(attr) || 0;
-            attrOccurences.set(attr, occurr + 1);
-            if (occurr >= 1) {
-              classification = 'duplicate';
-            }
-            if (!ceAttrs.includes(attr)) {
-              classification = 'unknown';
-            }
-            return {
-              tagName,
-              tagNameOccurrence,
-              attr,
-              attrOccurrence: occurr + 1,
-              classification,
-            };
-          })
-          .filter(({ classification }) => classification !== 'valid');
-      })
-      .flat();
-
-    invalidAttrs.forEach((attr) => {
-      this.logger.log(
-        `getInvalidCEAttribute: ${attr.tagName} - ${attr.attr} - ${attr.tagNameOccurrence}`
-      );
-    });
+    const invalidAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
 
     const errorAttrs = invalidAttrs
       .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
@@ -195,6 +166,39 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         );
       }
     );
+  }
+
+  private buildInvalidAttrDefinitions(tagsWithAttrs: TagsWithAttrs[]): InvalidAttrDefinition[] {
+    return tagsWithAttrs
+      .map(({ tagName, tagNameOccurrence, attrs }) => {
+        const attrOccurences: Map<string, number> = new Map();
+
+        const ceAttrs = this.services.customElements
+          .getCEAttributes(tagName)
+          .map(({ name }) => name);
+
+        return attrs
+          .map((attr) => {
+            let classification: ATTIBUTE_CLASSIFICATION = 'valid';
+            const occurr = attrOccurences.get(attr) || 0;
+            attrOccurences.set(attr, occurr + 1);
+            if (occurr >= 1) {
+              classification = 'duplicate';
+            }
+            if (!ceAttrs.includes(attr)) {
+              classification = 'unknown';
+            }
+            return {
+              tagName,
+              tagNameOccurrence,
+              attr,
+              attrOccurrence: occurr + 1,
+              classification,
+            };
+          })
+          .filter(({ classification }) => classification !== 'valid');
+      })
+      .flat();
   }
 
   private buildAttributeDiagnosticMessage(
