@@ -7,7 +7,7 @@ const rootTemplate = html`
 
     <h1>${(x) => (x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : '')}</h1>
 
-    <person-avatar>
+    <person-avatar id="test" aria-label="person" data-test-id="${(_) => 'test_id'}">
       <h1 slot="title">Matt</h1>
     </person-avatar>
 
