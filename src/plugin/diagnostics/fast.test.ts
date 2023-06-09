@@ -12,7 +12,7 @@ const getFASTDiagnosticsService = (
   gd: GlobalDataRepository = getGDServiceFromStubbedResource()
 ) => new FASTDiagnosticsService(getLogger(), buildServices({ customElements: ce, globalData: gd }));
 
-describe('filterBooleanBindingAttributes', () => {
+describe('filterValidAttributes', () => {
   const file = 'test-file' as unknown as SourceFile;
 
   it('returns true for a diagnostic which was for a valid boolean binding attribute', () => {
@@ -25,7 +25,7 @@ describe('filterBooleanBindingAttributes', () => {
       messageText: 'Unknown attribute "?activated" for custom element "custom-element"',
       file,
     };
-    const res = (service as any).filterBooleanBindingAttributes(validDiagnostic);
+    const res = (service as any).filterValidAttributes(validDiagnostic);
     expect(res).toBe(false);
   });
 
@@ -39,7 +39,7 @@ describe('filterBooleanBindingAttributes', () => {
       messageText: 'Unknown attribute "?activated" for custom element "no-attr"',
       file,
     };
-    const res = (service as any).filterBooleanBindingAttributes(input);
+    const res = (service as any).filterValidAttributes(input);
     expect(res).toEqual(true);
   });
 
@@ -53,7 +53,7 @@ describe('filterBooleanBindingAttributes', () => {
       messageText: '',
       file,
     };
-    const res = (service as any).filterBooleanBindingAttributes(input);
+    const res = (service as any).filterValidAttributes(input);
     expect(res).toEqual(true);
   });
 });
