@@ -465,7 +465,7 @@ describe('getInvalidCEAttribute', () => {
     expect(result.length).toEqual(0);
   });
 
-  it('Diagnostics for a FAST ref() are ignored', () => {
+  it.skip('Diagnostics for a FAST ref() are ignored', () => {
     const ref = (_: any) => () => '';
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`

@@ -14,6 +14,7 @@ const rootTemplate = html`
     <person-avatar
       :avatarSrc="${(x) => propertySrc}"
       avatar-src="${(x) => attrSrc}"
+      :curry=${(_) => 'curry'}
     ></person-avatar>
 
     <priority-selector></priority-selector>
