@@ -128,8 +128,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
     const errorAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
 
-    return errorAttrs.map(
-      ({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
+    return errorAttrs
+      .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
+      .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
         let searchOffset = getPositionOfNthOccuranceEnd({
           substring: `<${tagName}`,
           occurrence: tagNameOccurrence,
@@ -154,8 +155,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           attrStart,
           attr.length
         );
-      }
-    );
+      });
   }
 
   private buildGlobalAttributeArray(): [string, CustomElementAttribute][] {
