@@ -13,6 +13,7 @@ export interface CustomElementDef extends CustomElementDeclaration {
 
 export interface CustomElementsService {
   customElementKnown(tagName: string): boolean;
+  getAllEvents(): CustomElementEvent[];
   getCEAttributes(name: string): CustomElementAttribute[];
   getCEEvents(name: string): CustomElementEvent[];
   getCEInfo(config: GetCEInfo): CEInfo[];

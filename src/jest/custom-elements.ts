@@ -15,7 +15,9 @@ let manifest: string;
 /**
  * Builds a stubbed `CustomElementsResource` and constructs a `CustomElementsServiceImpl`.
  */
-export const getCEServiceFromStubbedResource = () => {
+export const getCEServiceFromStubbedResource = (
+  override: Map<string, CustomElementDef> = new Map()
+) => {
   const resource = {
     data: new Map<string, CustomElementDef>(),
   };
@@ -65,6 +67,8 @@ export const getCEServiceFromStubbedResource = () => {
     customElement: true,
     attributes: [],
   });
+
+  resource.data = new Map([...resource.data, ...override]);
 
   return new CustomElementsServiceImpl(getLogger(), resource);
 };
