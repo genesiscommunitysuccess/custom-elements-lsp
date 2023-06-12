@@ -117,18 +117,11 @@ describe('convertFastEventAttributes', () => {
   });
 });
 
-describe('addElementEventCompletions', () => {
-  it("Doesn't return any completions if the custom element doesn't have any events", () => {
+describe('addAllElementsEventCompletions', () => {
+  it('Returns all events for known custom elements', () => {
     const service = getFASTCompletionsService();
     const replacementSpan: TextSpan = { start: 0, length: 2 };
-    const res = (service as any).addElementEventCompletions([], replacementSpan, 'no-attr');
-    expect(res.length).toBe(0);
-  });
-
-  it('Returns any events concatenated onto the input array with the input replacementSpan', () => {
-    const service = getFASTCompletionsService();
-    const replacementSpan: TextSpan = { start: 0, length: 2 };
-    const res = (service as any).addElementEventCompletions([], replacementSpan, 'custom-element');
+    const res = (service as any).addAllElementsEventCompletions([], replacementSpan);
     expect(res).toEqual([
       {
         insertText: '@event="${(x, c) => $1}"$0',
