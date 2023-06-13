@@ -12,64 +12,76 @@ const getFASTDiagnosticsService = (
   gd: GlobalDataRepository = getGDServiceFromStubbedResource()
 ) => new FASTDiagnosticsService(getLogger(), buildServices({ customElements: ce, globalData: gd }));
 
-describe('filterBooleanBindingAttributes', () => {
+describe('filterValidAttributes', () => {
   const file = 'test-file' as unknown as SourceFile;
-  const validDiagnostic: Diagnostic = {
-    length: 1,
-    start: 1,
-    category: 1,
-    code: UNKNOWN_ATTRIBUTE,
-    messageText: 'Unknown attribute "?activated" for custom element "custom-element"',
-    file,
-  };
-  it('returns an empty array if provided an empty array', () => {
+
+  it('returns true for a diagnostic which was for a valid boolean binding attribute', () => {
     const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
-    const res = (service as any).filterBooleanBindingAttributes([]);
-    expect(res.length).toBe(0);
+    const validDiagnostic: Diagnostic = {
+      length: 1,
+      start: 1,
+      category: 1,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute "?activated" for custom element "custom-element"',
+      file,
+    };
+    const res = (service as any).filterValidAttributes(validDiagnostic);
+    expect(res).toBe(false);
   });
 
-  it('filters out a valid boolean binding attribute for a custom element', () => {
+  it('returns false for a diagnostic which was for an invalid boolean binding attribute', () => {
     const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
-    const input: Diagnostic[] = [validDiagnostic];
-    const res = (service as any).filterBooleanBindingAttributes(input);
-    expect(res.length).toBe(0);
+    const input: Diagnostic = {
+      length: 1,
+      start: 1,
+      category: 0,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute "?activated" for custom element "no-attr"',
+      file,
+    };
+    const res = (service as any).filterValidAttributes(input);
+    expect(res).toEqual(true);
   });
 
-  it('returns other errors wile filtering out a valid boolean binding', () => {
+  it('returns true for a diagnostic which was for a valid member binding attribute', () => {
     const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
-    const input: Diagnostic[] = [
-      validDiagnostic,
-      {
-        length: 1,
-        start: 1,
-        category: 0,
-        code: DUPLICATE_ATTRIBUTE,
-        messageText: '',
-        file,
-      },
-      {
-        ...validDiagnostic,
-        messageText: 'Unknown attribute "?activated" for custom element "no-attr"',
-      },
-    ];
-    const res = (service as any).filterBooleanBindingAttributes(input);
-    expect(res).toEqual([
-      {
-        category: 0,
-        code: 1002,
-        file: 'test-file',
-        length: 1,
-        messageText: '',
-        start: 1,
-      },
-      {
-        category: 1,
-        code: 1001,
-        file: 'test-file',
-        length: 1,
-        messageText: 'Unknown attribute "?activated" for custom element "no-attr"',
-        start: 1,
-      },
-    ]);
+    const validDiagnostic: Diagnostic = {
+      length: 1,
+      start: 1,
+      category: 1,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute ":member" for custom element "custom-element"',
+      file,
+    };
+    const res = (service as any).filterValidAttributes(validDiagnostic);
+    expect(res).toBe(false);
+  });
+
+  it('returns false for a diagnostic which was for an member binding attribute', () => {
+    const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
+    const input: Diagnostic = {
+      length: 1,
+      start: 1,
+      category: 0,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute ":member" for custom element "no-attr"',
+      file,
+    };
+    const res = (service as any).filterValidAttributes(input);
+    expect(res).toEqual(true);
+  });
+
+  it('returns false for other attr code types', () => {
+    const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
+    const input: Diagnostic = {
+      length: 1,
+      start: 1,
+      category: 0,
+      code: DUPLICATE_ATTRIBUTE,
+      messageText: '',
+      file,
+    };
+    const res = (service as any).filterValidAttributes(input);
+    expect(res).toEqual(true);
   });
 });

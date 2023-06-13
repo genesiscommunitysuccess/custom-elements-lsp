@@ -126,14 +126,11 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       };
     });
 
-    const invalidAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
+    const errorAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
 
-    const errorAttrs = invalidAttrs
-      .filter(({ attr }) => !attr.startsWith(':')) // TODO: FUI-1193
-      .filter(({ attr }) => attr.replaceAll('x', '').length > 0); // TODO: This might be FAST specific hiding ${ref(_)}
-
-    return errorAttrs.map(
-      ({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
+    return errorAttrs
+      .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
+      .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
         let searchOffset = getPositionOfNthOccuranceEnd({
           substring: `<${tagName}`,
           occurrence: tagNameOccurrence,
@@ -158,13 +155,12 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           attrStart,
           attr.length
         );
-      }
-    );
+      });
   }
 
   private buildGlobalAttributeArray(): [string, CustomElementAttribute][] {
     const globalAttrWithAriaTuples = getStore(this.logger).TSUnsafeGetOrAdd(
-      'global-attribute-with-aria-tuplies',
+      'global-attribute-with-aria-tuples',
       () => {
         const globalAttrTuples: [string, CustomElementAttribute][] = this.services.globalData
           .getAttributes()

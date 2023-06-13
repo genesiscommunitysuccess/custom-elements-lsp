@@ -21,38 +21,53 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
   }
 
   getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {
-    const withoutValidBooleanBindings = this.filterBooleanBindingAttributes(ctx.diagnostics);
-    return withoutValidBooleanBindings;
+    const withoutValidAttributes = this.filterValidDiagnostics(ctx.diagnostics);
+    return withoutValidAttributes;
   }
 
-  private filterBooleanBindingAttributes(diagnostics: Diagnostic[]): Diagnostic[] {
+  private filterValidDiagnostics(diagnostics: Diagnostic[]): Diagnostic[] {
     return diagnostics.filter((d) => {
-      if (d.code !== UNKNOWN_ATTRIBUTE) {
-        return true;
+      switch (d.code) {
+        case UNKNOWN_ATTRIBUTE:
+          return this.filterValidAttributes(d);
+        default:
+          return true;
       }
-      const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
-      const res = msgRegex.exec(d.messageText as string);
-      if (!res) {
-        this.logger.log(
-          `filterBooleanBindingAttributes: Failed to parse diagnostic message: ${JSON.stringify(
-            d.messageText
-          )}`
-        );
-        return true;
-      }
-      const [_, attrName, tagName] = res;
-      if (!attrName.startsWith('?')) {
-        return true;
-      }
-      const booleanBindingName = attrName.slice(1);
+    });
+  }
 
-      const isValidBinding = !(
+  private filterValidAttributes(d: Diagnostic): boolean {
+    if (d.code !== UNKNOWN_ATTRIBUTE) {
+      return true;
+    }
+    const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
+    const res = msgRegex.exec(d.messageText as string);
+    if (!res) {
+      this.logger.log(
+        `filterValidAttributes: Failed to parse diagnostic message: ${JSON.stringify(
+          d.messageText
+        )}`
+      );
+      return true;
+    }
+    const [_, attrName, tagName] = res;
+    const [prefix, attr] = [attrName.slice(0, 1), attrName.slice(1)];
+
+    if (prefix === '?') {
+      const isValidBooleanBinding = !(
         this.services.customElements
           .getCEAttributes(tagName)
-          .filter(({ name, type }) => name === booleanBindingName && type === 'boolean').length > 0
+          .filter(({ name, type }) => name === attr && type === 'boolean').length > 0
       );
+      return isValidBooleanBinding;
+    } else if (prefix === ':') {
+      const isValidPropertyBinding = !(
+        this.services.customElements.getCEMembers(tagName).filter(({ name }) => name === attr)
+          .length > 0
+      );
+      return isValidPropertyBinding;
+    }
 
-      return isValidBinding;
-    });
+    return true;
   }
 }

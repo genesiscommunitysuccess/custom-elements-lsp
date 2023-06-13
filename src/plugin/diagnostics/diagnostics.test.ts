@@ -450,8 +450,7 @@ describe('getInvalidCEAttribute', () => {
     ]);
   });
 
-  // TODO: handled in FUI-1193
-  it.skip('Temp: Diagnostics for a FAST properties are ignored', () => {
+  it('Error on attributes which start with a : (used as a binding in some dialects)', () => {
     const nothing = '';
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
@@ -462,10 +461,19 @@ describe('getInvalidCEAttribute', () => {
     `;
     const elementList = getElements(context);
     const result = (service as any).getInvalidCEAttribute(context, elementList);
-    expect(result.length).toEqual(0);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 5,
+        messageText: 'Unknown attribute ":test" for custom element "no-attr"',
+        start: 79,
+      },
+    ]);
   });
 
-  it('Diagnostics for a FAST ref() are ignored', () => {
+  it('Diagnostics for items entirely inside of template interpolation (e.g. FAST ref()) are ignored', () => {
     const ref = (_: any) => () => '';
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
