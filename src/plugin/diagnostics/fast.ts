@@ -29,16 +29,16 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     return diagnostics.filter((d) => {
       switch (d.code) {
         case UNKNOWN_ATTRIBUTE:
-          return this.filterValidAttributes(d);
+          return this.mapAndFilterValidAttributes(d);
         default:
           return true;
       }
     });
   }
 
-  private filterValidAttributes(d: Diagnostic): boolean {
+  private mapAndFilterValidAttributes(d: Diagnostic): Diagnostic | null {
     if (d.code !== UNKNOWN_ATTRIBUTE) {
-      return true;
+      return d;
     }
     const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
     const res = msgRegex.exec(d.messageText as string);
@@ -48,26 +48,23 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
           d.messageText
         )}`
       );
-      return true;
+      return d;
     }
     const [_, attrName, tagName] = res;
     const [prefix, attr] = [attrName.slice(0, 1), attrName.slice(1)];
 
     if (prefix === '?') {
-      const isValidBooleanBinding = !(
-        this.services.customElements
-          .getCEAttributes(tagName)
-          .filter(({ name, type }) => name === attr && type === 'boolean').length > 0
-      );
-      return isValidBooleanBinding;
+      const isValidBooleanBinding = this.services.customElements
+        .getCEAttributes(tagName)
+        .some(({ name, type }) => name === attr && type === 'boolean');
+      return isValidBooleanBinding ? null : d;
     } else if (prefix === ':') {
-      const isValidPropertyBinding = !(
-        this.services.customElements.getCEMembers(tagName).filter(({ name }) => name === attr)
-          .length > 0
-      );
-      return isValidPropertyBinding;
+      const isValidPropertyBinding = this.services.customElements
+        .getCEMembers(tagName)
+        .some(({ name }) => name === attr);
+      return isValidPropertyBinding ? null : d;
     }
 
-    return true;
+    return d;
   }
 }
