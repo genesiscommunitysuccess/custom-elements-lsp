@@ -1,6 +1,7 @@
 import { Logger } from 'typescript-template-language-service-decorator';
-import { Diagnostic } from 'typescript/lib/tsserverlibrary';
-import { UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
+import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
+import { UNKNOWN_ATTRIBUTE, UNKNOWN_EVENT } from '../constants/diagnostic-codes';
+import { getStore } from '../utils/kvstore';
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
 
@@ -21,19 +22,21 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
   }
 
   getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {
-    const withoutValidAttributes = this.filterValidDiagnostics(ctx.diagnostics);
+    const withoutValidAttributes = this.mapAndFilterValidDiagnostics(ctx.diagnostics);
     return withoutValidAttributes;
   }
 
-  private filterValidDiagnostics(diagnostics: Diagnostic[]): Diagnostic[] {
-    return diagnostics.filter((d) => {
-      switch (d.code) {
-        case UNKNOWN_ATTRIBUTE:
-          return this.mapAndFilterValidAttributes(d);
-        default:
-          return true;
-      }
-    });
+  private mapAndFilterValidDiagnostics(diagnostics: Diagnostic[]): Diagnostic[] {
+    return diagnostics
+      .map((d) => {
+        switch (d.code) {
+          case UNKNOWN_ATTRIBUTE:
+            return this.mapAndFilterValidAttributes(d);
+          default:
+            return d;
+        }
+      })
+      .filter((d) => d !== null) as Diagnostic[];
   }
 
   private mapAndFilterValidAttributes(d: Diagnostic): Diagnostic | null {
@@ -63,8 +66,34 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
         .getCEMembers(tagName)
         .some(({ name }) => name === attr);
       return isValidPropertyBinding ? null : d;
+    } else if (prefix === '@') {
+      return this.checkOrTransformEventAttribute(d, attr, tagName);
+    }
+    return d;
+  }
+
+  private checkOrTransformEventAttribute(
+    d: Diagnostic,
+    attr: string,
+    tagName: string
+  ): Diagnostic | null {
+    const totalEventsNameMap = getStore(this.logger).TSUnsafeGetOrAdd('total-events-names', () => {
+      const totalEventsNames = this.services.customElements
+        .getAllEvents()
+        .map(({ name }) => name)
+        .concat(this.services.globalData.getEvents());
+      return new Map(totalEventsNames.map((name) => [name, true]));
+    });
+
+    if (totalEventsNameMap.has(attr)) {
+      return null;
     }
 
-    return d;
+    return {
+      ...d,
+      category: DiagnosticCategory.Warning,
+      code: UNKNOWN_EVENT,
+      messageText: `Unknown event binding "@${attr}" for custom element "${tagName}"`,
+    };
   }
 }

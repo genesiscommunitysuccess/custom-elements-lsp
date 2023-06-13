@@ -1,4 +1,4 @@
-import { Diagnostic, SourceFile } from 'typescript/lib/tsserverlibrary';
+import { Diagnostic, DiagnosticCategory, SourceFile } from 'typescript/lib/tsserverlibrary';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger } from '../../jest/utils';
@@ -12,9 +12,9 @@ const getFASTDiagnosticsService = (
   gd: GlobalDataRepository = getGDServiceFromStubbedResource()
 ) => new FASTDiagnosticsService(getLogger(), buildServices({ customElements: ce, globalData: gd }));
 
-describe('mapAndFilterValidAttributes', () => {
-  const file = 'test-file' as unknown as SourceFile;
+const file = 'test-file' as unknown as SourceFile;
 
+describe('mapAndFilterValidAttributes', () => {
   it('returns null for a diagnostic which was for a valid boolean binding attribute', () => {
     const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
     const validDiagnostic: Diagnostic = {
@@ -103,6 +103,51 @@ describe('mapAndFilterValidAttributes', () => {
       length: 1,
       messageText: '',
       start: 1,
+    });
+  });
+});
+
+describe('checkOrTransformEventAttribute', () => {
+  it('returns null for any known event attribute', () => {
+    const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
+    const validEventDiagnostic: Diagnostic = {
+      start: 0,
+      length: 2,
+      file,
+      category: DiagnosticCategory.Error,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute "@event" for custom element "custom-element"',
+    };
+    const res = (service as any).checkOrTransformEventAttribute(
+      validEventDiagnostic,
+      'event',
+      'custom-element'
+    );
+    expect(res).toBe(null);
+  });
+
+  it('returns the diagnostic transformed to a warning for an unknown event attribute', () => {
+    const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
+    const invalidEventDiagnostic: Diagnostic = {
+      start: 0,
+      length: 2,
+      file,
+      category: DiagnosticCategory.Error,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute "@unknown" for custom element "custom-element"',
+    };
+    const res = (service as any).checkOrTransformEventAttribute(
+      invalidEventDiagnostic,
+      'unknown',
+      'custom-element'
+    );
+    expect(res).toEqual({
+      category: 0,
+      code: 1004,
+      file: 'test-file',
+      length: 2,
+      messageText: 'Unknown event binding "@unknown" for custom element "custom-element"',
+      start: 0,
     });
   });
 });
