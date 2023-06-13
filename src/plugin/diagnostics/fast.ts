@@ -81,7 +81,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
       const totalEventsNames = this.services.customElements
         .getAllEvents()
         .map(({ name }) => name)
-        .concat(this.services.globalData.getEvents());
+        .concat(this.services.globalData.getEvents().map((e) => e.replace('on', '')));
       return new Map(totalEventsNames.map((name) => [name, true]));
     });
 

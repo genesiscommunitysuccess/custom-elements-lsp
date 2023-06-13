@@ -126,6 +126,24 @@ describe('checkOrTransformEventAttribute', () => {
     expect(res).toBe(null);
   });
 
+  it('returns null for any known (global) event attribute', () => {
+    const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
+    const validEventDiagnostic: Diagnostic = {
+      start: 0,
+      length: 2,
+      file,
+      category: DiagnosticCategory.Error,
+      code: UNKNOWN_ATTRIBUTE,
+      messageText: 'Unknown attribute "@resize" for custom element "custom-element"',
+    };
+    const res = (service as any).checkOrTransformEventAttribute(
+      validEventDiagnostic,
+      'event',
+      'custom-element'
+    );
+    expect(res).toBe(null);
+  });
+
   it('returns the diagnostic transformed to a warning for an unknown event attribute', () => {
     const service = getFASTDiagnosticsService(getCEServiceFromStubbedResource());
     const invalidEventDiagnostic: Diagnostic = {
