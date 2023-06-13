@@ -39,19 +39,19 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
       .filter((d) => d !== null) as Diagnostic[];
   }
 
-  private mapAndFilterValidAttributes(d: Diagnostic): Diagnostic | null {
-    if (d.code !== UNKNOWN_ATTRIBUTE) {
-      return d;
+  private mapAndFilterValidAttributes(diag: Diagnostic): Diagnostic | null {
+    if (diag.code !== UNKNOWN_ATTRIBUTE) {
+      return diag;
     }
     const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
-    const res = msgRegex.exec(d.messageText as string);
+    const res = msgRegex.exec(diag.messageText as string);
     if (!res) {
       this.logger.log(
         `filterValidAttributes: Failed to parse diagnostic message: ${JSON.stringify(
-          d.messageText
+          diag.messageText
         )}`
       );
-      return d;
+      return diag;
     }
     const [_, attrName, tagName] = res;
     const [prefix, attr] = [attrName.slice(0, 1), attrName.slice(1)];
@@ -60,20 +60,20 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
       const isValidBooleanBinding = this.services.customElements
         .getCEAttributes(tagName)
         .some(({ name, type }) => name === attr && type === 'boolean');
-      return isValidBooleanBinding ? null : d;
+      return isValidBooleanBinding ? null : diag;
     } else if (prefix === ':') {
       const isValidPropertyBinding = this.services.customElements
         .getCEMembers(tagName)
         .some(({ name }) => name === attr);
-      return isValidPropertyBinding ? null : d;
+      return isValidPropertyBinding ? null : diag;
     } else if (prefix === '@') {
-      return this.checkOrTransformEventAttribute(d, attr, tagName);
+      return this.checkOrTransformEventAttribute(diag, attr, tagName);
     }
-    return d;
+    return diag;
   }
 
   private checkOrTransformEventAttribute(
-    d: Diagnostic,
+    diag: Diagnostic,
     attr: string,
     tagName: string
   ): Diagnostic | null {
@@ -90,7 +90,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     }
 
     return {
-      ...d,
+      ...diag,
       category: DiagnosticCategory.Warning,
       code: UNKNOWN_EVENT,
       messageText: `Unknown event binding "@${attr}" for custom element "${tagName}"`,
