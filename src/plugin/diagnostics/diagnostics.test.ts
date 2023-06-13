@@ -317,7 +317,7 @@ describe('getInvalidCEAttribute', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 1002,
+        code: 1003,
         file: 'test.ts',
         length: 9,
         messageText:
@@ -351,7 +351,7 @@ describe('getInvalidCEAttribute', () => {
       },
       {
         category: 0,
-        code: 1002,
+        code: 1003,
         file: 'test.ts',
         length: 9,
         messageText:
@@ -419,7 +419,7 @@ describe('getInvalidCEAttribute', () => {
     expect(result).toEqual([
       {
         category: 0,
-        code: 1002,
+        code: 1003,
         file: 'test.ts',
         length: 9,
         messageText:

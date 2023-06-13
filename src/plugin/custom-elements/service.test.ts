@@ -3,6 +3,7 @@ import {
   getCEServiceFromTestJsonResource,
 } from '../../jest/custom-elements';
 import { expectArrayElements } from '../../jest/utils';
+import { CustomElementDef } from './custom-elements.types';
 
 describe('customElementKnown', () => {
   it('Returns true if the element is known', () => {
@@ -236,5 +237,59 @@ describe('getCEMembers', () => {
         type: 'string',
       },
     ]);
+  });
+});
+
+describe('getAllEvents', () => {
+  it('Returns all events for all elements', () => {
+    const resource = new Map<string, CustomElementDef>();
+    resource.set('another-element', {
+      name: 'AnotherElement',
+      kind: 'class',
+      path: 'src/components/another/another.ts',
+      customElement: true,
+      events: [
+        {
+          name: 'silenced',
+          type: { text: 'MouseEvent' },
+        },
+        {
+          name: 'inherited',
+          type: { text: 'string' },
+          inheritedFrom: {
+            name: 'AnotherParent',
+          },
+        },
+      ],
+    });
+
+    const ceResource = getCEServiceFromStubbedResource(resource);
+
+    const res = ceResource.getAllEvents();
+
+    expect(res).toEqual([
+      {
+        name: 'event',
+        referenceClass: 'CustomElement',
+        type: 'MouseEvent',
+      },
+      {
+        name: 'inherited',
+        referenceClass: 'ParentElement',
+        type: 'MouseEvent',
+      },
+      {
+        name: 'silenced',
+        referenceClass: 'AnotherElement',
+        type: 'MouseEvent',
+      },
+      {
+        name: 'inherited',
+        referenceClass: 'AnotherParent',
+        type: 'string',
+      },
+    ]);
+
+    expect(ceResource.getAllEvents()).toBe(res);
   });
 });

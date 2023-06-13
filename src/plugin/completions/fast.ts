@@ -59,10 +59,9 @@ export class FASTCompletionsService implements PartialCompletionsService {
       withConvertedEvents,
       replacementSpan
     );
-    const withElementsEvents = this.addElementEventCompletions(
+    const withElementsEvents = this.addAllElementsEventCompletions(
       withBooleanBindings,
-      replacementSpan,
-      tagName
+      replacementSpan
     );
     const withElementMembers = this.addElementMembers(withElementsEvents, replacementSpan, tagName);
     return withElementMembers;
@@ -92,13 +91,12 @@ export class FASTCompletionsService implements PartialCompletionsService {
     );
   }
 
-  private addElementEventCompletions(
+  private addAllElementsEventCompletions(
     completions: CompletionEntry[],
-    replacementSpan: TextSpan,
-    tagName: string
+    replacementSpan: TextSpan
   ): CompletionEntry[] {
     return completions.concat(
-      this.services.customElements.getCEEvents(tagName).map(({ name, referenceClass }) => ({
+      this.services.customElements.getAllEvents().map(({ name, referenceClass }) => ({
         name: `@${name}`,
         insertText: `@${name}="\${(x, c) => $1}"$0`,
         kind: ScriptElementKind.parameterElement,

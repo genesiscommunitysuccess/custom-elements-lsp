@@ -1,5 +1,6 @@
 import { ClassField } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
+import { getStore } from '../utils/kvstore';
 import {
   CEInfo,
   CustomElementAttribute,
@@ -15,6 +16,16 @@ const PARSE_PATH_REGEXP = /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/)
 export class CustomElementsServiceImpl implements CustomElementsService {
   constructor(private logger: Logger, private ceData: CustomElementsResource) {
     this.logger.log('Setting up CustomElementsServiceImpl');
+  }
+
+  getAllEvents(): CustomElementEvent[] {
+    // TODO: Will need to invalidate cache if using --watch in future
+    return getStore(this.logger).TSUnsafeGetOrAdd('ce-get-all-events', () =>
+      this.getCENames().reduce(
+        (acum: CustomElementEvent[], ceName: string) => acum.concat(this.getCEEvents(ceName)),
+        []
+      )
+    );
   }
 
   getCEMembers(name: string): CustomElementMember[] {

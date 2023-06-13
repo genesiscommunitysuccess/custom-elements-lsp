@@ -1,6 +1,7 @@
 import { Logger } from 'typescript-template-language-service-decorator';
-import { Diagnostic } from 'typescript/lib/tsserverlibrary';
-import { UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
+import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
+import { UNKNOWN_ATTRIBUTE, UNKNOWN_EVENT } from '../constants/diagnostic-codes';
+import { getStore } from '../utils/kvstore';
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
 
@@ -21,53 +22,78 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
   }
 
   getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {
-    const withoutValidAttributes = this.filterValidDiagnostics(ctx.diagnostics);
+    const withoutValidAttributes = this.mapAndFilterValidDiagnostics(ctx.diagnostics);
     return withoutValidAttributes;
   }
 
-  private filterValidDiagnostics(diagnostics: Diagnostic[]): Diagnostic[] {
-    return diagnostics.filter((d) => {
-      switch (d.code) {
-        case UNKNOWN_ATTRIBUTE:
-          return this.filterValidAttributes(d);
-        default:
-          return true;
-      }
-    });
+  private mapAndFilterValidDiagnostics(diagnostics: Diagnostic[]): Diagnostic[] {
+    return diagnostics
+      .map((d) => {
+        switch (d.code) {
+          case UNKNOWN_ATTRIBUTE:
+            return this.mapAndFilterValidAttributes(d);
+          default:
+            return d;
+        }
+      })
+      .filter((d) => d !== null) as Diagnostic[];
   }
 
-  private filterValidAttributes(d: Diagnostic): boolean {
-    if (d.code !== UNKNOWN_ATTRIBUTE) {
-      return true;
+  private mapAndFilterValidAttributes(diag: Diagnostic): Diagnostic | null {
+    if (diag.code !== UNKNOWN_ATTRIBUTE) {
+      return diag;
     }
     const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
-    const res = msgRegex.exec(d.messageText as string);
+    const res = msgRegex.exec(diag.messageText as string);
     if (!res) {
       this.logger.log(
         `filterValidAttributes: Failed to parse diagnostic message: ${JSON.stringify(
-          d.messageText
+          diag.messageText
         )}`
       );
-      return true;
+      return diag;
     }
     const [_, attrName, tagName] = res;
     const [prefix, attr] = [attrName.slice(0, 1), attrName.slice(1)];
 
     if (prefix === '?') {
-      const isValidBooleanBinding = !(
-        this.services.customElements
-          .getCEAttributes(tagName)
-          .filter(({ name, type }) => name === attr && type === 'boolean').length > 0
-      );
-      return isValidBooleanBinding;
+      const isValidBooleanBinding = this.services.customElements
+        .getCEAttributes(tagName)
+        .some(({ name, type }) => name === attr && type === 'boolean');
+      return isValidBooleanBinding ? null : diag;
     } else if (prefix === ':') {
-      const isValidPropertyBinding = !(
-        this.services.customElements.getCEMembers(tagName).filter(({ name }) => name === attr)
-          .length > 0
-      );
-      return isValidPropertyBinding;
+      const isValidPropertyBinding = this.services.customElements
+        .getCEMembers(tagName)
+        .some(({ name }) => name === attr);
+      return isValidPropertyBinding ? null : diag;
+    } else if (prefix === '@') {
+      return this.checkOrTransformEventAttribute(diag, attr, tagName);
+    }
+    return diag;
+  }
+
+  private checkOrTransformEventAttribute(
+    diag: Diagnostic,
+    attr: string,
+    tagName: string
+  ): Diagnostic | null {
+    const totalEventsNameMap = getStore(this.logger).TSUnsafeGetOrAdd('total-events-names', () => {
+      const totalEventsNames = this.services.customElements
+        .getAllEvents()
+        .map(({ name }) => name)
+        .concat(this.services.globalData.getEvents().map((e) => e.replace('on', '')));
+      return new Map(totalEventsNames.map((name) => [name, true]));
+    });
+
+    if (totalEventsNameMap.has(attr)) {
+      return null;
     }
 
-    return true;
+    return {
+      ...diag,
+      category: DiagnosticCategory.Warning,
+      code: UNKNOWN_EVENT,
+      messageText: `Unknown event binding "@${attr}" for custom element "${tagName}"`,
+    };
   }
 }

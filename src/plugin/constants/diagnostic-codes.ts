@@ -1,4 +1,5 @@
 export const UNKNOWN_CUSTOM_ELEMENT = 1000;
 export const UNKNOWN_ATTRIBUTE = 1001;
 export const DUPLICATE_ATTRIBUTE = 1002;
-export const DEPRECATED_ATTRIBUTE = 1002;
+export const DEPRECATED_ATTRIBUTE = 1003;
+export const UNKNOWN_EVENT = 1004;
