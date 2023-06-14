@@ -14,6 +14,7 @@ import { GlobalDataServiceImpl } from './global-data/service';
 import { LanguageServiceLogger, TypescriptCompilerIOService } from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
+import { CoreMetadataService } from './metadata';
 
 const USE_BYPASS = false;
 
@@ -78,6 +79,8 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreDiagnosticsServiceImpl(logger, services),
     ];
 
+    const metadata = new CoreMetadataService(logger, services);
+
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
       completions.push(new FASTCompletionsService(logger, services));
@@ -88,7 +91,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       ts,
       info.languageService,
       info.project,
-      new CustomElementsLanguageService(logger, diagnostics, completions),
+      new CustomElementsLanguageService(logger, diagnostics, completions, metadata),
       {
         tags: ['html'], // Could add for css too
         enableForStringWithSubstitutions: true,

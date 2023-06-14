@@ -7,6 +7,7 @@ import {
 import { getCompletionType, PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { LanguageServiceLogger } from './utils';
+import { MetadataService } from './metadata';
 
 /**
  * Handles calls from the TypeScript language server and delegates them to
@@ -24,7 +25,8 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
     private diagnostics: PartialDiagnosticsService[],
-    private completions: PartialCompletionsService[]
+    private completions: PartialCompletionsService[],
+    private metadata: MetadataService
   ) {
     logger.log('Setting up customelements class');
   }

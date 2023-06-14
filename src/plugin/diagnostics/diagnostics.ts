@@ -21,7 +21,7 @@ import { getStore } from '../utils/kvstore';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
-    logger.log('Setting up Diagnostics');
+    this.logger.log('Setting up Diagnostics');
   }
 
   getSemanticDiagnostics(ctx: DiagnosticCtx): Diagnostic[] {
