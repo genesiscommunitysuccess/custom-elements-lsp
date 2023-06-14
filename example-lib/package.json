@@ -5,6 +5,7 @@
   "main": "dist/esm/index.js",
   "types": "dist/dts/index.d.ts",
   "scripts": {
+    "bootstrap:module": "npm i && npm run build && npm run cem:analyze",
     "build": "npm run build:tsc",
     "build:tsc": "tsc -b tsconfig.json",
     "cem:analyze": "cem analyze --config custom-elements-manifest.config.js"

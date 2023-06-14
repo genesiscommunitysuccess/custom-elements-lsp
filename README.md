@@ -61,7 +61,8 @@ The LSP plugin should be symlinked locally via the `package.json` but if you're 
 
 While developing:
 
-1. `npx tsc --watch` from the root directory to incrementally transpile the plugin.
+1. `npm run bootstrap` will do all required setup for installing and building packages for working on the LSP and using the test example apps.
+2. `npx tsc --watch` from the root directory to incrementally transpile the plugin.
 
 To view logs
 
