@@ -16,7 +16,8 @@ export interface CustomElementsService {
   getAllEvents(): CustomElementEvent[];
   getCEAttributes(name: string): CustomElementAttribute[];
   getCEEvents(name: string): CustomElementEvent[];
-  getCEInfo(config: GetCEInfo): CEInfo[];
+  getAllCEInfo(config: GetCEInfo): CEInfo[];
+  getCEPath(name: string, config: Pick<GetCEInfo, 'getFullPath'>): string | null;
   getCEMembers(name: string): CustomElementMember[];
   getCENames(): string[];
 }

@@ -79,7 +79,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreDiagnosticsServiceImpl(logger, services),
     ];
 
-    const metadata = new CoreMetadataService(logger, services);
+    const metadata = new CoreMetadataService(logger, services, ioService.getNormalisedRootPath());
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');

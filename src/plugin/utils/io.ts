@@ -1,7 +1,9 @@
+import * as nodepath from 'path';
 import { CompilerHost } from 'typescript/lib/tsserverlibrary';
 
 export interface IO {
   readFile(path: string): string | undefined;
+  getNormalisedRootPath(): string;
 }
 
 /**
@@ -11,12 +13,17 @@ export interface IO {
  */
 export class TypescriptCompilerIOService implements IO {
   constructor(private compilerHost: CompilerHost, private projectRootOffset: string) {
-    console.log(
-      `[CE] offset: ${
-        this.projectRootOffset
-      }, dir: ${compilerHost.getCurrentDirectory()}, $HOME: ${compilerHost.getEnvironmentVariable?.(
-        'HOME'
-      )}, default lib location: ${compilerHost.getDefaultLibLocation?.()}`
+    // console.log(
+    // `[CE] offset: ${this.projectRootOffset
+    // }, dir: ${compilerHost.getCurrentDirectory()}, $HOME: ${compilerHost.getEnvironmentVariable?.(
+    // 'HOME'
+    // )}, default lib location: ${compilerHost.getDefaultLibLocation?.()}`
+    // );
+  }
+
+  getNormalisedRootPath(): string {
+    return nodepath.normalize(
+      this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/'
     );
   }
 

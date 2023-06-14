@@ -77,7 +77,7 @@ describe('getTokenSpanMatchingPattern', () => {
         `,
         /b/,
       ],
-      { start: 12, length: 4 },
+      { start: 13, length: 4 },
     ],
     [
       'Returns the span of a matching pattern of length 1',
@@ -88,7 +88,7 @@ describe('getTokenSpanMatchingPattern', () => {
         `,
         /b/,
       ],
-      { start: 12, length: 1 },
+      { start: 13, length: 1 },
     ],
     [
       'Can get the tag name of an element',
@@ -99,7 +99,7 @@ describe('getTokenSpanMatchingPattern', () => {
         `,
         /[\w-]/,
       ],
-      { start: 11, length: 14 },
+      { start: 12, length: 14 },
     ],
   ];
 

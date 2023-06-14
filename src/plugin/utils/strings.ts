@@ -48,20 +48,17 @@ export function getTokenSpanMatchingPattern(
   while (pattern.test(context.rawText[offset])) {
     offset -= 1;
     if (offset < 0) {
-      offset = 0;
       break;
     }
   }
-  const start = offset;
-  let length = context.toOffset(position) - start + 1;
+  const start = offset + 1;
+  let length = context.toOffset(position) - start;
   while (pattern.test(context.rawText[start + length])) {
     length += 1;
     if (start + length == context.rawText.length) {
-      length -= 1;
       break;
     }
   }
-  length -= 1;
 
   return {
     start,

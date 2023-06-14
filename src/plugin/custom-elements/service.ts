@@ -71,7 +71,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     return [...this.ceData.data.keys()];
   }
 
-  getCEInfo(config: GetCEInfo): CEInfo[] {
+  getAllCEInfo(config: GetCEInfo): CEInfo[] {
     const info: CEInfo[] = [];
     for (const [k, v] of this.ceData.data) {
       info.push({
@@ -80,6 +80,15 @@ export class CustomElementsServiceImpl implements CustomElementsService {
       });
     }
     return info;
+  }
+
+  getCEPath(name: string, config: Pick<GetCEInfo, 'getFullPath'>): string | null {
+    const key = config.getFullPath ? 'ce-get-all-paths-full' : 'ce-get-all-paths-short';
+    const mapWithFullPaths = getStore(this.logger).TSUnsafeGetOrAdd(
+      key,
+      () => new Map(this.getAllCEInfo(config).map(({ tagName, path }) => [tagName, path]))
+    );
+    return mapWithFullPaths.get(name) ?? null;
   }
 
   customElementKnown(tagName: string): boolean {
