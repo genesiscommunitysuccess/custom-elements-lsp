@@ -1,25 +1,14 @@
 import * as nodepath from 'path';
 import { CompilerHost } from 'typescript/lib/tsserverlibrary';
-
-export interface IO {
-  readFile(path: string): string | undefined;
-  getNormalisedRootPath(): string;
-}
+import { IORepository } from './io.types';
 
 /**
  * Uses methods on the typescript compiler host to perform IO operations.
  * // Info 29   [10:43:18.627] [CE] dir: /Users/matt.walker/genesis/poc/customelement-lsp/example/src
  * const dir = ts.createCompilerHost({}).getCurrentDirectory();
  */
-export class TypescriptCompilerIOService implements IO {
-  constructor(private compilerHost: CompilerHost, private projectRootOffset: string) {
-    // console.log(
-    // `[CE] offset: ${this.projectRootOffset
-    // }, dir: ${compilerHost.getCurrentDirectory()}, $HOME: ${compilerHost.getEnvironmentVariable?.(
-    // 'HOME'
-    // )}, default lib location: ${compilerHost.getDefaultLibLocation?.()}`
-    // );
-  }
+export class TypescriptCompilerIORepository implements IORepository {
+  constructor(private compilerHost: CompilerHost, private projectRootOffset: string) {}
 
   getNormalisedRootPath(): string {
     return nodepath.normalize(

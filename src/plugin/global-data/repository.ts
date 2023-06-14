@@ -7,7 +7,7 @@ import { GlobalAttrType, GlobalDataRepository } from './global-data.types';
 export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   constructor(private logger: Logger) {
     this.init();
-    logger.log('Setting up GlobalDataRepositoryImpl');
+    this.logger.log('Setting up GlobalDataRepositoryImpl');
   }
 
   private globalAttributes: [string, GlobalAttrType][] = [];
