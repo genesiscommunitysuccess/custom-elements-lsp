@@ -34,7 +34,7 @@ const toOffset =
   ({ line, character }: { line: number; character: number }) =>
     rawText
       .split(/\n/g)
-      .slice(0, line)
+      .slice(0, line - 1)
       .reduce((acc, curr) => acc + curr.length + 1, 0) + character;
 
 /**
