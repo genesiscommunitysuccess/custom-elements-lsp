@@ -1,5 +1,10 @@
 import parse from 'node-html-parser';
-import { CompletionInfo, Diagnostic, LineAndCharacter } from 'typescript/lib/tsserverlibrary';
+import {
+  CompletionInfo,
+  DefinitionInfoAndBoundSpan,
+  Diagnostic,
+  LineAndCharacter,
+} from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
   TemplateLanguageService,
@@ -68,5 +73,12 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
         entries: [],
       }
     );
+  }
+
+  getDefinitionAndBoundSpan(
+    context: TemplateContext,
+    position: LineAndCharacter
+  ): DefinitionInfoAndBoundSpan {
+    return this.metadata.getDefinitionAndBoundSpan(context, position);
   }
 }
