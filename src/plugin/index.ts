@@ -14,8 +14,8 @@ import { GlobalDataServiceImpl } from './global-data/service';
 import {
   LanguageServiceLogger,
   IOServiceImpl,
-  TypescriptCompilerIORepository,
   IORepository,
+  TypescriptCompilerIORepository,
 } from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
@@ -58,7 +58,11 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     // TODO: Should this default or error out?
     const projectRoot = info.config.srcRouteFromTSServer || '../../..';
 
-    const ioRepo = new TypescriptCompilerIORepository(ts.createCompilerHost({}), projectRoot);
+    const ioRepo = new TypescriptCompilerIORepository(
+      logger,
+      ts.createCompilerHost({}),
+      projectRoot
+    );
 
     // TODO: Need to use the service to get the schema FUI-1195
     const maybeSchema = ioRepo.readFile('ce.json');
@@ -86,7 +90,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreDiagnosticsServiceImpl(logger, services),
     ];
 
-    const metadata = new CoreMetadataService(logger, services, services.io.getNormalisedRootPath());
+    const metadata = new CoreMetadataService(logger, services);
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');

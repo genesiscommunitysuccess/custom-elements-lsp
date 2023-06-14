@@ -1,10 +1,5 @@
 import { IORepository, IOService } from './io.types';
 
-/**
- * Uses methods on the typescript compiler host to perform IO operations.
- * // Info 29   [10:43:18.627] [CE] dir: /Users/matt.walker/genesis/poc/customelement-lsp/example/src
- * const dir = ts.createCompilerHost({}).getCurrentDirectory();
- */
 export class IOServiceImpl implements IOService {
   constructor(private repo: IORepository) {
     // console.log(

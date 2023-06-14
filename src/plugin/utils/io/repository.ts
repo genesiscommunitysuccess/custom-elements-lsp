@@ -1,4 +1,5 @@
 import * as nodepath from 'path';
+import { Logger } from 'typescript-template-language-service-decorator';
 import { CompilerHost } from 'typescript/lib/tsserverlibrary';
 import { IORepository } from './io.types';
 
@@ -8,7 +9,13 @@ import { IORepository } from './io.types';
  * const dir = ts.createCompilerHost({}).getCurrentDirectory();
  */
 export class TypescriptCompilerIORepository implements IORepository {
-  constructor(private compilerHost: CompilerHost, private projectRootOffset: string) {}
+  constructor(
+    private logger: Logger,
+    private compilerHost: CompilerHost,
+    private projectRootOffset: string
+  ) {
+    this.logger.log('setting up TypescriptCompilerIORepository');
+  }
 
   getNormalisedRootPath(): string {
     return nodepath.normalize(
