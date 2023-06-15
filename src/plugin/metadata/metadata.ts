@@ -66,8 +66,6 @@ export class CoreMetadataService implements MetadataService {
       throw new Error("Couldn't find path for custom element with tagName: " + path);
     }
 
-    console.log(`getCustomElementDefinitionInfo, path: ${path}`);
-
     let maybeFileName: string | null = null;
 
     if (!path.includes('node_modules')) {
@@ -121,28 +119,23 @@ export class CoreMetadataService implements MetadataService {
   }
 
   private tryFindPathOfDependencyFile(tagName: string, longPathName: string): string | null {
-    const pkgName = this.services.customElements.getCEPath(tagName, { getFullPath: false });
-    if (pkgName === null) return null;
+    const npmPackageName = this.services.customElements.getCEPath(tagName, { getFullPath: false });
+    if (npmPackageName === null) return null;
 
-    const pkgPath = resolvePkg(pkgName);
+    const pkgPath = resolvePkg(npmPackageName);
     if (typeof pkgPath === 'undefined') return null;
-    const filePathInPkg = longPathName.replace('node_modules/' + pkgName, '');
-    this.logger.log(
-      `tryFindPathOfDependencyFile, pkgName: ${pkgName}, pkgPath: ${pkgPath}, longPathName: ${longPathName}, filePathInPkg: ${filePathInPkg}`
-    );
+    const filePathFromPackageRoot = longPathName.replace('node_modules/' + npmPackageName, '');
 
-    this.logger.log(pkgPath + filePathInPkg);
-    if (this.services.io.fileExists(pkgPath + filePathInPkg)) {
-      this.logger.log(`tryFindPathOfDependencyFile, found path: ${pkgPath + filePathInPkg}`);
-      return pkgPath + filePathInPkg;
+    if (this.services.io.fileExists(pkgPath + filePathFromPackageRoot)) {
+      // Direct source file exists
+      return pkgPath + filePathFromPackageRoot;
     }
 
-    const filePathInPkgAsJS = filePathInPkg
+    const filePathInPkgAsJS = filePathFromPackageRoot
       .replace('.ts', '.js')
       .replace(/dist\/.+?\//, 'dist/esm/');
-    this.logger.log(pkgPath + filePathInPkgAsJS);
     if (this.services.io.fileExists(pkgPath + filePathInPkgAsJS)) {
-      this.logger.log(`tryFindPathOfDependencyFile, found path: ${pkgPath + filePathInPkgAsJS}`);
+      // JS output exists
       return pkgPath + filePathInPkgAsJS;
     }
 

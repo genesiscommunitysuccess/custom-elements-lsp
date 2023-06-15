@@ -19,10 +19,13 @@ To use this plugin you have a version of typescript as part of the project, loca
             "fastEnable": true
         }
     ],
+    "target": "ES2021"
 }
 ```
 
 > `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where `ce.json` (see step 4) is saved to. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`.
+
+> You need to use a target of `ES2021` or later.
 
 3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
 <!-- TODO: need much better explanation of this command -->
