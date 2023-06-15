@@ -9,7 +9,6 @@ import {
 import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
 import { MetadataService } from './metadata.types';
-// import { getInstalledPathSync } from 'get-installed-path';
 
 /**
  * Handles metadata requests such as signature and definition info.

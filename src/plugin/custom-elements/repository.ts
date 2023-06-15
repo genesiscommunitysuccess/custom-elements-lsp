@@ -1,5 +1,6 @@
 import { CustomElement, JavaScriptModule, Package } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
+import { DESIGN_SYSTEM_PREFIX_TOKEN } from '../constants/misc';
 import { CEMTConfig, CustomElementDef, CustomElementsResource } from './custom-elements.types';
 
 export class CustomElementsAnalyzerManifestParser implements CustomElementsResource {
@@ -54,7 +55,7 @@ export class CustomElementsAnalyzerManifestParser implements CustomElementsResou
     const baseTag = (declaration as { tagName: string }).tagName;
 
     const tagName = this.config.designSystemPrefix
-      ? baseTag.replace('%%prefix%%', this.config.designSystemPrefix)
+      ? baseTag.replace(DESIGN_SYSTEM_PREFIX_TOKEN, this.config.designSystemPrefix)
       : baseTag;
 
     this.data.set(tagName, {
