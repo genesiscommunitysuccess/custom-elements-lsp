@@ -55,7 +55,7 @@ export class CoreMetadataService implements MetadataService {
   ): DefinitionInfoAndBoundSpan {
     const path = this.services.customElements.getCEPath(tagName, { getFullPath: true });
     if (!path) {
-      throw new Error("Couldn't find path for custom element with tagName: " + path);
+      throw new Error("Couldn't find path for custom element with tagName: " + tagName);
     }
 
     let maybeFileName: string | null = null;
