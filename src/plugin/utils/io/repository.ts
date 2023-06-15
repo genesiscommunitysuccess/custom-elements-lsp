@@ -1,10 +1,11 @@
 import * as nodepath from 'path';
+import * as nodefs from 'fs';
 import { Logger } from 'typescript-template-language-service-decorator';
 import { CompilerHost } from 'typescript/lib/tsserverlibrary';
 import { IORepository } from './io.types';
 
 /**
- * Uses methods on the typescript compiler host to perform IO operations.
+ * Uses methods on the typescript compiler host and NodeJS to perform IO operations.
  * // Info 29   [10:43:18.627] [CE] dir: /Users/matt.walker/genesis/poc/customelement-lsp/example/src
  * const dir = ts.createCompilerHost({}).getCurrentDirectory();
  */
@@ -17,6 +18,10 @@ export class TypescriptCompilerIORepository implements IORepository {
     this.logger.log('setting up TypescriptCompilerIORepository');
   }
 
+  fileExists(path: string): boolean {
+    return nodefs.existsSync(path);
+  }
+
   getNormalisedRootPath(): string {
     return nodepath.normalize(
       this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/'
@@ -24,8 +29,6 @@ export class TypescriptCompilerIORepository implements IORepository {
   }
 
   readFile(path: string): string | undefined {
-    return this.compilerHost.readFile(
-      this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/' + path
-    );
+    return this.compilerHost.readFile(path);
   }
 }

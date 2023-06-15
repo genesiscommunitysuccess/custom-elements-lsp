@@ -65,7 +65,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     );
 
     // TODO: Need to use the service to get the schema FUI-1195
-    const maybeSchema = ioRepo.readFile('ce.json');
+    const maybeSchema = ioRepo.readFile(ioRepo.getNormalisedRootPath() + 'ce.json');
     if (!maybeSchema) {
       console.error('Unable to read schema, using plugin bypass.');
       console.error(`Searched for schema at ${projectRoot}/ce.json`);

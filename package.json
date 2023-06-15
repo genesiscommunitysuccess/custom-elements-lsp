@@ -36,6 +36,7 @@
 		"globby": "^13.1.4",
 		"minimist-lite": "^2.2.1",
 		"node-html-parser": "^6.1.5",
+		"resolve-pkg": "^2.0.0",
 		"typescript-template-language-service-decorator": "^2.3.2"
 	},
 	"devDependencies": {

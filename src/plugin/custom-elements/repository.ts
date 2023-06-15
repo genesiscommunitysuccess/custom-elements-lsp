@@ -1,10 +1,6 @@
 import { CustomElement, JavaScriptModule, Package } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
-import { CustomElementDef, CustomElementsResource } from './custom-elements.types';
-
-export type CEMTConfig = {
-  designSystemPrefix?: string;
-};
+import { CEMTConfig, CustomElementDef, CustomElementsResource } from './custom-elements.types';
 
 export class CustomElementsAnalyzerManifestParser implements CustomElementsResource {
   constructor(private logger: Logger, private manifest: Package, private config: CEMTConfig) {
@@ -18,6 +14,10 @@ export class CustomElementsAnalyzerManifestParser implements CustomElementsResou
    * API
    */
   data: Map<string, CustomElementDef> = new Map();
+
+  getConfig() {
+    return this.config;
+  }
 
   /**
    * PRIVATE

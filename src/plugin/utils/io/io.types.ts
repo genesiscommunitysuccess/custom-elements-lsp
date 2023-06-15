@@ -1,10 +1,12 @@
 export interface IOService {
-  readFile(path: string): string | undefined;
-  getNormalisedRootPath(): string;
+  fileExists(path: string): boolean;
   getLocationOfStringInFile(path: string, token: string): number | null;
+  getNormalisedRootPath(): string;
+  readFile(path: string): string | undefined;
 }
 
 export interface IORepository {
-  readFile(path: string): string | undefined;
+  fileExists(path: string): boolean;
   getNormalisedRootPath(): string;
+  readFile(path: string): string | undefined;
 }

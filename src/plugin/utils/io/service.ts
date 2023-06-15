@@ -10,6 +10,10 @@ export class IOServiceImpl implements IOService {
     // );
   }
 
+  fileExists(path: string): boolean {
+    return this.repo.fileExists(path);
+  }
+
   readFile(path: string): string | undefined {
     return this.repo.readFile(path);
   }

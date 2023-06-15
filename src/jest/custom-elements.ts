@@ -1,10 +1,7 @@
 import { readFileSync, existsSync } from 'fs';
 import { Package } from 'custom-elements-manifest';
-import { CustomElementDef } from '../plugin/custom-elements/custom-elements.types';
-import {
-  CEMTConfig,
-  CustomElementsAnalyzerManifestParser,
-} from '../plugin/custom-elements/repository';
+import { CEMTConfig, CustomElementDef } from '../plugin/custom-elements/custom-elements.types';
+import { CustomElementsAnalyzerManifestParser } from '../plugin/custom-elements/repository';
 import { CustomElementsServiceImpl } from '../plugin/custom-elements/service';
 import { getLogger } from './utils';
 
@@ -20,6 +17,7 @@ export const getCEServiceFromStubbedResource = (
 ) => {
   const resource = {
     data: new Map<string, CustomElementDef>(),
+    getConfig: () => ({ designSystemPrefix: 'example' }),
   };
 
   resource.data.set('custom-element', {

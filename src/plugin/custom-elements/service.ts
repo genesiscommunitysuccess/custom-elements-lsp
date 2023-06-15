@@ -18,6 +18,16 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     this.logger.log('Setting up CustomElementsServiceImpl');
   }
 
+  /**
+   * Gets the tag name with the design system prefix replaced with a placeholder if appropriate, or gets the tag name as-is.
+   * If the custom element is unknown, returns null.
+   */
+  getCEDefinitionName(name: string): string | null {
+    if (!this.customElementKnown(name)) return null;
+    const maybeDSPrefix = this.ceData.getConfig().designSystemPrefix;
+    return name.replace(maybeDSPrefix ?? '', '%%prefix%%');
+  }
+
   getAllEvents(): CustomElementEvent[] {
     // TODO: Will need to invalidate cache if using --watch in future
     return getStore(this.logger).TSUnsafeGetOrAdd('ce-get-all-events', () =>
