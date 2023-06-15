@@ -102,13 +102,15 @@ export class CoreMetadataService implements MetadataService {
     // string onto the start. So we need to manually get the node text start ourselves and subtract
     // it to cancel out the offset.
     const nodeTextStart = context.node.getStart();
+    let start = definitionStart - nodeTextStart - 1;
+    if (start < 0) start = 0;
 
     return {
       textSpan: tokenSpan,
       definitions: [
         {
           fileName: maybeFileName,
-          textSpan: { start: definitionStart - nodeTextStart - 1, length: tagName.length },
+          textSpan: { start, length: tagName.length },
           kind: ScriptElementKind.classElement,
           containerKind: ScriptElementKind.moduleElement,
           containerName: 'file',
@@ -135,7 +137,9 @@ export class CoreMetadataService implements MetadataService {
       return pkgPath + filePathInPkg;
     }
 
-    const filePathInPkgAsJS = filePathInPkg.replace('.ts', '.js').replace('/src', '/esm');
+    const filePathInPkgAsJS = filePathInPkg
+      .replace('.ts', '.js')
+      .replace(/dist\/.+?\//, 'dist/esm/');
     this.logger.log(pkgPath + filePathInPkgAsJS);
     if (this.services.io.fileExists(pkgPath + filePathInPkgAsJS)) {
       this.logger.log(`tryFindPathOfDependencyFile, found path: ${pkgPath + filePathInPkgAsJS}`);
