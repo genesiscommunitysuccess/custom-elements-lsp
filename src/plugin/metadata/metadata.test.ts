@@ -1,5 +1,5 @@
 import resolvePkg from 'resolve-pkg';
-import { TextSpan } from 'typescript/lib/tsserverlibrary';
+import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
@@ -224,5 +224,63 @@ describe('getCustomElementDefinitionInfo', () => {
     expect(fakeIOService.getNormalisedRootPath).toHaveBeenCalledTimes(0);
     expect(fakeIOService.getLocationOfStringInFile).toHaveBeenCalledTimes(1);
     expect(depFnSpy).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe('getDefinitionAndBoundSpan', () => {
+  const position: LineAndCharacter = { line: 1, character: 9 };
+  const context = html`
+    <custom-element></custom-element>
+  `;
+  context.node.getStart = jest.fn().mockImplementation(() => 10);
+
+  it('returns a 0 0 text span if we are unable to find a token under the cursor', () => {
+    const blankPosition: LineAndCharacter = { line: 1, character: 0 };
+    const service = getMetadataService({});
+    const res = (service as any).getDefinitionAndBoundSpan(context, blankPosition);
+    expect(res).toEqual({
+      textSpan: {
+        start: 0,
+        length: 0,
+      },
+    });
+  });
+
+  it('returns the textspan of the found token if the token is not a known custom element', () => {
+    const service = getMetadataService({});
+    const contextWithUnknownElement = html`
+      <unknown-elem></unknown-elem>
+    `;
+    const res = (service as any).getDefinitionAndBoundSpan(contextWithUnknownElement, position);
+    expect(res).toEqual({
+      textSpan: {
+        start: 8,
+        length: 12,
+      },
+    });
+  });
+
+  it('returns the definition for a known custom element', () => {
+    const service = getMetadataService({});
+    const res = (service as any).getDefinitionAndBoundSpan(context, position);
+    expect(res).toEqual({
+      definitions: [
+        {
+          containerKind: 'module',
+          containerName: 'file',
+          fileName: '/home/user/projectsrc/components/avatar/avatar.ts',
+          kind: 'class',
+          name: 'custom-element',
+          textSpan: {
+            length: 14,
+            start: 0,
+          },
+        },
+      ],
+      textSpan: {
+        length: 14,
+        start: 6,
+      },
+    });
   });
 });
