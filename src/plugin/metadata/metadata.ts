@@ -37,12 +37,6 @@ export class CoreMetadataService implements MetadataService {
     const { start, length } = maybeTokenSpan;
     const token = context.rawText.slice(start, start + length);
 
-    this.logger.log(
-      `getDefinitionAndBoundSpan;  maybeTokenSpan: ${JSON.stringify(
-        maybeTokenSpan
-      )} token: ${token}`
-    );
-
     if (this.services.customElements.customElementKnown(token)) {
       return this.getCustomElementDefinitionInfo(maybeTokenSpan, token, context);
     }
@@ -52,7 +46,6 @@ export class CoreMetadataService implements MetadataService {
     };
   }
 
-  // Info 206  [09:09:12.859] getCustomElementDefinitionInfo, path: node_modules/example-lib/dist/lib/priority/priority.ts
   /**
    * If the token is a custom element, try and find the definition in the source file.
    */

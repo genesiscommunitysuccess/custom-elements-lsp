@@ -319,3 +319,28 @@ describe('getCEPath', () => {
     expect(resTwo).toBe('pkg');
   });
 });
+
+describe('getCEDefinitionName', () => {
+  it('Returns null for an unknown custom element', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEDefinitionName('unknown-element');
+    expect(res).toBeNull();
+  });
+  it('Returns the definition name for a known custom element with a full name', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEDefinitionName('custom-element');
+    expect(res).toBe('custom-element');
+  });
+  it('Returns the tagname with the design system prefix placeholder if appropriate', () => {
+    const resource = new Map<string, CustomElementDef>();
+    resource.set('example-element', {
+      name: 'TestElement',
+      kind: 'class',
+      path: 'src/components/test/testcomponent.ts',
+      customElement: true,
+    });
+    const ceResource = getCEServiceFromStubbedResource(resource);
+    const res = ceResource.getCEDefinitionName('example-element');
+    expect(res).toBe('%%prefix%%-element');
+  });
+});
