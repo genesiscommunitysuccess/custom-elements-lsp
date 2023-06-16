@@ -60,7 +60,9 @@ export class CoreMetadataServiceImpl implements MetadataService {
     }
 
     const { className, superclassName, description } = customElementInfo;
-    const attributes = this.services.customElements.getCEAttributes(tagName);
+    const attributes = this.services.customElements
+      .getCEAttributes(tagName)
+      .filter(({ deprecated }) => !deprecated);
 
     let documentation: QuickInfo['documentation'] = [];
     if (description) {
@@ -72,6 +74,12 @@ export class CoreMetadataServiceImpl implements MetadataService {
         text:
           (i === 0 ? '\n\nAttributes:' : '') +
           `\n${name} \`${type}\`${deprecated ? ' (deprecated)' : ''}`,
+      }))
+    );
+    documentation = documentation.concat(
+      this.services.customElements.getCEEvents(tagName).map(({ name }, i) => ({
+        kind: 'text',
+        text: (i === 0 ? '\n\nEvents:' : '') + `\n${name}`,
       }))
     );
 

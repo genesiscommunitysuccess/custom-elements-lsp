@@ -20,6 +20,7 @@ import {
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
+import { FASTMetadataService } from './metadata/fast';
 
 const USE_BYPASS = false;
 
@@ -96,6 +97,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       logger.log('FAST config enabled');
       completions.push(new FASTCompletionsService(logger, services));
       diagnostics.push(new FASTDiagnosticsService(logger, services));
+      metadata.push(new FASTMetadataService(logger, services));
     }
 
     return decorateWithTemplateLanguageService(
