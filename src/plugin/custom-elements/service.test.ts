@@ -156,10 +156,16 @@ describe('getAllCEInfo', () => {
       {
         path: 'src/components/avatar/avatar.ts',
         tagName: 'custom-element',
+        className: 'CustomElement',
+        description: undefined,
+        superclassName: undefined,
       },
       {
         path: 'node_modules/pkg/src/components/misc/no-attr.ts',
         tagName: 'no-attr',
+        className: 'NoAttribute',
+        description: undefined,
+        superclassName: undefined,
       },
     ]);
   });
@@ -171,10 +177,16 @@ describe('getAllCEInfo', () => {
       {
         path: 'src/components/avatar/avatar.ts',
         tagName: 'custom-element',
+        className: 'CustomElement',
+        description: undefined,
+        superclassName: undefined,
       },
       {
         path: 'pkg',
         tagName: 'no-attr',
+        className: 'NoAttribute',
+        description: undefined,
+        superclassName: undefined,
       },
     ]);
   });
