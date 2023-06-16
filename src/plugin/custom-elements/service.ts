@@ -1,5 +1,6 @@
 import { ClassField } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
+import { DESIGN_SYSTEM_PREFIX_TOKEN } from '../constants/misc';
 import { getStore } from '../utils/kvstore';
 import {
   CEInfo,
@@ -16,6 +17,16 @@ const PARSE_PATH_REGEXP = /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/)
 export class CustomElementsServiceImpl implements CustomElementsService {
   constructor(private logger: Logger, private ceData: CustomElementsResource) {
     this.logger.log('Setting up CustomElementsServiceImpl');
+  }
+
+  /**
+   * Gets the tag name with the design system prefix replaced with a placeholder if appropriate, or gets the tag name as-is.
+   * If the custom element is unknown, returns null.
+   */
+  getCEDefinitionName(name: string): string | null {
+    if (!this.customElementKnown(name)) return null;
+    const maybeDSPrefix = this.ceData.getConfig().designSystemPrefix;
+    return name.replace(maybeDSPrefix ?? '', DESIGN_SYSTEM_PREFIX_TOKEN);
   }
 
   getAllEvents(): CustomElementEvent[] {
@@ -71,7 +82,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     return [...this.ceData.data.keys()];
   }
 
-  getCEInfo(config: GetCEInfo): CEInfo[] {
+  getAllCEInfo(config: GetCEInfo): CEInfo[] {
     const info: CEInfo[] = [];
     for (const [k, v] of this.ceData.data) {
       info.push({
@@ -80,6 +91,15 @@ export class CustomElementsServiceImpl implements CustomElementsService {
       });
     }
     return info;
+  }
+
+  getCEPath(name: string, config: Pick<GetCEInfo, 'getFullPath'>): string | null {
+    const key = config.getFullPath ? 'ce-get-all-paths-full' : 'ce-get-all-paths-short';
+    const mapWithFullPaths = getStore(this.logger).TSUnsafeGetOrAdd(
+      key,
+      () => new Map(this.getAllCEInfo(config).map(({ tagName, path }) => [tagName, path]))
+    );
+    return mapWithFullPaths.get(name) ?? null;
   }
 
   customElementKnown(tagName: string): boolean {

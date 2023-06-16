@@ -6,6 +6,7 @@ import {
   replaceTemplateStringBinding,
   getPositionOfNthOccuranceEnd,
   parseAttrNamesFromRawString,
+  getTokenSpanMatchingPattern,
 } from './strings';
 
 describe('replaceTemplateStringBinding', () => {
@@ -28,6 +29,84 @@ describe('replaceTemplateStringBinding', () => {
   for (const [name, [input], expected] of testCases) {
     it(name, () => {
       expect(replaceTemplateStringBinding(input)).toEqual(expected);
+    });
+  }
+});
+
+describe('getTokenSpanMatchingPattern', () => {
+  const testCases: [string, [LineAndCharacter, TemplateContext, RegExp], TextSpan | null][] = [
+    [
+      'Returns null if the position is out of bounds (start)',
+      [
+        { line: -2, character: -3 },
+        html`
+          a
+        `,
+        /./,
+      ],
+      null,
+    ],
+    [
+      'Returns null if the position is out of bounds (end)',
+      [
+        { line: 5, character: 3 },
+        html`
+          a
+        `,
+        /./,
+      ],
+      null,
+    ],
+    [
+      'Returns null if the initial cursor position does not match',
+      [
+        { line: 1, character: 16 },
+        html`
+          aaaaaaa
+        `,
+        /b/,
+      ],
+      null,
+    ],
+    [
+      'Returns the span of a matching pattern',
+      [
+        { line: 1, character: 15 },
+        html`
+          aabbbba
+        `,
+        /b/,
+      ],
+      { start: 13, length: 4 },
+    ],
+    [
+      'Returns the span of a matching pattern of length 1',
+      [
+        { line: 1, character: 12 },
+        html`
+          aabaaa
+        `,
+        /b/,
+      ],
+      { start: 13, length: 1 },
+    ],
+    [
+      'Can get the tag name of an element',
+      [
+        { line: 1, character: 12 },
+        html`
+          <custom-element attr="Test"></custom-element>
+        `,
+        /[\w-]/,
+      ],
+      { start: 12, length: 14 },
+    ],
+  ];
+
+  for (const [name, [position, context, pattern], expected] of testCases) {
+    it(name, () => {
+      debugger;
+      expect(getTokenSpanMatchingPattern(position, context, pattern)).toEqual(expected);
     });
   }
 });

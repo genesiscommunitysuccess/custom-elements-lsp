@@ -87,7 +87,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
   private getTagCompletions(): CompletionEntry[] {
     return this.services.customElements
-      .getCEInfo({ getFullPath: false })
+      .getAllCEInfo({ getFullPath: false })
       .map(({ tagName: name, path }) => ({
         name: name,
         insertText: `${name}></${name}>`,

@@ -19,10 +19,58 @@ export function replaceTemplateStringBinding(line: string): string {
 }
 
 /**
- * Get a `ReplacementSpan` which is a slice of the string containing all word characters before cursor.
+ * Get a `TextSpan` object which is the span of the token at the given position, where the token matches the given pattern. Could be used to find the span of a custom element name, or an attribute name, etc.
+ *
+ * @remarks Returns `null` if no token is provided from matched pattern, or other invalid scenarios.
+ *
+ * @example
+ * ```
+ * const str = "   <my-element attr='test'>"
+ * const position = {line: 0, character: 5}
+ * const ptrn = /[\w-]/ // any word character or -
+ *
+ * // This will match the token describing the custom element name
+ * ````
+ */
+export function getTokenSpanMatchingPattern(
+  position: LineAndCharacter,
+  context: TemplateContext,
+  pattern: RegExp
+): TextSpan | null {
+  let offset = context.toOffset(position);
+  if (offset < 0 || offset >= context.rawText.length) {
+    return null;
+  }
+  if (!pattern.test(context.rawText[offset])) {
+    return null;
+  }
+
+  while (pattern.test(context.rawText[offset])) {
+    offset -= 1;
+    if (offset < 0) {
+      break;
+    }
+  }
+  const start = offset + 1;
+  let length = context.toOffset(position) - start;
+  while (pattern.test(context.rawText[start + length])) {
+    length += 1;
+    if (start + length == context.rawText.length) {
+      break;
+    }
+  }
+
+  return {
+    start,
+    length,
+  };
+}
+
+/**
+ * Get a `TextSpan` which is a slice of the string containing all consecutive word characters before cursor.
  * @remarks
  * VSCode doesn't account for characters such as "`@`" when matching on the completions returned by the LSP, meaning a string such as `@cl` will not show `@click` as an option in VSCode.
- * We can force it to account for the character by manually returning a `ReplacementSpan`. This points from the first non-space character behind the cursor, to the cursor.
+ * We can force it to account for the character by manually returning a `ReplacementSpan` (which is a `TextSpan` object). This points from the first non-space character behind the cursor, to the cursor.
  */
 export function getWholeTextReplacementSpan(
   position: LineAndCharacter,

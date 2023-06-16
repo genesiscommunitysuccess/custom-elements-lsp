@@ -148,10 +148,10 @@ describe('processPath', () => {
   }
 });
 
-describe('getCEInfo', () => {
+describe('getAllCEInfo', () => {
   it('Returns the custom element info with full paths when configured', () => {
     const ceResource = getCEServiceFromStubbedResource();
-    const res = ceResource.getCEInfo({ getFullPath: true });
+    const res = ceResource.getAllCEInfo({ getFullPath: true });
     expectArrayElements(res, [
       {
         path: 'src/components/avatar/avatar.ts',
@@ -166,7 +166,7 @@ describe('getCEInfo', () => {
 
   it('Returns the custom element info with reduced paths when configured', () => {
     const ceResource = getCEServiceFromStubbedResource();
-    const res = ceResource.getCEInfo({ getFullPath: false });
+    const res = ceResource.getAllCEInfo({ getFullPath: false });
     expectArrayElements(res, [
       {
         path: 'src/components/avatar/avatar.ts',
@@ -291,5 +291,56 @@ describe('getAllEvents', () => {
     ]);
 
     expect(ceResource.getAllEvents()).toBe(res);
+  });
+});
+
+describe('getCEPath', () => {
+  it('Returns null for an unknown custom element', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEPath('unknown-element', { getFullPath: true });
+    expect(res).toBeNull();
+  });
+
+  it('Returns full paths for known custom elements when configured', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEPath('custom-element', { getFullPath: true });
+    expect(res).toBe('src/components/avatar/avatar.ts');
+
+    const resTwo = ceResource.getCEPath('no-attr', { getFullPath: true });
+    expect(resTwo).toBe('node_modules/pkg/src/components/misc/no-attr.ts');
+  });
+
+  it('Returns short paths for known custom elements when configured', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEPath('custom-element', { getFullPath: false });
+    expect(res).toBe('src/components/avatar/avatar.ts');
+
+    const resTwo = ceResource.getCEPath('no-attr', { getFullPath: false });
+    expect(resTwo).toBe('pkg');
+  });
+});
+
+describe('getCEDefinitionName', () => {
+  it('Returns null for an unknown custom element', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEDefinitionName('unknown-element');
+    expect(res).toBeNull();
+  });
+  it('Returns the definition name for a known custom element with a full name', () => {
+    const ceResource = getCEServiceFromStubbedResource();
+    const res = ceResource.getCEDefinitionName('custom-element');
+    expect(res).toBe('custom-element');
+  });
+  it('Returns the tagname with the design system prefix placeholder if appropriate', () => {
+    const resource = new Map<string, CustomElementDef>();
+    resource.set('example-element', {
+      name: 'TestElement',
+      kind: 'class',
+      path: 'src/components/test/testcomponent.ts',
+      customElement: true,
+    });
+    const ceResource = getCEServiceFromStubbedResource(resource);
+    const res = ceResource.getCEDefinitionName('example-element');
+    expect(res).toBe('%%prefix%%-element');
   });
 });

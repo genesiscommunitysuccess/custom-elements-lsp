@@ -11,9 +11,15 @@ import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { GlobalDataServiceImpl } from './global-data/service';
-import { LanguageServiceLogger, TypescriptCompilerIOService } from './utils';
+import {
+  LanguageServiceLogger,
+  IOServiceImpl,
+  IORepository,
+  TypescriptCompilerIORepository,
+} from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
+import { CoreMetadataService } from './metadata';
 
 const USE_BYPASS = false;
 
@@ -50,14 +56,19 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     logger.log('Setting up main plugin');
 
     // TODO: Should this default or error out?
-    const projectRoute = info.config.srcRouteFromTSServer || '../../..';
+    const projectRoot = info.config.srcRouteFromTSServer || '../../..';
 
-    const ioService = new TypescriptCompilerIOService(ts.createCompilerHost({}), projectRoute);
+    const ioRepo = new TypescriptCompilerIORepository(
+      logger,
+      ts.createCompilerHost({}),
+      projectRoot
+    );
 
-    const maybeSchema = ioService.readFile('ce.json');
+    // TODO: Need to use the service to get the schema FUI-1195
+    const maybeSchema = ioRepo.readFile(ioRepo.getNormalisedRootPath() + 'ce.json');
     if (!maybeSchema) {
       console.error('Unable to read schema, using plugin bypass.');
-      console.error(`Searched for schema at ${projectRoute}/ce.json`);
+      console.error(`Searched for schema at ${projectRoot}/ce.json`);
       useBypassDueToError = true;
       return proxy;
     }
@@ -67,6 +78,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     const services = initServices({
       logger,
       schema,
+      ioRepo,
       config: info.config,
     });
 
@@ -78,6 +90,8 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreDiagnosticsServiceImpl(logger, services),
     ];
 
+    const metadata = new CoreMetadataService(logger, services);
+
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
       completions.push(new FASTCompletionsService(logger, services));
@@ -88,7 +102,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       ts,
       info.languageService,
       info.project,
-      new CustomElementsLanguageService(logger, diagnostics, completions),
+      new CustomElementsLanguageService(logger, diagnostics, completions, metadata),
       {
         tags: ['html'], // Could add for css too
         enableForStringWithSubstitutions: true,
@@ -102,10 +116,12 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
 function initServices({
   logger,
   schema,
+  ioRepo,
   config,
 }: {
   logger: Logger;
   schema: any;
+  ioRepo: IORepository;
   config: any;
 }): Services {
   const customElements = new CustomElementsServiceImpl(
@@ -117,5 +133,7 @@ function initServices({
 
   const globalData = new GlobalDataServiceImpl(logger, new GlobalDataRepositoryImpl(logger));
 
-  return { customElements, globalData };
+  const io = new IOServiceImpl(ioRepo);
+
+  return { customElements, globalData, io };
 }

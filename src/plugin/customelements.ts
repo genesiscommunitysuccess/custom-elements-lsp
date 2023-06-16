@@ -1,5 +1,10 @@
 import parse from 'node-html-parser';
-import { CompletionInfo, Diagnostic, LineAndCharacter } from 'typescript/lib/tsserverlibrary';
+import {
+  CompletionInfo,
+  DefinitionInfoAndBoundSpan,
+  Diagnostic,
+  LineAndCharacter,
+} from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
   TemplateLanguageService,
@@ -7,6 +12,7 @@ import {
 import { getCompletionType, PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { LanguageServiceLogger } from './utils';
+import { MetadataService } from './metadata';
 
 /**
  * Handles calls from the TypeScript language server and delegates them to
@@ -24,7 +30,8 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
     private logger: LanguageServiceLogger,
     private diagnostics: PartialDiagnosticsService[],
-    private completions: PartialCompletionsService[]
+    private completions: PartialCompletionsService[],
+    private metadata: MetadataService
   ) {
     logger.log('Setting up customelements class');
   }
@@ -66,5 +73,12 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
         entries: [],
       }
     );
+  }
+
+  getDefinitionAndBoundSpan(
+    context: TemplateContext,
+    position: LineAndCharacter
+  ): DefinitionInfoAndBoundSpan {
+    return this.metadata.getDefinitionAndBoundSpan(context, position);
   }
 }

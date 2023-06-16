@@ -7,13 +7,15 @@
 		"customelements-analyse": "./src/parser/analyse.js"
 	},
 	"scripts": {
+		"bootstrap": "cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. && npm run bootstrap:module",
+		"bootstrap:module": "npm i && npm run bootstrap:husky",
+		"bootstrap:husky": "npx husky install",
 		"build": "npx tsc",
 		"build:watch": "npx tsc --watch",
 		"copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
 		"lint:eslint": "eslint",
 		"lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
 		"lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
-		"setup": "cd example-lib && npm i && cd ../example && npm i && cd .. && npm i && npx husky install",
 		"test:unit": "jest",
 		"test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
 		"test:unit:verbose": "cross-env TEST_LOG=1 jest",
@@ -34,6 +36,7 @@
 		"globby": "^13.1.4",
 		"minimist-lite": "^2.2.1",
 		"node-html-parser": "^6.1.5",
+		"resolve-pkg": "^2.0.0",
 		"typescript-template-language-service-decorator": "^2.3.2"
 	},
 	"devDependencies": {
