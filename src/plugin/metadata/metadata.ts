@@ -85,10 +85,10 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .getCEMembers(tagName)
         .filter(({ deprecated, privacy = 'public' }) => !(deprecated || privacy !== 'public'))
         .map(({ name, type, isStatic }, i) => ({
-          kind: '[property]',
+          kind: 'text',
           text:
             (i === 0 ? '\n\nProperties:' : '') +
-            `\n${name} \`${type}\`${isStatic ? ' (static) ' : ''}`,
+            `\n${name} \`${type}\`${isStatic ? ' (static)' : ''}`,
         }))
     );
 
