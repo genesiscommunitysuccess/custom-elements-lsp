@@ -68,9 +68,29 @@ export class CoreMetadataService implements MetadataService {
   }
 
   private quickInfoForCustomElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
-    if (!this.services.customElements.customElementKnown(tagName)) {
+    const customElementInfo = this.services.customElements
+      .getAllCEInfo({ getFullPath: true })
+      .find(({ tagName: tn }) => tn === tagName);
+
+    if (!customElementInfo) {
       throw new Error(`Unable to get quickinfo for unknown custom element: "${tagName}"`);
     }
+
+    const { className, superclassName, description } = customElementInfo;
+    const attributes = this.services.customElements.getCEAttributes(tagName);
+
+    let documentation: QuickInfo['documentation'] = [];
+    if (description) {
+      documentation.push({ kind: 'text', text: '\n' + description });
+    }
+    documentation = documentation.concat(
+      attributes.map(({ name, type, deprecated }, i) => ({
+        kind: 'text',
+        text:
+          (i === 0 ? '\n\nAttributes:' : '') +
+          `\n${name} \`${type}\`${deprecated ? ' (deprecated)' : ''}`,
+      }))
+    );
 
     return {
       textSpan: tokenSpan,
@@ -78,7 +98,14 @@ export class CoreMetadataService implements MetadataService {
       kindModifiers: 'declare',
       displayParts: [
         { kind: 'text', text: `(declaration) CustomElement declaration \`${tagName}\` ` },
+        {
+          kind: 'text',
+          text: `\n(definition) export class ${className}${
+            superclassName ? ' extends ' + superclassName : ''
+          }`,
+        },
       ],
+      documentation,
     };
   }
 
