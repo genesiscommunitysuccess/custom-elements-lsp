@@ -3,6 +3,7 @@ import {
   DefinitionInfoAndBoundSpan,
   LineAndCharacter,
   QuickInfo,
+  TextSpan,
 } from 'typescript/lib/tsserverlibrary';
 
 export interface MetadataService {
@@ -11,8 +12,15 @@ export interface MetadataService {
     position: LineAndCharacter
   ): DefinitionInfoAndBoundSpan;
 
-  getQuickInfoAtPosition(
-    context: TemplateContext,
-    position: LineAndCharacter
-  ): QuickInfo | undefined;
+  getQuickInfoAtPosition(ctx: QuickInfoCtx): QuickInfo | undefined;
 }
+
+export interface PartialMetadataService extends Partial<MetadataService> {}
+
+export type QuickInfoCtx = {
+  context: TemplateContext;
+  position: LineAndCharacter;
+  tokenSpan: TextSpan;
+  token: string;
+  result: QuickInfo | undefined;
+};

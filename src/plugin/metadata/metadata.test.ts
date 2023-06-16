@@ -5,7 +5,7 @@ import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { GlobalDataRepository } from '../global-data/global-data.types';
-import { CoreMetadataService } from './metadata';
+import { CoreMetadataServiceImpl } from './metadata';
 import { IOService } from '../utils';
 import { getIOServiceFromStubResource } from '../../jest/io';
 
@@ -20,7 +20,10 @@ const getMetadataService = ({
   gd?: GlobalDataRepository;
   io?: IOService;
 }) =>
-  new CoreMetadataService(getLogger(), buildServices({ customElements: ce, globalData: gd, io }));
+  new CoreMetadataServiceImpl(
+    getLogger(),
+    buildServices({ customElements: ce, globalData: gd, io })
+  );
 
 const baseFakeIOService: IOService = {
   fileExists: jest.fn(),

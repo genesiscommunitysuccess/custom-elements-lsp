@@ -9,36 +9,19 @@ import {
 } from 'typescript/lib/tsserverlibrary';
 import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
-import { MetadataService } from './metadata.types';
-
-// Quickinfo for console.log
-// {"seq":0,"type":"response","command":"quickinfo","request_seq":28,"success":true,"body":{"kind":"method","kindModifiers":"declare","start":{"line":4,"offset":9},"end":{"line":4,"offset":12},"displayString":"(method) Console.log(message?: any, ...optionalParams: any[]): void (+1 overload)","documentation":[{"text":"Prints to `stdout` with newline. Multiple arguments can be passed, with the\nfirst used as the primary message and all additional used as substitution\nvalues similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html) (the arguments are all passed to `util.format()`).\n\n```js\nconst count = 5;\nconsole.log('count: %d', count);\n// Prints: count: 5, to stdout\nconsole.log('count:', count);\n// Prints: count: 5, to stdout\n```\n\nSee `util.format()` for more information.","kind":"text"}],"tags":[{"name":"since","text":[{"text":"v0.1.100","kind":"text"}]}]}}
+import { MetadataService, QuickInfoCtx } from './metadata.types';
 
 /**
  * Handles metadata requests such as signature and definition info.
  */
-export class CoreMetadataService implements MetadataService {
+export class CoreMetadataServiceImpl implements MetadataService {
   constructor(private logger: Logger, private services: Services) {
     this.logger.log(`Setting up CoreMetadataService`);
   }
 
-  getQuickInfoAtPosition(
-    context: TemplateContext,
-    position: LineAndCharacter
-  ): QuickInfo | undefined {
-    // TODO: better matching for attributes as we need to get the associated tagname too
-    const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-:?@]/);
-    if (!maybeTokenSpan) {
-      return undefined;
-    }
-
-    const { start, length } = maybeTokenSpan;
-    const token = context.rawText.slice(start, start + length);
-
-    this.logger.log(`getQuickInfoAtPosition: ${token}`);
-
+  getQuickInfoAtPosition({ token, tokenSpan }: QuickInfoCtx): QuickInfo | undefined {
     if (this.services.customElements.customElementKnown(token)) {
-      return this.quickInfoForCustomElement(maybeTokenSpan, token);
+      return this.quickInfoForCustomElement(tokenSpan, token);
     }
 
     return undefined;
