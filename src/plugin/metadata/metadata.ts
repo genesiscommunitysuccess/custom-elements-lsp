@@ -60,21 +60,19 @@ export class CoreMetadataServiceImpl implements MetadataService {
     }
 
     const { className, superclassName, description } = customElementInfo;
-    const attributes = this.services.customElements
-      .getCEAttributes(tagName)
-      .filter(({ deprecated }) => !deprecated);
 
     let documentation: QuickInfo['documentation'] = [];
     if (description) {
       documentation.push({ kind: 'text', text: '\n' + description });
     }
     documentation = documentation.concat(
-      attributes.map(({ name, type, deprecated }, i) => ({
-        kind: 'text',
-        text:
-          (i === 0 ? '\n\nAttributes:' : '') +
-          `\n${name} \`${type}\`${deprecated ? ' (deprecated)' : ''}`,
-      }))
+      this.services.customElements
+        .getCEAttributes(tagName)
+        .filter(({ deprecated }) => !deprecated)
+        .map(({ name, type }, i) => ({
+          kind: 'text',
+          text: (i === 0 ? '\n\nAttributes:' : '') + `\n${name} \`${type}\``,
+        }))
     );
     documentation = documentation.concat(
       this.services.customElements.getCEEvents(tagName).map(({ name }, i) => ({
@@ -82,13 +80,24 @@ export class CoreMetadataServiceImpl implements MetadataService {
         text: (i === 0 ? '\n\nEvents:' : '') + `\n${name}`,
       }))
     );
+    documentation = documentation.concat(
+      this.services.customElements
+        .getCEMembers(tagName)
+        .filter(({ deprecated, privacy = 'public' }) => !(deprecated || privacy !== 'public'))
+        .map(({ name, type, isStatic }, i) => ({
+          kind: '[property]',
+          text:
+            (i === 0 ? '\n\nProperties:' : '') +
+            `\n${name} \`${type}\`${isStatic ? ' (static) ' : ''}`,
+        }))
+    );
 
     return {
       textSpan: tokenSpan,
       kind: ScriptElementKind.classElement,
       kindModifiers: 'declare',
       displayParts: [
-        { kind: 'text', text: `(declaration) CustomElement declaration \`${tagName}\` ` },
+        { kind: 'text', text: `CustomElement declaration \`${tagName}\` ` },
         {
           kind: 'text',
           text: `\n(definition) export class ${className}${
