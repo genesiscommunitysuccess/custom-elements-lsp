@@ -3,6 +3,7 @@ import { Logger, TemplateContext } from 'typescript-template-language-service-de
 import {
   DefinitionInfoAndBoundSpan,
   LineAndCharacter,
+  QuickInfo,
   ScriptElementKind,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
@@ -10,16 +11,37 @@ import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
 import { MetadataService } from './metadata.types';
 
+// Quickinfo for console.log
+// {"seq":0,"type":"response","command":"quickinfo","request_seq":28,"success":true,"body":{"kind":"method","kindModifiers":"declare","start":{"line":4,"offset":9},"end":{"line":4,"offset":12},"displayString":"(method) Console.log(message?: any, ...optionalParams: any[]): void (+1 overload)","documentation":[{"text":"Prints to `stdout` with newline. Multiple arguments can be passed, with the\nfirst used as the primary message and all additional used as substitution\nvalues similar to [`printf(3)`](http://man7.org/linux/man-pages/man3/printf.3.html) (the arguments are all passed to `util.format()`).\n\n```js\nconst count = 5;\nconsole.log('count: %d', count);\n// Prints: count: 5, to stdout\nconsole.log('count:', count);\n// Prints: count: 5, to stdout\n```\n\nSee `util.format()` for more information.","kind":"text"}],"tags":[{"name":"since","text":[{"text":"v0.1.100","kind":"text"}]}]}}
+
 /**
  * Handles metadata requests such as signature and definition info.
- *
- * @privateRemarks Unlikely that these types of actions will be custom element dialect specific
- * (e.g. not FAST or Lit specific) so this is just implemented as a core service, but could
- * be extended using the same pattern as completions and diagnostics in future if required.
  */
 export class CoreMetadataService implements MetadataService {
   constructor(private logger: Logger, private services: Services) {
     this.logger.log(`Setting up CoreMetadataService`);
+  }
+
+  getQuickInfoAtPosition(
+    context: TemplateContext,
+    position: LineAndCharacter
+  ): QuickInfo | undefined {
+    // TODO: better matching for attributes as we need to get the associated tagname too
+    const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-:?@]/);
+    if (!maybeTokenSpan) {
+      return undefined;
+    }
+
+    const { start, length } = maybeTokenSpan;
+    const token = context.rawText.slice(start, start + length);
+
+    this.logger.log(`getQuickInfoAtPosition: ${token}`);
+
+    if (this.services.customElements.customElementKnown(token)) {
+      return this.quickInfoForCustomElement(maybeTokenSpan, token);
+    }
+
+    return undefined;
   }
 
   getDefinitionAndBoundSpan(
@@ -42,6 +64,21 @@ export class CoreMetadataService implements MetadataService {
 
     return {
       textSpan: maybeTokenSpan,
+    };
+  }
+
+  private quickInfoForCustomElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
+    if (!this.services.customElements.customElementKnown(tagName)) {
+      throw new Error(`Unable to get quickinfo for unknown custom element: "${tagName}"`);
+    }
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.classElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `(declaration) CustomElement declaration \`${tagName}\` ` },
+      ],
     };
   }
 

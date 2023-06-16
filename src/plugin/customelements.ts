@@ -4,6 +4,7 @@ import {
   DefinitionInfoAndBoundSpan,
   Diagnostic,
   LineAndCharacter,
+  QuickInfo,
 } from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
@@ -80,5 +81,12 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     position: LineAndCharacter
   ): DefinitionInfoAndBoundSpan {
     return this.metadata.getDefinitionAndBoundSpan(context, position);
+  }
+
+  getQuickInfoAtPosition(
+    context: TemplateContext,
+    position: LineAndCharacter
+  ): QuickInfo | undefined {
+    return this.metadata.getQuickInfoAtPosition(context, position);
   }
 }
