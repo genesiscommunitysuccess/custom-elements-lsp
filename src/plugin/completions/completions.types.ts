@@ -1,24 +1,11 @@
 import { CompletionInfo, LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
-
-export type CompletionTypeParams =
-  | {
-      key: 'none';
-      params: undefined;
-    }
-  | {
-      key: 'custom-element-name';
-      params: undefined;
-    }
-  | {
-      key: 'custom-element-attribute';
-      params: string;
-    };
+import { TokenUnderCursorType } from '../utils';
 
 export type CompletionCtx = {
   context: TemplateContext;
   position: LineAndCharacter;
-  typeAndParam: CompletionTypeParams;
+  typeAndParam: TokenUnderCursorType;
 };
 
 export interface CompletionsService {

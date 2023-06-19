@@ -391,7 +391,9 @@ describe('getCompletionsAtPosition', () => {
       context: html``,
       typeAndParam: {
         key: 'custom-element-attribute',
-        params: 'custom-element',
+        params: {
+          tagName: 'custom-element',
+        },
       },
     };
 

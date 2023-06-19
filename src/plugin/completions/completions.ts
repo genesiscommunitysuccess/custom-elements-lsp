@@ -36,11 +36,11 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         break;
 
       case 'custom-element-attribute':
-        if (!this.services.customElements.customElementKnown(params)) {
+        if (!this.services.customElements.customElementKnown(params.tagName)) {
           baseEntries = this.getTagCompletions();
           break;
         }
-        baseEntries = this.getAttributeCompletions(params);
+        baseEntries = this.getAttributeCompletions(params.tagName);
         break;
 
       case 'none':

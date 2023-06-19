@@ -4,8 +4,8 @@ import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { GlobalDataService } from '../global-data/global-data.types';
+import { getTokenTypeWithInfo } from '../utils';
 import { CoreCompletionsServiceImpl } from './completions';
-import { getCompletionType } from './helpers';
 
 const getCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
@@ -84,7 +84,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 0,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -104,7 +104,7 @@ describe('getCompletionsAtPosition', () => {
       line: 1,
       character: 6,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -141,7 +141,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 13,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -178,7 +178,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 16,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -220,7 +220,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 19,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -264,7 +264,7 @@ describe('getCompletionsAtPosition', () => {
       line: 1,
       character: 34,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -306,7 +306,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 28,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,
@@ -324,7 +324,7 @@ describe('getCompletionsAtPosition', () => {
       line: 0,
       character: 17,
     };
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
 
     const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
       context,

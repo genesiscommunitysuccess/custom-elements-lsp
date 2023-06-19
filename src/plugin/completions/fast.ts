@@ -36,7 +36,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
 
     switch (key) {
       case 'custom-element-attribute':
-        entries = this.getUpdatedAttributeEntries(entries, position, context, params);
+        entries = this.getUpdatedAttributeEntries(entries, position, context, params.tagName);
         this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;
     }
