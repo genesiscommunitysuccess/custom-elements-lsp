@@ -2,24 +2,31 @@ import resolvePkg from 'resolve-pkg';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import {
   DefinitionInfoAndBoundSpan,
+  JSDocTagInfo,
   LineAndCharacter,
+  QuickInfo,
   ScriptElementKind,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
 import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
-import { MetadataService } from './metadata.types';
+import { buildAndAddJSDocTag } from './helpers';
+import { MetadataService, QuickInfoCtx } from './metadata.types';
 
 /**
  * Handles metadata requests such as signature and definition info.
- *
- * @privateRemarks Unlikely that these types of actions will be custom element dialect specific
- * (e.g. not FAST or Lit specific) so this is just implemented as a core service, but could
- * be extended using the same pattern as completions and diagnostics in future if required.
  */
-export class CoreMetadataService implements MetadataService {
+export class CoreMetadataServiceImpl implements MetadataService {
   constructor(private logger: Logger, private services: Services) {
     this.logger.log(`Setting up CoreMetadataService`);
+  }
+
+  getQuickInfoAtPosition({ token, tokenSpan }: QuickInfoCtx): QuickInfo | undefined {
+    if (this.services.customElements.customElementKnown(token)) {
+      return this.quickInfoForCustomElement(tokenSpan, token);
+    }
+
+    return undefined;
   }
 
   getDefinitionAndBoundSpan(
@@ -42,6 +49,67 @@ export class CoreMetadataService implements MetadataService {
 
     return {
       textSpan: maybeTokenSpan,
+    };
+  }
+
+  private quickInfoForCustomElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
+    const customElementInfo = this.services.customElements
+      .getAllCEInfo({ getFullPath: true })
+      .find(({ tagName: tn }) => tn === tagName);
+
+    if (!customElementInfo) {
+      throw new Error(`Unable to get quickinfo for unknown custom element: "${tagName}"`);
+    }
+
+    const { className, superclassName, description } = customElementInfo;
+
+    const documentation: QuickInfo['documentation'] = [];
+    if (description) {
+      documentation.push({ kind: 'text', text: '\n' + description });
+    }
+
+    const tags: JSDocTagInfo[] = [];
+
+    buildAndAddJSDocTag(tags, 'attributes', () =>
+      this.services.customElements
+        .getCEAttributes(tagName)
+        .filter(({ deprecated }) => !deprecated)
+        .map(({ name, type }) => ({
+          kind: 'text',
+          text: `- ${name} \`${type}\`\r\n`,
+        }))
+    );
+    buildAndAddJSDocTag(tags, 'properties', () =>
+      this.services.customElements
+        .getCEMembers(tagName)
+        .filter(({ deprecated, privacy = 'public' }) => !(deprecated || privacy !== 'public'))
+        .map(({ name, type, isStatic }) => ({
+          kind: 'text',
+          text: `- ${name} \`${type}\`${isStatic ? ' (static)' : ''}\r\n`,
+        }))
+    );
+    buildAndAddJSDocTag(tags, 'events', () =>
+      this.services.customElements.getCEEvents(tagName).map(({ name }) => ({
+        kind: 'text',
+        text: `- ${name}\r\n`,
+      }))
+    );
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.classElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `CustomElement declaration \`${tagName}\` ` },
+        {
+          kind: 'text',
+          text: `\n(definition) export class ${className}${
+            superclassName ? ' extends ' + superclassName : ''
+          }`,
+        },
+      ],
+      documentation,
+      tags,
     };
   }
 

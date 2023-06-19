@@ -3,11 +3,16 @@ import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
-import { CustomElementsService } from '../custom-elements/custom-elements.types';
+import {
+  CustomElementDef,
+  CustomElementsResource,
+  CustomElementsService,
+} from '../custom-elements/custom-elements.types';
 import { GlobalDataRepository } from '../global-data/global-data.types';
-import { CoreMetadataService } from './metadata';
+import { CoreMetadataServiceImpl } from './metadata';
 import { IOService } from '../utils';
 import { getIOServiceFromStubResource } from '../../jest/io';
+import { CustomElementsServiceImpl } from '../custom-elements/service';
 
 jest.mock('resolve-pkg', () => jest.fn());
 
@@ -20,7 +25,10 @@ const getMetadataService = ({
   gd?: GlobalDataRepository;
   io?: IOService;
 }) =>
-  new CoreMetadataService(getLogger(), buildServices({ customElements: ce, globalData: gd, io }));
+  new CoreMetadataServiceImpl(
+    getLogger(),
+    buildServices({ customElements: ce, globalData: gd, io })
+  );
 
 const baseFakeIOService: IOService = {
   fileExists: jest.fn(),
@@ -282,5 +290,199 @@ describe('getDefinitionAndBoundSpan', () => {
         start: 6,
       },
     });
+  });
+});
+
+describe('quickInfoForCustomElement', () => {
+  const tokenSpan: TextSpan = { start: 6, length: 14 };
+
+  const buildMetadataWithOverridenCustomElement = (override: Partial<CustomElementDef>) => {
+    const ceRes: CustomElementsResource = {
+      data: new Map<string, CustomElementDef>(),
+      getConfig: () => ({ designSystemPrefix: 'example' }),
+    };
+    ceRes.data.set('test-element', {
+      name: 'TestElement',
+      kind: 'class',
+      path: 'src/path/to/test-element.ts',
+      customElement: true,
+      superclass: {
+        name: 'HTMLElement',
+      },
+      description: 'This is a test element',
+      ...override,
+    });
+    const ceService = new CustomElementsServiceImpl(getLogger(), ceRes);
+    return getMetadataService({ ce: ceService });
+  };
+
+  const baseQuickInfoResponse = {
+    displayParts: [
+      {
+        kind: 'text',
+        text: 'CustomElement declaration `test-element` ',
+      },
+      {
+        kind: 'text',
+        text: '\n(definition) export class TestElement extends HTMLElement',
+      },
+    ],
+    documentation: [
+      {
+        kind: 'text',
+        text: '\nThis is a test element',
+      },
+    ],
+    tags: [],
+    kind: 'class',
+    kindModifiers: 'declare',
+    textSpan: tokenSpan,
+  };
+
+  it('throws an error for an unknown custom element', () => {
+    const service = getMetadataService({});
+    let err;
+    try {
+      (service as any).quickInfoForCustomElement(tokenSpan, 'unknown-element');
+    } catch (error) {
+      err = error;
+    }
+    expect((err as Error).message).toBe(
+      'Unable to get quickinfo for unknown custom element: "unknown-element"'
+    );
+  });
+
+  it('Returns quickinfo with base description', () => {
+    const service = buildMetadataWithOverridenCustomElement({});
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual(baseQuickInfoResponse);
+  });
+
+  it('Returns quickinfo with attributes, and a header indicating the attribute section', () => {
+    const service = buildMetadataWithOverridenCustomElement({
+      attributes: [
+        {
+          name: 'test-attr',
+          type: { text: 'string' },
+        },
+      ],
+    });
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual({
+      ...baseQuickInfoResponse,
+      tags: [
+        {
+          name: 'attributes',
+          text: [
+            {
+              kind: 'text',
+              text: '- test-attr `string`\r\n',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('Returns quickinfo and filters out deprecated attributes', () => {
+    const service = buildMetadataWithOverridenCustomElement({
+      attributes: [
+        {
+          name: 'deprecated-attr',
+          type: { text: 'string' },
+          deprecated: 'true',
+        },
+      ],
+    });
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual(baseQuickInfoResponse);
+  });
+
+  it('Returns quickinfo with events, and a header indicating the events section', () => {
+    const service = buildMetadataWithOverridenCustomElement({
+      events: [
+        {
+          name: 'event',
+          type: { text: 'MouseEvent' },
+        },
+      ],
+    });
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual({
+      ...baseQuickInfoResponse,
+      tags: [
+        {
+          name: 'events',
+          text: [
+            {
+              kind: 'text',
+              text: '- event\r\n',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('Returns quickinfo with properties, and a header indicating the properties section', () => {
+    const service = buildMetadataWithOverridenCustomElement({
+      members: [
+        {
+          kind: 'field',
+          name: 'member',
+          inheritedFrom: {
+            name: 'ParentElement',
+          },
+          type: { text: 'string' },
+          static: true,
+          privacy: 'public',
+        },
+      ],
+    });
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual({
+      ...baseQuickInfoResponse,
+      tags: [
+        {
+          name: 'properties',
+          text: [
+            {
+              kind: 'text',
+              text: '- member `string` (static)\r\n',
+            },
+          ],
+        },
+      ],
+    });
+  });
+
+  it('Quickinfo with properties filter out non-public and deprecated properties', () => {
+    const service = buildMetadataWithOverridenCustomElement({
+      members: [
+        {
+          kind: 'field',
+          name: 'member',
+          inheritedFrom: {
+            name: 'ParentElement',
+          },
+          type: { text: 'string' },
+          static: true,
+          privacy: 'private',
+        },
+        {
+          kind: 'field',
+          name: 'deprecated',
+          inheritedFrom: {
+            name: 'ParentElement',
+          },
+          type: { text: 'string' },
+          static: true,
+          privacy: 'private',
+          deprecated: 'true',
+        },
+      ],
+    });
+    const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
+    expect(res).toEqual(baseQuickInfoResponse);
   });
 });

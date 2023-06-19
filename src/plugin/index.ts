@@ -19,7 +19,8 @@ import {
 } from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
-import { CoreMetadataService } from './metadata';
+import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
+import { FASTMetadataService } from './metadata/fast';
 
 const USE_BYPASS = false;
 
@@ -90,12 +91,13 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       new CoreDiagnosticsServiceImpl(logger, services),
     ];
 
-    const metadata = new CoreMetadataService(logger, services);
+    const metadata: PartialMetadataService[] = [new CoreMetadataServiceImpl(logger, services)];
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
       completions.push(new FASTCompletionsService(logger, services));
       diagnostics.push(new FASTDiagnosticsService(logger, services));
+      metadata.push(new FASTMetadataService(logger, services));
     }
 
     return decorateWithTemplateLanguageService(

@@ -35,6 +35,9 @@ export type GetCEInfo = {
 export type CEInfo = {
   tagName: string;
   path: string;
+  className: string;
+  superclassName?: string;
+  description?: string;
 };
 
 export type CustomElementAttribute = {

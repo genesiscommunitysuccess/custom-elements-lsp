@@ -88,6 +88,9 @@ export class CustomElementsServiceImpl implements CustomElementsService {
       info.push({
         tagName: k,
         path: this.processPath(v.path, config.getFullPath),
+        className: v.name,
+        superclassName: v.superclass?.name,
+        description: v.description,
       });
     }
     return info;

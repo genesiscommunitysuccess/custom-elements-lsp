@@ -4,6 +4,7 @@ import {
   DefinitionInfoAndBoundSpan,
   Diagnostic,
   LineAndCharacter,
+  QuickInfo,
 } from 'typescript/lib/tsserverlibrary';
 import {
   TemplateContext,
@@ -11,8 +12,8 @@ import {
 } from 'typescript-template-language-service-decorator';
 import { getCompletionType, PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { LanguageServiceLogger } from './utils';
-import { MetadataService } from './metadata';
+import { getTokenSpanMatchingPattern, LanguageServiceLogger } from './utils';
+import { MetadataService, PartialMetadataService } from './metadata';
 
 /**
  * Handles calls from the TypeScript language server and delegates them to
@@ -31,7 +32,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     private logger: LanguageServiceLogger,
     private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[],
-    private metadata: MetadataService
+    private metadata: PartialMetadataService[]
   ) {
     logger.log('Setting up customelements class');
   }
@@ -79,6 +80,39 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     context: TemplateContext,
     position: LineAndCharacter
   ): DefinitionInfoAndBoundSpan {
-    return this.metadata.getDefinitionAndBoundSpan(context, position);
+    // TODO: Need to refactor this if we want to allow other classes to implement this method
+    // in future
+    const base = this.metadata[0];
+    return base.getDefinitionAndBoundSpan!(context, position);
+  }
+
+  getQuickInfoAtPosition(
+    context: TemplateContext,
+    position: LineAndCharacter
+  ): QuickInfo | undefined {
+    // TODO: better matching for attributes as we need to get the associated tagname too
+    const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-:?@]/);
+    if (!maybeTokenSpan) {
+      return undefined;
+    }
+
+    const { start, length } = maybeTokenSpan;
+    const token = context.rawText.slice(start, start + length);
+
+    this.logger.log(`getQuickInfoAtPosition: ${token}`);
+
+    return this.metadata.reduce(
+      (acum: QuickInfo | undefined, service) =>
+        service.getQuickInfoAtPosition
+          ? service.getQuickInfoAtPosition({
+              context,
+              position,
+              token,
+              tokenSpan: maybeTokenSpan,
+              result: acum,
+            })
+          : acum,
+      undefined
+    );
   }
 }
