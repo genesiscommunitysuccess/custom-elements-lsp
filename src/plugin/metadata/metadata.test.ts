@@ -333,6 +333,7 @@ describe('quickInfoForCustomElement', () => {
         text: '\nThis is a test element',
       },
     ],
+    tags: [],
     kind: 'class',
     kindModifiers: 'declare',
     textSpan: tokenSpan,
@@ -369,11 +370,15 @@ describe('quickInfoForCustomElement', () => {
     const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
     expect(res).toEqual({
       ...baseQuickInfoResponse,
-      documentation: [
-        ...baseQuickInfoResponse.documentation,
+      tags: [
         {
-          kind: 'text',
-          text: '\n\nAttributes:\ntest-attr `string`',
+          name: 'attributes',
+          text: [
+            {
+              kind: 'text',
+              text: '- test-attr `string`\r\n',
+            },
+          ],
         },
       ],
     });
@@ -405,11 +410,15 @@ describe('quickInfoForCustomElement', () => {
     const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
     expect(res).toEqual({
       ...baseQuickInfoResponse,
-      documentation: [
-        ...baseQuickInfoResponse.documentation,
+      tags: [
         {
-          kind: 'text',
-          text: '\n\nEvents:\nevent',
+          name: 'events',
+          text: [
+            {
+              kind: 'text',
+              text: '- event\r\n',
+            },
+          ],
         },
       ],
     });
@@ -433,11 +442,15 @@ describe('quickInfoForCustomElement', () => {
     const res = (service as any).quickInfoForCustomElement(tokenSpan, 'test-element');
     expect(res).toEqual({
       ...baseQuickInfoResponse,
-      documentation: [
-        ...baseQuickInfoResponse.documentation,
+      tags: [
         {
-          kind: 'text',
-          text: '\n\nProperties:\nmember `string` (static)',
+          name: 'properties',
+          text: [
+            {
+              kind: 'text',
+              text: '- member `string` (static)\r\n',
+            },
+          ],
         },
       ],
     });
