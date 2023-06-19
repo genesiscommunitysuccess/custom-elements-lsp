@@ -2,6 +2,7 @@ import resolvePkg from 'resolve-pkg';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import {
   DefinitionInfoAndBoundSpan,
+  JSDocTagInfo,
   LineAndCharacter,
   QuickInfo,
   ScriptElementKind,
@@ -9,6 +10,7 @@ import {
 } from 'typescript/lib/tsserverlibrary';
 import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
+import { buildAndAddJSDocTag } from './helpers';
 import { MetadataService, QuickInfoCtx } from './metadata.types';
 
 /**
@@ -61,35 +63,36 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
     const { className, superclassName, description } = customElementInfo;
 
-    let documentation: QuickInfo['documentation'] = [];
+    const documentation: QuickInfo['documentation'] = [];
     if (description) {
       documentation.push({ kind: 'text', text: '\n' + description });
     }
-    documentation = documentation.concat(
+
+    const tags: JSDocTagInfo[] = [];
+
+    buildAndAddJSDocTag(tags, 'attributes', () =>
       this.services.customElements
         .getCEAttributes(tagName)
         .filter(({ deprecated }) => !deprecated)
-        .map(({ name, type }, i) => ({
+        .map(({ name, type }) => ({
           kind: 'text',
-          text: (i === 0 ? '\n\nAttributes:' : '') + `\n${name} \`${type}\``,
+          text: `- ${name} \`${type}\`\r\n`,
         }))
     );
-    documentation = documentation.concat(
-      this.services.customElements.getCEEvents(tagName).map(({ name }, i) => ({
-        kind: 'text',
-        text: (i === 0 ? '\n\nEvents:' : '') + `\n${name}`,
-      }))
-    );
-    documentation = documentation.concat(
+    buildAndAddJSDocTag(tags, 'properties', () =>
       this.services.customElements
         .getCEMembers(tagName)
         .filter(({ deprecated, privacy = 'public' }) => !(deprecated || privacy !== 'public'))
-        .map(({ name, type, isStatic }, i) => ({
+        .map(({ name, type, isStatic }) => ({
           kind: 'text',
-          text:
-            (i === 0 ? '\n\nProperties:' : '') +
-            `\n${name} \`${type}\`${isStatic ? ' (static)' : ''}`,
+          text: `- ${name} \`${type}\`${isStatic ? ' (static)' : ''}\r\n`,
         }))
+    );
+    buildAndAddJSDocTag(tags, 'events', () =>
+      this.services.customElements.getCEEvents(tagName).map(({ name }) => ({
+        kind: 'text',
+        text: `- ${name}\r\n`,
+      }))
     );
 
     return {
@@ -106,6 +109,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
         },
       ],
       documentation,
+      tags,
     };
   }
 
