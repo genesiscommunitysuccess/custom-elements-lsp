@@ -45,6 +45,7 @@ export type CustomElementAttribute = {
   type: string;
   referenceClass?: string;
   deprecated: boolean;
+  description?: string;
 };
 
 export type CustomElementEvent = {
