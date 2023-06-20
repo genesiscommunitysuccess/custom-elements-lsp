@@ -70,18 +70,22 @@ describe('getCEAttributes', () => {
           referenceClass: 'Avatar',
           type: 'string',
           deprecated: false,
+          description:
+            'String is the `img` src to show for the avatar. Defaulted to `avataaars.io`',
         },
         {
           name: 'fullInfoDisabled',
           referenceClass: 'Avatar',
           type: 'boolean',
           deprecated: false,
+          description: 'Boolean attribute to disable the full info section entirely.',
         },
         {
           deprecated: true,
           name: 'unused',
           referenceClass: 'Avatar',
           type: 'string',
+          description: undefined,
         },
       ],
     ],
@@ -94,12 +98,14 @@ describe('getCEAttributes', () => {
           referenceClass: 'ExampleCounter',
           type: 'boolean',
           deprecated: false,
+          description: 'Counter will decrement if set',
         },
         {
           name: 'display-text',
           referenceClass: 'Counter',
           type: 'string | undefined',
           deprecated: false,
+          description: 'The text to display on the counter button',
         },
       ],
     ],
@@ -213,11 +219,15 @@ describe('getCEEvents', () => {
         name: 'event',
         referenceClass: 'CustomElement',
         type: 'MouseEvent',
+        deprecated: false,
+        description: undefined,
       },
       {
         name: 'inherited',
         referenceClass: 'ParentElement',
         type: 'MouseEvent',
+        deprecated: false,
+        description: undefined,
       },
     ]);
   });
@@ -284,21 +294,29 @@ describe('getAllEvents', () => {
         name: 'event',
         referenceClass: 'CustomElement',
         type: 'MouseEvent',
+        deprecated: false,
+        description: undefined,
       },
       {
         name: 'inherited',
         referenceClass: 'ParentElement',
         type: 'MouseEvent',
+        deprecated: false,
+        description: undefined,
       },
       {
         name: 'silenced',
         referenceClass: 'AnotherElement',
         type: 'MouseEvent',
+        deprecated: false,
+        description: undefined,
       },
       {
         name: 'inherited',
         referenceClass: 'AnotherParent',
         type: 'string',
+        deprecated: false,
+        description: undefined,
       },
     ]);
 
