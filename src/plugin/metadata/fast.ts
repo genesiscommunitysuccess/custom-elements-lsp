@@ -6,7 +6,6 @@ import { Services } from '../utils/services.types';
 import { PartialMetadataService, QuickInfoCtx } from './metadata.types';
 
 /**
- * Can be used to extend metadata functionality in future.
  */
 export class FASTMetadataService implements PartialMetadataService {
   constructor(private logger: Logger, private services: Services) {
