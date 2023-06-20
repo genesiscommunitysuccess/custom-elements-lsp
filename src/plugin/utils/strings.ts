@@ -155,3 +155,82 @@ export function parseAttrNamesFromRawString(rawString: string): string[] {
     })
     .filter((x) => x) as string[];
 }
+
+const tokenParseHelper = (() => {
+  const unfinishedTag = /<[^>]*$/;
+  // Like an unfinished tag, but with a hyphen
+  const unfinishedCustomElement = /<.+-[^>]*$/m;
+
+  // Unclosed tag, suggest any tag names
+  const suggestTags = (line: string) => unfinishedTag.test(line);
+  // Returns the currently written custom element tag name, or false if not found
+  const suggestCustomElements = (line: string) => {
+    if (!unfinishedCustomElement.test(line)) return false;
+    const lastTag = line.split(/</).pop() as string;
+    return lastTag.split(' ')[0].trim();
+  };
+  return {
+    suggestTags,
+    suggestCustomElements,
+  };
+})();
+
+export type TokenUnderCursorType =
+  | {
+      key: 'none';
+      params: undefined;
+    }
+  | {
+      key: 'custom-element-name';
+      params: undefined;
+    }
+  | {
+      key: 'custom-element-attribute';
+      params: {
+        tagName: string;
+      };
+    };
+
+/**
+ * Returns the `TokenUnderCursorType` for the token under the cursor.
+ *
+ * @example
+ * ```
+ * const res =getTokenTypeWithInfo({rawText: `<cus-el attr`, position: {line: 0, character: 13}})
+ * // res.key -> 'custom-element-attribute'
+ * // res.params.tagName -> 'cus-el'
+ * ```
+ */
+export function getTokenTypeWithInfo(
+  context: TemplateContext,
+  position: LineAndCharacter
+): TokenUnderCursorType {
+  const rawLine = context.rawText.split(/\n/g)[position.line];
+  const processedLine = replaceTemplateStringBinding(
+    context.rawText.substring(0, context.toOffset(position))
+  );
+
+  {
+    let tagName: string | false;
+    if (((tagName = tokenParseHelper.suggestCustomElements(processedLine)), tagName)) {
+      return {
+        key: 'custom-element-attribute',
+        params: {
+          tagName,
+        },
+      };
+    }
+  }
+
+  if (tokenParseHelper.suggestTags(rawLine)) {
+    return {
+      key: 'custom-element-name',
+      params: undefined,
+    };
+  }
+
+  return {
+    key: 'none',
+    params: undefined,
+  };
+}

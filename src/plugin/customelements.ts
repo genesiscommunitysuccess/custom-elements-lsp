@@ -10,10 +10,10 @@ import {
   TemplateContext,
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
-import { getCompletionType, PartialCompletionsService } from './completions';
+import { PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { getTokenSpanMatchingPattern, LanguageServiceLogger } from './utils';
-import { MetadataService, PartialMetadataService } from './metadata';
+import { getTokenTypeWithInfo, getTokenSpanMatchingPattern, LanguageServiceLogger } from './utils';
+import { PartialMetadataService } from './metadata';
 
 /**
  * Handles calls from the TypeScript language server and delegates them to
@@ -55,7 +55,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
 
   getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
-    const typeAndParam = getCompletionType(context, position);
+    const typeAndParam = getTokenTypeWithInfo(context, position);
     this.logger.log(`getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`);
 
     return this.completions.reduce(
