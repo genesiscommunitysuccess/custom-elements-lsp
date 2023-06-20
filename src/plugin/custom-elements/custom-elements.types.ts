@@ -48,11 +48,7 @@ export type CustomElementAttribute = {
   description?: string;
 };
 
-export type CustomElementEvent = {
-  name: string;
-  type: string;
-  referenceClass?: string;
-};
+export type CustomElementEvent = CustomElementAttribute & {};
 
 export type CustomElementMember = CustomElementAttribute & {
   isStatic?: boolean;

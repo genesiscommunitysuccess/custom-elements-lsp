@@ -1,6 +1,7 @@
 import { Logger } from 'typescript-template-language-service-decorator';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { UNKNOWN_ATTRIBUTE, UNKNOWN_EVENT } from '../constants/diagnostic-codes';
+import { stringHeadTail } from '../utils';
 import { getStore } from '../utils/kvstore';
 import { Services } from '../utils/services.types';
 import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
@@ -54,7 +55,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
       return diag;
     }
     const [_, attrName, tagName] = res;
-    const [prefix, attr] = [attrName.slice(0, 1), attrName.slice(1)];
+    const [prefix, attr] = stringHeadTail(attrName);
 
     if (prefix === '?') {
       const isValidBooleanBinding = this.services.customElements

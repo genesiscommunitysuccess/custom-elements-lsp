@@ -76,6 +76,8 @@ export class CustomElementsServiceImpl implements CustomElementsService {
       name: a.name,
       type: a.type?.text ?? a.description ?? 'any',
       referenceClass: a.inheritedFrom?.name ?? definition.name,
+      deprecated: a.deprecated === 'true',
+      description: a.description,
     }));
   }
 
