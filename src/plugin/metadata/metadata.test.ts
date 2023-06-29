@@ -486,3 +486,164 @@ describe('quickInfoForCustomElement', () => {
     expect(res).toEqual(baseQuickInfoResponse);
   });
 });
+
+describe('quickInfoForCEAttribute', () => {
+  const tokenSpan: TextSpan = { start: 6, length: 14 };
+
+  it('returns undefined for an unknown tag', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForCEAttribute(tokenSpan, 'attr', 'unknown-element');
+    expect(res).toBeUndefined();
+  });
+
+  it('returns undefined for an unknown attribute on a known tag', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForCEAttribute(tokenSpan, 'unknown', 'custom-element');
+    expect(res).toBeUndefined();
+  });
+
+  it('returns undefined for a custom elements dialect binding (e.g. FAST)', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForCEAttribute(tokenSpan, ':member', 'custom-element');
+    expect(res).toBeUndefined();
+  });
+
+  it('returns quickinfo for a known plain attribute on a known custom-element', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForCEAttribute(tokenSpan, 'activated', 'custom-element');
+    expect(res).toEqual({
+      displayParts: [
+        {
+          kind: 'text',
+          text: '(attribute) activated [CustomElement]',
+        },
+        {
+          kind: 'text',
+          text: '\n`boolean` (deprecated)',
+        },
+      ],
+      documentation: [],
+      kind: 'parameter',
+      kindModifiers: 'declare',
+      textSpan: tokenSpan,
+    });
+  });
+});
+
+describe('getQuickInfoAtPosition', () => {
+  const tokenSpan: TextSpan = { start: 6, length: 14 };
+
+  it('simply returns undefined for TokenUnderCursorType "none"', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
+    quickInfoCESpy.mockReturnValue(undefined);
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForCEAttribute');
+    quickInfoAttrSpy.mockReturnValue(undefined);
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'none',
+        params: undefined,
+      },
+      token: '',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toBeUndefined();
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns undefined for a custom element name which is unknown', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForCEAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'custom-element-name',
+        params: undefined,
+      },
+      token: 'unknown-element',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toBeUndefined();
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns undefined for a custom element attribute, with an unknown element', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForCEAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'custom-element-attribute',
+        params: {
+          tagName: 'attr',
+        },
+      },
+      token: 'unknown-element',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toBeUndefined();
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns the result from quickInfoForCustomElement if quickinfo for name for a known element', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForCEAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'custom-element-name',
+        params: undefined,
+      },
+      token: 'custom-element',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toEqual('a');
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(1);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns the result from quickInfoForCEAttribute if quickinfo for attribute for a known element', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForCEAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'custom-element-attribute',
+        params: {
+          tagName: 'custom-element',
+        },
+      },
+      token: 'attr',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toEqual('b');
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(1);
+  });
+});

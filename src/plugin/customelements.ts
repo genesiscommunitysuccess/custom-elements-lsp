@@ -90,9 +90,13 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     context: TemplateContext,
     position: LineAndCharacter
   ): QuickInfo | undefined {
-    // TODO: better matching for attributes as we need to get the associated tagname too
     const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-:?@]/);
     if (!maybeTokenSpan) {
+      return undefined;
+    }
+
+    const tokenTypeWithInfo = getTokenTypeWithInfo(context, position);
+    if (tokenTypeWithInfo.key === 'none') {
       return undefined;
     }
 
@@ -110,6 +114,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
               token,
               tokenSpan: maybeTokenSpan,
               result: acum,
+              typeAndParam: tokenTypeWithInfo,
             })
           : acum,
       undefined

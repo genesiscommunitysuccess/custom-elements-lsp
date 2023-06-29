@@ -234,3 +234,7 @@ export function getTokenTypeWithInfo(
     params: undefined,
   };
 }
+
+export function stringHeadTail(str: string): [string, string] {
+  return [str.slice(0, 1), str.slice(1)];
+}

@@ -21,9 +21,17 @@ export class CoreMetadataServiceImpl implements MetadataService {
     this.logger.log(`Setting up CoreMetadataService`);
   }
 
-  getQuickInfoAtPosition({ token, tokenSpan }: QuickInfoCtx): QuickInfo | undefined {
-    if (this.services.customElements.customElementKnown(token)) {
+  getQuickInfoAtPosition({ token, tokenSpan, typeAndParam }: QuickInfoCtx): QuickInfo | undefined {
+    if (
+      typeAndParam.key === 'custom-element-name' &&
+      this.services.customElements.customElementKnown(token)
+    ) {
       return this.quickInfoForCustomElement(tokenSpan, token);
+    } else if (
+      typeAndParam.key === 'custom-element-attribute' &&
+      this.services.customElements.customElementKnown(typeAndParam.params.tagName)
+    ) {
+      return this.quickInfoForCEAttribute(tokenSpan, token, typeAndParam.params.tagName);
     }
 
     return undefined;
@@ -49,6 +57,34 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
     return {
       textSpan: maybeTokenSpan,
+    };
+  }
+
+  private quickInfoForCEAttribute(
+    tokenSpan: TextSpan,
+    attrName: string,
+    tagName: string
+  ): QuickInfo | undefined {
+    const attrs = this.services.customElements.getCEAttributes(tagName);
+    const maybeAttr = attrs.find(({ name }) => name === attrName);
+    if (!maybeAttr) {
+      return undefined;
+    }
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.parameterElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `(attribute) ${attrName} [${maybeAttr.referenceClass}]` },
+        {
+          kind: 'text',
+          text: `\n\`${maybeAttr.type}\`${maybeAttr.deprecated ? ' (deprecated)' : ''}`,
+        },
+      ],
+      documentation: maybeAttr.description
+        ? [{ kind: 'text', text: '\n' + maybeAttr.description }]
+        : [],
     };
   }
 

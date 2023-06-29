@@ -45,13 +45,10 @@ export type CustomElementAttribute = {
   type: string;
   referenceClass?: string;
   deprecated: boolean;
+  description?: string;
 };
 
-export type CustomElementEvent = {
-  name: string;
-  type: string;
-  referenceClass?: string;
-};
+export type CustomElementEvent = CustomElementAttribute & {};
 
 export type CustomElementMember = CustomElementAttribute & {
   isStatic?: boolean;
