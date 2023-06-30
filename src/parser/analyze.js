@@ -2,7 +2,7 @@
 
 // TODO: Handle --watch
 
-import { readFileSync, writeFileSync, renameSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, unlinkSync } from 'fs';
 import path from 'path';
 import { cli } from '@custom-elements-manifest/analyzer/cli.js';
 import { globby } from 'globby';
@@ -62,4 +62,5 @@ for (const libFile of libFiles) {
 }
 
 writeFileSync(OUT_FILE, JSON.stringify(manifest, null, 2));
+unlinkSync(IN_FILE);
 console.log('customelments-analyze written to ' + OUT_FILE);
