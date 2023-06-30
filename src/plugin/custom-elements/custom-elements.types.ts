@@ -1,4 +1,8 @@
-import { CustomElementDeclaration, Privacy } from 'custom-elements-manifest';
+import { CustomElementDeclaration, Package, Privacy } from 'custom-elements-manifest';
+
+export interface ManifestResource {
+  manifest: Package;
+}
 
 // RAW DATA
 export interface CustomElementsResource {
