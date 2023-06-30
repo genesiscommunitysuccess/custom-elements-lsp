@@ -81,7 +81,7 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
     if (!existsSync(MANIFSST_PATH)) {
       console.error(`ERROR: tests require manifest from /example application to exists.`);
       console.error(
-        `ERROR: to generate manifest go into the 'example' directory and run 'npm run lsp:analyse'`
+        `ERROR: to generate manifest go into the 'example' directory and run 'npm run lsp:analyze'`
       );
       process.exit(1);
     }

@@ -1,10 +1,10 @@
 {
   "name": "example-tsc-codebase",
   "scripts": {
-    "bootstrap:module": "npm i && npm run build && npm run lsp:analyse",
+    "bootstrap:module": "npm i && npm run build && npm run lsp:analyze",
     "build": "tsc && vite build",
     "dev": "npm run build && npm run start",
-    "lsp:analyse": "customelements-analyse --src='src/**/*.{js,ts}' --lib='node_modules/example-lib/**/custom-elements.json' --dependencies",
+    "lsp:analyze": "customelements-analyze --src='src/**/*.{js,ts}' --lib='node_modules/example-lib/**/custom-elements.json' --dependencies",
     "preview": "vite preview",
     "start": "vite"
   },
