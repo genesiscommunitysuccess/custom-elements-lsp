@@ -14,14 +14,17 @@ import { GlobalDataServiceImpl } from './global-data/service';
 import {
   LanguageServiceLogger,
   IOServiceImpl,
-  IORepository,
   TypescriptCompilerIORepository,
 } from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
 import { FASTMetadataService } from './metadata/fast';
-import { StaticCEManifestRepository } from './custom-elements/manifest/repository';
+import {
+  LiveUpdatingCEManifestRepository,
+  StaticCEManifestRepository,
+} from './custom-elements/manifest/repository';
+import { SourceAnalyzerConfig } from './custom-elements/custom-elements.types';
 
 const USE_BYPASS = false;
 
@@ -108,6 +111,12 @@ function initServices({
   const io = new IOServiceImpl(ioRepo);
 
   const manifest = new StaticCEManifestRepository(logger, io, projectRoot);
+  const liveManifest = new LiveUpdatingCEManifestRepository(
+    logger,
+    io,
+    (config.parser || {}) as Partial<SourceAnalyzerConfig>,
+    projectRoot
+  );
   const customElements = new CustomElementsServiceImpl(
     logger,
     new CustomElementsAnalyzerManifestParser(logger, manifest, {

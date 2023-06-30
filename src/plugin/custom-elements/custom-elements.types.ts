@@ -1,5 +1,11 @@
 import { CustomElementDeclaration, Package, Privacy } from 'custom-elements-manifest';
 
+export type SourceAnalyzerConfig = {
+  timeout: number;
+  src: string;
+  dependencies: string;
+}
+
 export interface ManifestResource {
   manifest: Package;
 }
