@@ -93,9 +93,13 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
 
   return new CustomElementsServiceImpl(
     logger,
-    new CustomElementsAnalyzerManifestParser(logger, manifest as unknown as Package, {
-      designSystemPrefix: 'example',
-      ...configOverride,
-    })
+    new CustomElementsAnalyzerManifestParser(
+      logger,
+      { manifest: manifest as unknown as Package },
+      {
+        designSystemPrefix: 'example',
+        ...configOverride,
+      }
+    )
   );
 }

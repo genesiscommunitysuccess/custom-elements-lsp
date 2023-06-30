@@ -1,6 +1,6 @@
 import { CustomElementDeclaration, Package, Privacy } from 'custom-elements-manifest';
 
-export interface ManifestResource {
+export interface ManifestRepository {
   manifest: Package;
 }
 
