@@ -27,9 +27,9 @@ To use this plugin you have a version of typescript as part of the project, loca
 
 > You need to use a target of `ES2021` or later.
 
-3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyse": "customelements-analyse --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
+3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyze": "customelements-analyze --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
 <!-- TODO: need much better explanation of this command -->
-4. Run `npm run lsp:analyse` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
+4. Run `npm run lsp:analyze` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
 5. Run `npx tsc` in the root of the project to compile the plugin code. (This will be done automatically in a future release!)
 6. Any IDE specific configuration...
 
@@ -37,7 +37,7 @@ To use this plugin you have a version of typescript as part of the project, loca
 
 Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
 
-<!-- If we get more language plugins then we need to also explain about setting the language for the lsp analyser as well as the plugin -->
+<!-- If we get more language plugins then we need to also explain about setting the language for the lsp analyzer as well as the plugin -->
 
 ### VSCode
 

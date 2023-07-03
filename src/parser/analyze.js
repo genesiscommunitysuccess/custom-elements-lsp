@@ -2,7 +2,7 @@
 
 // TODO: Handle --watch
 
-import { readFileSync, writeFileSync, renameSync } from 'fs';
+import { readFileSync, writeFileSync, renameSync, unlinkSync } from 'fs';
 import path from 'path';
 import { cli } from '@custom-elements-manifest/analyzer/cli.js';
 import { globby } from 'globby';
@@ -18,7 +18,7 @@ if (!args.src) {
   process.exit(1);
 }
 
-const analyseArgs = [
+const analyzeArgs = [
   'analyze',
   '--outdir',
   '.',
@@ -28,18 +28,18 @@ const analyseArgs = [
 ];
 
 if (args.dependencies) {
-  analyseArgs.push('--dependencies');
+  analyzeArgs.push('--dependencies');
 }
 
 // https://custom-elements-manifest.open-wc.org/analyzer/config/
 // TODO: Allow to set some variables from the node api
 await cli({
-  argv: analyseArgs,
+  argv: analyzeArgs,
 });
 
 if (!args.lib) {
   renameSync(IN_FILE, OUT_FILE);
-  console.log('customelments-analyse written to ' + OUT_FILE);
+  console.log('customelments-analyze written to ' + OUT_FILE);
   process.exit(0);
 }
 
@@ -62,4 +62,5 @@ for (const libFile of libFiles) {
 }
 
 writeFileSync(OUT_FILE, JSON.stringify(manifest, null, 2));
-console.log('customelments-analyse written to ' + OUT_FILE);
+unlinkSync(IN_FILE);
+console.log('customelments-analyze written to ' + OUT_FILE);

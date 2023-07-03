@@ -1,10 +1,19 @@
-import { CustomElement, JavaScriptModule, Package } from 'custom-elements-manifest';
+import { CustomElement, JavaScriptModule } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
 import { DESIGN_SYSTEM_PREFIX_TOKEN } from '../constants/misc';
-import { CEMTConfig, CustomElementDef, CustomElementsResource } from './custom-elements.types';
+import {
+  CEMTConfig,
+  CustomElementDef,
+  CustomElementsResource,
+  ManifestRepository,
+} from './custom-elements.types';
 
 export class CustomElementsAnalyzerManifestParser implements CustomElementsResource {
-  constructor(private logger: Logger, private manifest: Package, private config: CEMTConfig) {
+  constructor(
+    private logger: Logger,
+    private manifestRepository: ManifestRepository,
+    private config: CEMTConfig
+  ) {
     this.tranfsormManifest();
     logger.log(
       `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`
@@ -25,11 +34,11 @@ export class CustomElementsAnalyzerManifestParser implements CustomElementsResou
    */
 
   private tranfsormManifest() {
-    this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifest)}`);
+    this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifestRepository.manifest)}`);
 
     // TODO: Only supports FAST @customElements export in same file
     // TODO: Support mixin custom elements
-    for (const module of this.manifest.modules) {
+    for (const module of this.manifestRepository.manifest.modules) {
       if (this.parseRegisterExportedCustomElement(module)) continue;
       this.parseRegisterComposedCustomElement(module);
     }

@@ -21,6 +21,7 @@ import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
 import { FASTMetadataService } from './metadata/fast';
+import { StaticCEManifestRepository } from './custom-elements/manifest/repository';
 
 const USE_BYPASS = false;
 
@@ -50,37 +51,14 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     return { create: bypass };
   }
 
-  let useBypassDueToError = false;
-
   function create(info: ts.server.PluginCreateInfo): ts.LanguageService {
     const logger = new LanguageServiceLogger(info, 'CE');
     logger.log('Setting up main plugin');
 
-    // TODO: Should this default or error out?
-    const projectRoot = info.config.srcRouteFromTSServer || '../../..';
-
-    const ioRepo = new TypescriptCompilerIORepository(
-      logger,
-      ts.createCompilerHost({}),
-      projectRoot
-    );
-
-    // TODO: Need to use the service to get the schema FUI-1195
-    const maybeSchema = ioRepo.readFile(ioRepo.getNormalisedRootPath() + 'ce.json');
-    if (!maybeSchema) {
-      console.error('Unable to read schema, using plugin bypass.');
-      console.error(`Searched for schema at ${projectRoot}/ce.json`);
-      useBypassDueToError = true;
-      return proxy;
-    }
-
-    const schema = JSON.parse(maybeSchema);
-
     const services = initServices({
       logger,
-      schema,
-      ioRepo,
       config: info.config,
+      ts,
     });
 
     const completions: PartialCompletionsService[] = [
@@ -112,30 +90,32 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     );
   }
 
-  return { create: useBypassDueToError ? bypass : create };
+  return { create };
 }
 
 function initServices({
   logger,
-  schema,
-  ioRepo,
   config,
+  ts,
 }: {
   logger: Logger;
-  schema: any;
-  ioRepo: IORepository;
   config: any;
+  ts: typeof import('typescript/lib/tsserverlibrary');
 }): Services {
+  const projectRoot = config.srcRouteFromTSServer || '../../..';
+
+  const ioRepo = new TypescriptCompilerIORepository(logger, ts.createCompilerHost({}), projectRoot);
+  const io = new IOServiceImpl(ioRepo);
+
+  const manifest = new StaticCEManifestRepository(logger, io, projectRoot);
   const customElements = new CustomElementsServiceImpl(
     logger,
-    new CustomElementsAnalyzerManifestParser(logger, schema, {
+    new CustomElementsAnalyzerManifestParser(logger, manifest, {
       designSystemPrefix: config.designSystemPrefix,
     })
   );
 
   const globalData = new GlobalDataServiceImpl(logger, new GlobalDataRepositoryImpl(logger));
-
-  const io = new IOServiceImpl(ioRepo);
 
   return { customElements, globalData, io };
 }
