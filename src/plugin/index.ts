@@ -11,20 +11,16 @@ import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { GlobalDataServiceImpl } from './global-data/service';
-import {
-  LanguageServiceLogger,
-  IOServiceImpl,
-  TypescriptCompilerIORepository,
-} from './utils';
+import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
 import { Services } from './utils/services.types';
 import { FASTDiagnosticsService } from './diagnostics/fast';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
 import { FASTMetadataService } from './metadata/fast';
 import {
   LiveUpdatingCEManifestRepository,
+  mixinParserConfigDefaults,
   StaticCEManifestRepository,
 } from './custom-elements/manifest/repository';
-import { SourceAnalyzerConfig } from './custom-elements/custom-elements.types';
 
 const USE_BYPASS = false;
 
@@ -110,12 +106,11 @@ function initServices({
   const ioRepo = new TypescriptCompilerIORepository(logger, ts.createCompilerHost({}), projectRoot);
   const io = new IOServiceImpl(ioRepo);
 
-  const manifest = new StaticCEManifestRepository(logger, io, projectRoot);
+  const manifest = new StaticCEManifestRepository(logger, io);
   const liveManifest = new LiveUpdatingCEManifestRepository(
     logger,
     io,
-    (config.parser || {}) as Partial<SourceAnalyzerConfig>,
-    projectRoot
+    mixinParserConfigDefaults(config.parser)
   );
   const customElements = new CustomElementsServiceImpl(
     logger,
