@@ -5,13 +5,13 @@ import {
   CEMTConfig,
   CustomElementDef,
   CustomElementsResource,
-  ManifestResource,
+  ManifestRepository,
 } from './custom-elements.types';
 
 export class CustomElementsAnalyzerManifestParser implements CustomElementsResource {
   constructor(
     private logger: Logger,
-    private manifest: ManifestResource,
+    private manifestRepository: ManifestRepository,
     private config: CEMTConfig
   ) {
     this.tranfsormManifest();
@@ -34,11 +34,11 @@ export class CustomElementsAnalyzerManifestParser implements CustomElementsResou
    */
 
   private tranfsormManifest() {
-    this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifest.manifest)}`);
+    this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifestRepository.manifest)}`);
 
     // TODO: Only supports FAST @customElements export in same file
     // TODO: Support mixin custom elements
-    for (const module of this.manifest.manifest.modules) {
+    for (const module of this.manifestRepository.manifest.modules) {
       if (this.parseRegisterExportedCustomElement(module)) continue;
       this.parseRegisterComposedCustomElement(module);
     }

@@ -3,13 +3,13 @@ import { Logger } from 'typescript-template-language-service-decorator';
 import chokidar from 'chokidar';
 import debounce from 'debounce';
 import { IOService } from '../../utils';
-import { ManifestResource, SourceAnalyzerConfig } from '../custom-elements.types';
+import { ManifestRepository, SourceAnalyzerConfig } from '../custom-elements.types';
 
 /**
- * Thin wrapper implementing the `ManifestResource` interface which
+ * Thin wrapper implementing the `ManifestRepository` interface which
  * reads in a manifest at a given path and exposes it
  */
-export class StaticCEManifestRepository implements ManifestResource {
+export class StaticCEManifestRepository implements ManifestRepository {
   constructor(private logger: Logger, io: IOService, projectRoot: string) {
     this.logger.log(`Setting up StaticCEManifestRepository`);
     // TODO: Need to use the service to get the schema FUI-1195
@@ -30,7 +30,7 @@ export class StaticCEManifestRepository implements ManifestResource {
  * Constantly updates the manifest in the background, configured via
  * the `.tsconfig.json` file.
  */
-export class LiveUpdatingCEManifestRepository implements ManifestResource {
+export class LiveUpdatingCEManifestRepository implements ManifestRepository {
   constructor(
     private logger: Logger,
     io: IOService,

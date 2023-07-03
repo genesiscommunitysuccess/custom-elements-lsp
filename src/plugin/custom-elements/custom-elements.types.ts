@@ -4,9 +4,9 @@ export type SourceAnalyzerConfig = {
   timeout: number;
   src: string;
   dependencies: string;
-}
+};
 
-export interface ManifestResource {
+export interface ManifestRepository {
   manifest: Package;
 }
 
