@@ -96,7 +96,10 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
     new CustomElementsAnalyzerManifestParser(
       logger,
       {
+        // TODO: Update this
         manifest: manifest as unknown as Package,
+        requestUpdate: async () => {},
+        callbackAfterUpdate(_) {},
       },
       {
         designSystemPrefix: 'example',

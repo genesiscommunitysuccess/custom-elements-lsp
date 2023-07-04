@@ -32,12 +32,16 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     private logger: LanguageServiceLogger,
     private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[],
-    private metadata: PartialMetadataService[]
+    private metadata: PartialMetadataService[],
+    private servicesReady: () => boolean
   ) {
     logger.log('Setting up customelements class');
   }
 
   getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
+    if (!this.servicesReady()) {
+      return [];
+    }
     const sourceFile = context.node.getSourceFile();
     this.logger.log(`getSyntacticDiagnostics: ${sourceFile.fileName}`);
 
@@ -54,6 +58,16 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
   }
 
   getCompletionsAtPosition(context: TemplateContext, position: LineAndCharacter): CompletionInfo {
+    const baseCompletionInfo: CompletionInfo = {
+      isGlobalCompletion: false,
+      isMemberCompletion: false,
+      isNewIdentifierLocation: false,
+      entries: [],
+    };
+    if (!this.servicesReady()) {
+      return baseCompletionInfo;
+    }
+
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
     const typeAndParam = getTokenTypeWithInfo(context, position);
     this.logger.log(`getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`);
@@ -67,12 +81,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
               typeAndParam,
             })
           : acum,
-      {
-        isGlobalCompletion: false,
-        isMemberCompletion: false,
-        isNewIdentifierLocation: false,
-        entries: [],
-      }
+      baseCompletionInfo
     );
   }
 
@@ -80,6 +89,11 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     context: TemplateContext,
     position: LineAndCharacter
   ): DefinitionInfoAndBoundSpan {
+    if (!this.servicesReady()) {
+      return {
+        textSpan: { start: 0, length: 0 },
+      };
+    }
     // TODO: Need to refactor this if we want to allow other classes to implement this method
     // in future
     const base = this.metadata[0];
@@ -90,6 +104,10 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     context: TemplateContext,
     position: LineAndCharacter
   ): QuickInfo | undefined {
+    if (!this.servicesReady()) {
+      return undefined;
+    }
+
     const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-:?@]/);
     if (!maybeTokenSpan) {
       return undefined;

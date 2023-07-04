@@ -15,6 +15,7 @@ export const getGlobalDataService = () =>
   new GlobalDataServiceImpl(getLogger(), new GlobalDataRepositoryImpl(getLogger()));
 
 export const buildServices = (overrides: Partial<Services>): Services => ({
+  servicesReady: () => true,
   io: getIOServiceFromStubResource({}),
   customElements: getCEServiceFromTestJsonResource({}),
   globalData: getGlobalDataService(),

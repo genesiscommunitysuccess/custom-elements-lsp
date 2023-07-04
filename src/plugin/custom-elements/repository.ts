@@ -1,6 +1,8 @@
+import { EventEmitter } from 'events';
 import { CustomElement, JavaScriptModule } from 'custom-elements-manifest';
 import { Logger } from 'typescript-template-language-service-decorator';
-import { DESIGN_SYSTEM_PREFIX_TOKEN } from '../constants/misc';
+import { CEM_FIRST_LOADED_EVENT, DESIGN_SYSTEM_PREFIX_TOKEN } from '../constants/misc';
+import { getStore } from '../utils/kvstore';
 import {
   CEMTConfig,
   CustomElementDef,
@@ -8,17 +10,26 @@ import {
   ManifestRepository,
 } from './custom-elements.types';
 
-export class CustomElementsAnalyzerManifestParser implements CustomElementsResource {
+export class CustomElementsAnalyzerManifestParser
+  extends EventEmitter
+  implements CustomElementsResource
+{
   constructor(
     private logger: Logger,
     private manifestRepository: ManifestRepository,
     private config: CEMTConfig
   ) {
-    this.tranfsormManifest();
+    super();
     logger.log(
       `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`
     );
-    this.manifestRepository.callbackAfterUpdate(() => this.tranfsormManifest());
+    this.manifestRepository.callbackAfterUpdate(() => {
+      this.logger.log(`callbackAfterUpdate`);
+      this.tranfsormManifest();
+      getStore(this.logger).clearCache();
+      this.emit(CEM_FIRST_LOADED_EVENT);
+    });
+    this.manifestRepository.requestUpdate();
   }
 
   /**

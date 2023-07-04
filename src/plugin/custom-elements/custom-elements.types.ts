@@ -9,6 +9,7 @@ export type SourceAnalyzerConfig = {
 export interface ManifestRepository {
   manifest: Package;
   callbackAfterUpdate(callback: () => void): void;
+  requestUpdate(): Promise<void>;
 }
 
 // RAW DATA

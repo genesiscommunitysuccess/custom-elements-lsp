@@ -6,7 +6,6 @@ import debounce from 'debounce';
 import { IOService } from '../../utils';
 import { ManifestRepository, SourceAnalyzerConfig } from '../custom-elements.types';
 import { AnalyzerCLI, getAnalyzerCLI, getGlobby } from './analyzer';
-import { getStore } from '../../utils/kvstore';
 
 /**
  * Thin wrapper implementing the `ManifestRepository` interface which
@@ -27,6 +26,7 @@ export class StaticCEManifestRepository implements ManifestRepository {
   }
 
   callbackAfterUpdate(_: () => void): void {}
+  async requestUpdate(): Promise<void> {}
 
   manifest: Package = { schemaVersion: '0.1.0', modules: [] };
 }
@@ -58,7 +58,7 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
   manifest: Package = { schemaVersion: '0.1.0', modules: [] };
   private analyzer: AnalyzerCLI | undefined;
   private dependencies: Package['modules'] | undefined;
-  private subscriber: () => void | undefined;
+  private subscriber: (() => void) | undefined;
 
   constructor(private logger: Logger, private io: IOService, private config: SourceAnalyzerConfig) {
     this.logger.log(`Setting up LiveUpdatingCEManifestRepository`);
@@ -67,10 +67,13 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     const onChange = debounce(this.analyzeAndUpdate, this.config.timeout).bind(this);
     fileWatcher.addListener('change', onChange);
     fileWatcher.addListener('unlink', onChange);
-
-    this.analyzeAndUpdate();
   }
 
+  /**
+   * Calling this function will cause the cache to become invalid
+   * if it contains any custom element data. The caller can listen
+   * for this event by registering a callback with `callbackAfterUpdate`.
+   */
   private async analyzeAndUpdate(): Promise<void> {
     this.logger.log(`Analyzing and updating manifest. Config: ${JSON.stringify(this.config)}`);
     if (!this.analyzer) {
@@ -94,7 +97,6 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
 
     manifest.modules = [...manifest.modules, ...dependencies];
     this.manifest = manifest;
-    getStore(this.logger).clearCache();
 
     this.logger.log(`Manifest: ${JSON.stringify(this.manifest)}`);
     this.subscriber?.();
@@ -128,5 +130,9 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
 
   callbackAfterUpdate(callback: () => void): void {
     this.subscriber = callback;
+  }
+
+  async requestUpdate(): Promise<void> {
+    await this.analyzeAndUpdate();
   }
 }

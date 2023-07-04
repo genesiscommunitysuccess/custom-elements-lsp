@@ -21,6 +21,7 @@ import {
   mixinParserConfigDefaults,
   StaticCEManifestRepository,
 } from './custom-elements/manifest/repository';
+import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
 
 const USE_BYPASS = false;
 
@@ -81,7 +82,13 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       ts,
       info.languageService,
       info.project,
-      new CustomElementsLanguageService(logger, diagnostics, completions, metadata),
+      new CustomElementsLanguageService(
+        logger,
+        diagnostics,
+        completions,
+        metadata,
+        services.servicesReady
+      ),
       {
         tags: ['html'], // Could add for css too
         enableForStringWithSubstitutions: true,
@@ -101,25 +108,25 @@ function initServices({
   config: any;
   ts: typeof import('typescript/lib/tsserverlibrary');
 }): Services {
+  let servicesReady = false;
   const projectRoot = config.srcRouteFromTSServer || '../../..';
 
   const ioRepo = new TypescriptCompilerIORepository(logger, ts.createCompilerHost({}), projectRoot);
   const io = new IOServiceImpl(ioRepo);
 
-  const manifest = new StaticCEManifestRepository(logger, io);
+  // const manifest = new StaticCEManifestRepository(logger, io);
   const liveManifest = new LiveUpdatingCEManifestRepository(
     logger,
     io,
     mixinParserConfigDefaults(config.parser)
   );
-  const customElements = new CustomElementsServiceImpl(
-    logger,
-    new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
-      designSystemPrefix: config.designSystemPrefix,
-    })
-  );
+  const cemRepository = new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
+    designSystemPrefix: config.designSystemPrefix,
+  });
+  cemRepository.once(CEM_FIRST_LOADED_EVENT, () => (servicesReady = true));
+  const customElements = new CustomElementsServiceImpl(logger, cemRepository);
 
   const globalData = new GlobalDataServiceImpl(logger, new GlobalDataRepositoryImpl(logger));
 
-  return { customElements, globalData, io };
+  return { customElements, globalData, io, servicesReady: () => servicesReady };
 }
