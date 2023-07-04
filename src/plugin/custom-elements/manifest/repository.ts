@@ -4,7 +4,7 @@ import chokidar from 'chokidar';
 import debounce from 'debounce';
 import { IOService } from '../../utils';
 import { ManifestRepository, SourceAnalyzerConfig } from '../custom-elements.types';
-// import { analyzerCLI } from './analyzer';
+import { AnalyzerCLI, getAnalyzerCLI } from './analyzer';
 
 /**
  * Thin wrapper implementing the `ManifestRepository` interface which
@@ -36,7 +36,7 @@ export const mixinParserConfigDefaults = (
   const inputConfig = config ?? {};
   return {
     timeout: 5000,
-    src: '**/*.{js,ts}',
+    src: 'src/**/*.{js,ts}',
     dependencies: 'node_modules/**/custom-elements.json',
     ...inputConfig,
   };
@@ -58,21 +58,26 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
 
   private async analyzeAndUpdate() {
     this.logger.log(`Analyzing and updating manifest. Config: ${JSON.stringify(this.config)}`);
+    if (!this.analyzer) {
+      this.analyzer = await getAnalyzerCLI();
+    }
     const analyzerArgs = [
       'analyze',
       '--fast', // TODO: don't hard code this if we ever want to be generic
       '--globs',
       this.config.src,
     ];
-    // const manifest = await analyzerCLI({
-      // argv: analyzerArgs,
-      // cwd: this.io.getNormalisedRootPath(),
-      // noWrite: true,
-    // });
-    // this.logger.log(JSON.stringify(manifest));
+    const manifest = await this.analyzer({
+      argv: analyzerArgs,
+      cwd: this.io.getNormalisedRootPath(),
+      noWrite: true,
+    });
+    this.logger.log('Hello-moto');
+    this.logger.log(JSON.stringify(manifest));
     // TODO: Need to invalidate cache
     // TODO: Need to read dependencies
   }
 
   manifest: Package = { schemaVersion: '0.1.0', modules: [] };
+  private analyzer: AnalyzerCLI | undefined;
 }
