@@ -18,6 +18,7 @@ export class CustomElementsAnalyzerManifestParser implements CustomElementsResou
     logger.log(
       `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`
     );
+    this.manifestRepository.callbackAfterUpdate(() => this.tranfsormManifest());
   }
 
   /**

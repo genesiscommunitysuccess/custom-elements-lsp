@@ -3,11 +3,12 @@ import { CustomElementDeclaration, Package, Privacy } from 'custom-elements-mani
 export type SourceAnalyzerConfig = {
   timeout: number;
   src: string;
-  dependencies: string;
+  dependencies: string[];
 };
 
 export interface ManifestRepository {
   manifest: Package;
+  callbackAfterUpdate(callback: () => void): void;
 }
 
 // RAW DATA

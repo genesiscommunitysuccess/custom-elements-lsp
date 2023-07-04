@@ -114,7 +114,7 @@ function initServices({
   );
   const customElements = new CustomElementsServiceImpl(
     logger,
-    new CustomElementsAnalyzerManifestParser(logger, manifest, {
+    new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
       designSystemPrefix: config.designSystemPrefix,
     })
   );

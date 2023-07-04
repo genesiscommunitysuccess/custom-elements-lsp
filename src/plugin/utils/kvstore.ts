@@ -18,6 +18,15 @@ class KVStore {
   private store = new Map<string, unknown>();
 
   /**
+   * Clear the cache.
+   * @remarks Call this if any of the underlying data which is cached is now out of sync.
+   */
+  clearCache(): void {
+    this.logger.log('Clearing KVStore cache');
+    this.store.clear();
+  }
+
+  /**
    * Type-safe getOrAdd method.
    * @param key The key to get or add.
    * @param factory The factory function to create the value if it does not exist.
