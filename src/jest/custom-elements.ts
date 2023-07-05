@@ -99,7 +99,7 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
         // TODO: Update this
         manifest: manifest as unknown as Package,
         requestUpdate: async () => {},
-        callbackAfterUpdate(_) {},
+        registerCallbackForPostUpdate(_) {},
       },
       {
         designSystemPrefix: 'example',

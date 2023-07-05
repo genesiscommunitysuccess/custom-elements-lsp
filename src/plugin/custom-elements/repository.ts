@@ -23,7 +23,7 @@ export class CustomElementsAnalyzerManifestParser
     logger.log(
       `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`
     );
-    this.manifestRepository.callbackAfterUpdate(() => {
+    this.manifestRepository.registerCallbackForPostUpdate(() => {
       this.logger.log(`callbackAfterUpdate`);
       this.tranfsormManifest();
       getStore(this.logger).clearCache();

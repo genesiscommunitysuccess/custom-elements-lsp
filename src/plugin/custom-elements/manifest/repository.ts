@@ -12,21 +12,31 @@ import { AnalyzerCLI, getAnalyzerCLI, getGlobby } from './analyzer';
  * reads in a manifest at a given path and exposes it
  */
 export class StaticCEManifestRepository implements ManifestRepository {
+  private subscriber: (() => void) | undefined;
   constructor(private logger: Logger, private io: IOService) {
     this.logger.log(`Setting up StaticCEManifestRepository`);
-    // TODO: Need to use the service to get the schema FUI-1195
-    const maybeSchema = io.readFile(io.getNormalisedRootPath() + 'ce.json');
+    this.loadManifest();
+  }
+
+  private loadManifest(): void {
+    const maybeSchema = this.io.readFile(this.io.getNormalisedRootPath() + 'ce.json');
     if (!maybeSchema) {
-      throw new Error(`Searched for schema at ${io.getNormalisedRootPath()}/ce.json`);
+      throw new Error(`Searched for schema at ${this.io.getNormalisedRootPath()}/ce.json`);
     }
 
     const schema = JSON.parse(maybeSchema);
     this.manifest = schema as Package;
-    this.logger.log(`Finished setting up StaticCEManifestRepository`);
+    this.logger.log(`Finished reading manifest in StaticCEManifestRepository`);
+
+    this.subscriber?.();
   }
 
-  callbackAfterUpdate(_: () => void): void {}
-  async requestUpdate(): Promise<void> {}
+  registerCallbackForPostUpdate(callback: () => void): void {
+    this.subscriber = callback;
+  }
+  async requestUpdate(): Promise<void> {
+    this.loadManifest();
+  }
 
   manifest: Package = { schemaVersion: '0.1.0', modules: [] };
 }
@@ -41,11 +51,7 @@ export const mixinParserConfigDefaults = (
   return {
     timeout: 5000,
     src: 'src/**/*.{js,ts}',
-    // TODO: These should be configured in tsconfig.json
-    dependencies: [
-      'node_modules/example-lib/**/custom-elements.json',
-      '!**/@custom-elements-manifest/**/*',
-    ],
+    dependencies: [],
     ...inputConfig,
   };
 };
@@ -128,7 +134,7 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     return this.dependencies;
   }
 
-  callbackAfterUpdate(callback: () => void): void {
+  registerCallbackForPostUpdate(callback: () => void): void {
     this.subscriber = callback;
   }
 

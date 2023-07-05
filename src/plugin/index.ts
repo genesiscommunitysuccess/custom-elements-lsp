@@ -19,7 +19,6 @@ import { FASTMetadataService } from './metadata/fast';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
-  StaticCEManifestRepository,
 } from './custom-elements/manifest/repository';
 import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
 
