@@ -10,28 +10,56 @@ To use this plugin you have a version of typescript as part of the project, loca
 2. Update your `tsconfig.json` with the following info:
 
 ```json
-"compilerOptions": {
+{
+  "compilerOptions": {
     "plugins": [
-        {
-            "name": "@genesiscommunitysuccess/custom-elements-lsp",
-            "srcRouteFromTSServer": "../../..",
-            "designSystemPrefix": "example",
-            "fastEnable": true
+      {
+        "name": "@genesiscommunitysuccess/custom-elements-lsp",
+        "srcRouteFromTSServer": "../../..",
+        "designSystemPrefix": "example",
+        "fastEnable": true,
+        "parser": {
+          "timeout": 2000,
+          "dependencies": [
+            "node_modules/example-lib/**/custom-elements.json",
+            "!**/@custom-elements-manifest/**/*"
+          ]
         }
-    ],
-    "target": "ES2021"
+      }
+    ]
+  }
 }
 ```
-
-> `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where `ce.json` (see step 4) is saved to. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`.
-
 > You need to use a target of `ES2021` or later.
 
+Base options.
+
+| Option                | Optional and Default | Explanation                                                                                                                                                                                                                                                                  |
+|---|---|--|
+| `name`                | False                | Need to set as `@genesiscommunitysuccess/custom-elements-lsp` to enable this plugin.                                                                                                                                                                                         |
+| `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. |
+| `designSystemPrefix`  | True (N/A)           | Used to work with `%%prefix%%` to handle components registered as part of a design system. See [here](#advanced-usage).                                                                                                                                                      |
+| `fastEnable`          | True (disabled)      | Enables Microsoft FAST parsing and completion (e.g. `:prop` property binding syntax).                                                                                                                                                                                        |
+
+
+Parser options. These control the analysis of the source code to understand semantics such as whether a custom element has a property or not. This is not controlling the LSP working with the html in the templates to understand whether there are diagnostic issues, or to aid with completion suggestions.
+
+| Option | Optional and Default | Explanation |
+|---|---|---|
+| `src` | True (`"src/**/*.{js,ts}"`) | The glob of the source files in the current project to analyze live.  |
+| `timeout` | True (2000) | Time in milliseconds to debounce calls between running the analyzer on the source files. The lower the time the more responsive the LSP will be to changes in the source code but the more resources it will use. |
+| `dependencies` | True (`[]`) | An array of strings of globs that find `custom-elements.json` from library dependencies to use with the LSP. Libraries will ship production code with which the analyzer will not be able to parse, so the libraries need to ship the manifest generated [from the analyzer](https://custom-elements-manifest.open-wc.org/analyzer/config/). An example default you could use to load all files would be `["node_modules/**/custom-elements.json","!**/@custom-elements-manifest/**/*"]` which will find all of the manifests in your dependencies, but ignore the test manifests from the analzyer dependency itself.
+
+Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
+
+<!--
+TODO: Remove in FUI-1379?
 3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyze": "customelements-analyze --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
-<!-- TODO: need much better explanation of this command -->
+ TODO: need much better explanation of this command
 4. Run `npm run lsp:analyze` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
 5. Run `npx tsc` in the root of the project to compile the plugin code. (This will be done automatically in a future release!)
 6. Any IDE specific configuration...
+-->
 
 ### FAST Syntax
 
@@ -65,7 +93,7 @@ The LSP plugin should be symlinked locally via the `package.json` but if you're 
 While developing:
 
 1. `npm run bootstrap` will do all required setup for installing and building packages for working on the LSP and using the test example apps.
-2. `npx tsc --watch` from the root directory to incrementally transpile the plugin.
+2. `npm run build:watch` from the root directory to incrementally transpile the plugin.
 
 To view logs
 
