@@ -66,7 +66,12 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
   private dependencies: Package['modules'] | undefined;
   private subscriber: (() => void) | undefined;
 
-  constructor(private logger: Logger, private io: IOService, private config: SourceAnalyzerConfig) {
+  constructor(
+    private logger: Logger,
+    private io: IOService,
+    private config: SourceAnalyzerConfig,
+    private fastEnabled: boolean
+  ) {
     this.logger.log(`Setting up LiveUpdatingCEManifestRepository`);
 
     const fileWatcher = chokidar.watch(this.config.src, { cwd: this.io.getNormalisedRootPath() });
@@ -81,16 +86,18 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
    * for this event by registering a callback with `callbackAfterUpdate`.
    */
   private async analyzeAndUpdate(): Promise<void> {
-    this.logger.log(`Analyzing and updating manifest. Config: ${JSON.stringify(this.config)}`);
+    this.logger.log(
+      `Analyzing and updating manifest. Config: ${JSON.stringify(
+        this.config
+      )}. CWD: ${this.io.getNormalisedRootPath()}`
+    );
     if (!this.analyzer) {
       this.analyzer = await getAnalyzerCLI();
     }
-    const analyzerArgs = [
-      'analyze',
-      '--fast', // TODO: don't hard code this if we ever want to be generic
-      '--globs',
-      this.config.src,
-    ];
+    const analyzerArgs = ['analyze', '--globs', this.config.src];
+    if (this.fastEnabled) {
+      analyzerArgs.push('--fast');
+    }
     const manifest = await this.analyzer({
       argv: analyzerArgs,
       cwd: this.io.getNormalisedRootPath(),

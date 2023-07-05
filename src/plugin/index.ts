@@ -113,11 +113,11 @@ function initServices({
   const ioRepo = new TypescriptCompilerIORepository(logger, ts.createCompilerHost({}), projectRoot);
   const io = new IOServiceImpl(ioRepo);
 
-  // const manifest = new StaticCEManifestRepository(logger, io);
   const liveManifest = new LiveUpdatingCEManifestRepository(
     logger,
     io,
-    mixinParserConfigDefaults(config.parser)
+    mixinParserConfigDefaults(config.parser),
+    config.fastEnable
   );
   const cemRepository = new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
     designSystemPrefix: config.designSystemPrefix,
