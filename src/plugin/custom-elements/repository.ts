@@ -25,7 +25,7 @@ export class CustomElementsAnalyzerManifestParser
     );
     this.manifestRepository.registerCallbackForPostUpdate(() => {
       this.logger.log(`callbackAfterUpdate`);
-      this.tranfsormManifest();
+      this.transformManifest();
       getStore(this.logger).clearCache();
       this.emit(CEM_FIRST_LOADED_EVENT);
     });
@@ -45,7 +45,7 @@ export class CustomElementsAnalyzerManifestParser
    * PRIVATE
    */
 
-  private tranfsormManifest() {
+  private transformManifest() {
     this.logger.log(`tranfsormManifest: ${JSON.stringify(this.manifestRepository.manifest)}`);
 
     // TODO: Only supports FAST @customElements export in same file

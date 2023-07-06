@@ -91,20 +91,21 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
 
   const logger = getLogger();
 
-  return new CustomElementsServiceImpl(
+  const ceRepo = new CustomElementsAnalyzerManifestParser(
     logger,
-    new CustomElementsAnalyzerManifestParser(
-      logger,
-      {
-        // TODO: Update this
-        manifest: manifest as unknown as Package,
-        requestUpdate: async () => {},
-        registerCallbackForPostUpdate(_) {},
-      },
-      {
-        designSystemPrefix: 'example',
-        ...configOverride,
-      }
-    )
+    {
+      manifest: manifest as unknown as Package,
+      requestUpdate: async () => {},
+      registerCallbackForPostUpdate: (_: () => void) => {},
+    },
+    {
+      designSystemPrefix: 'example',
+      ...configOverride,
+    }
   );
+
+  // Bypass requirements for async events by manually calling the transformation function
+  (ceRepo as any).transformManifest();
+
+  return new CustomElementsServiceImpl(logger, ceRepo);
 }
