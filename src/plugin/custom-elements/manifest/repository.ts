@@ -104,14 +104,10 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
       noWrite: true,
     });
     const dependencies = await this.getDependencies();
-    this.logger.log(JSON.stringify(manifest));
-    this.logger.log('Hello-moto');
-    this.logger.log(`Deps : ${JSON.stringify(dependencies)}`);
 
     manifest.modules = [...manifest.modules, ...dependencies];
     this.manifest = manifest;
 
-    this.logger.log(`Manifest: ${JSON.stringify(this.manifest)}`);
     this.subscriber?.();
   }
 
