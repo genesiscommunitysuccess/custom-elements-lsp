@@ -106,7 +106,6 @@ describe('getTokenSpanMatchingPattern', () => {
 
   for (const [name, [position, context, pattern], expected] of testCases) {
     it(name, () => {
-      debugger;
       expect(getTokenSpanMatchingPattern(position, context, pattern)).toEqual(expected);
     });
   }

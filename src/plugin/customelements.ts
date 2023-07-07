@@ -7,12 +7,13 @@ import {
   QuickInfo,
 } from 'typescript/lib/tsserverlibrary';
 import {
+  Logger,
   TemplateContext,
   TemplateLanguageService,
 } from 'typescript-template-language-service-decorator';
 import { PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { getTokenTypeWithInfo, getTokenSpanMatchingPattern, LanguageServiceLogger } from './utils';
+import { getTokenTypeWithInfo, getTokenSpanMatchingPattern } from './utils';
 import { PartialMetadataService } from './metadata';
 
 /**
@@ -29,7 +30,7 @@ import { PartialMetadataService } from './metadata';
  */
 export class CustomElementsLanguageService implements TemplateLanguageService {
   constructor(
-    private logger: LanguageServiceLogger,
+    private logger: Logger,
     private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[],
     private metadata: PartialMetadataService[],

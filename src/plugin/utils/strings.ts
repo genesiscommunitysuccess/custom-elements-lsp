@@ -205,7 +205,6 @@ export function getTokenTypeWithInfo(
   context: TemplateContext,
   position: LineAndCharacter
 ): TokenUnderCursorType {
-  const rawLine = context.rawText.split(/\n/g)[position.line];
   const processedLine = replaceTemplateStringBinding(
     context.rawText.substring(0, context.toOffset(position))
   );
@@ -222,7 +221,7 @@ export function getTokenTypeWithInfo(
     }
   }
 
-  if (tokenParseHelper.suggestTags(rawLine)) {
+  if (tokenParseHelper.suggestTags(processedLine)) {
     return {
       key: 'custom-element-name',
       params: undefined,

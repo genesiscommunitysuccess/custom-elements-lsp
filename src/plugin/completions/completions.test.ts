@@ -102,7 +102,7 @@ describe('getCompletionsAtPosition', () => {
     `;
     const position = {
       line: 1,
-      character: 6,
+      character: 7,
     };
     const typeAndParam = getTokenTypeWithInfo(context, position);
 
