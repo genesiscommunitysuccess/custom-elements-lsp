@@ -1,10 +1,6 @@
 import { customElement, FASTElement, html, observable } from '@microsoft/fast-element';
 import { attrSrc, Avatar, propertySrc } from './components/avatar/avatar';
 
-
-
-
-
 const rootTemplate = html`
   <template @avatar-selected=${(x, c) => x.avatarSelected(c.event)}>
     <theme-picker background="FFFFFF" background="000000"></theme-picker>
