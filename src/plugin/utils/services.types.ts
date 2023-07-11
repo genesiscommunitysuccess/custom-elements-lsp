@@ -6,4 +6,9 @@ export type Services = {
   customElements: CustomElementsService;
   globalData: GlobalDataService;
   io: IOService;
+  /**
+   * Returns true if all services are ready, having completed any async background tasks.
+   * @remarks Because we have to do async setup for some services, but we can't use await as the plugin expects a synchronous setup function.
+   */
+  servicesReady: () => boolean;
 };

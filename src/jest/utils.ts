@@ -2,7 +2,7 @@ import { Logger, TemplateContext } from 'typescript-template-language-service-de
 import { GlobalDataRepositoryImpl } from '../plugin/global-data/repository';
 import { GlobalDataServiceImpl } from '../plugin/global-data/service';
 import { Services } from '../plugin/utils/services.types';
-import { getCEServiceFromTestJsonResource } from './custom-elements';
+import { getCEServiceFromStubbedResource } from './custom-elements';
 import { getIOServiceFromStubResource } from './io';
 
 const constructLogger = (debugLog: boolean = false): Logger => ({
@@ -15,8 +15,9 @@ export const getGlobalDataService = () =>
   new GlobalDataServiceImpl(getLogger(), new GlobalDataRepositoryImpl(getLogger()));
 
 export const buildServices = (overrides: Partial<Services>): Services => ({
+  servicesReady: () => true,
   io: getIOServiceFromStubResource({}),
-  customElements: getCEServiceFromTestJsonResource({}),
+  customElements: getCEServiceFromStubbedResource(),
   globalData: getGlobalDataService(),
   ...overrides,
 });
