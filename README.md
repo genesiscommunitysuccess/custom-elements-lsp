@@ -2,8 +2,11 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 # Custom Elements LSP Plugin
 
+<!-- Add an intro to the LSP stuff in FUI-1186 -->
+
 ## Plugin Setup and Usage
 
+These instructions are for setting up the LSP in your application. If you are wanting to set up the LSP test it or contribute to it then go to [this section](#plugin-development).
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
 
 1. Ensure the package is installed in your `package.json` and you've run `npm install`.
@@ -52,15 +55,6 @@ Parser options. These control the analysis of the source code to understand sema
 
 Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
 
-<!--
-TODO: Remove in FUI-1379?
-3. Configure a npm command to generate all of the custom element manifest for your local source files and the globs of any dependencies to use too. `"lsp:analyze": "customelements-analyze --watch --src='web/src/**/*.{js,ts}' --lib='node_modules/**/custom-elements.json'",`
- TODO: need much better explanation of this command
-4. Run `npm run lsp:analyze` to generate the manifest `ce.json` (you might want to add this to your `.gitignore`).
-5. Run `npx tsc` in the root of the project to compile the plugin code. (This will be done automatically in a future release!)
-6. Any IDE specific configuration...
--->
-
 ### FAST Syntax
 
 Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
@@ -71,24 +65,25 @@ Enable enhanced completions and diagnostics by setting the `"fastEnable": true` 
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
 
-1. Launch using the settings in `.vscode` directory (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`.
-2. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript
+1. You need to create a `settings.json` file inside of a `.vscode` directory. We need to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`.
+2. Launch VSCode on the project directory that contains the `.vscode` directory.
+3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
 
 ### NVIM
 
 If you have an LSP setup for typescript this should work straight away using the project's TypeScript.
 
+### Advanced Usage
+
+`designSystemPrefix` is used to specify how to handle custom elements which are defined but exported as an element registry function, and later registered against a design system with a specific prefix. An example of this is [FAST component libraries](https://www.fast.design/docs/design-systems/creating-a-component-library). Export these with the magic string `%%prefix%%-` at the start of the tagname and then `designSystemPrefix` will override the `%%prefix%%`.
+
+In the config of this repository it is set to `example` because we use the `example` prefix as set in `./example/src/components.ts`. An example of a component exported in this way can be found in the `./example/src/components/button/` directory.
+
 ## Plugin Development
 
-Playground based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin
+This section helps you to set up the LSP plugin locally so you can contribute to it. Playground based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin
 
-The app in `/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
-
-The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
-
-1. `npm link` in the project root
-2. `cd example`
-3. `npm link @genesiscommunitysuccess/custom-elements-lsp`
+When working on the LSP codebase itself, it is useful to be running an application in order to see what functionality is and is not working. The app in `/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
 
 While developing:
 
@@ -102,12 +97,24 @@ To view logs
 
 > If you're using VSCode you can view the logs using `TypeScript: Open TS Server log` from the command palette.
 
+### Troubleshooting
+
+#### NPM Link
+
+The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
+
+1. `npm link` in the project root
+2. `cd example`
+3. `npm link @genesiscommunitysuccess/custom-elements-lsp`
+
 ### Example Library
 
 The directory `/example-lib` contains a small example library which publishes a FAST web component and associated custom elements manifest. It is added as a dependency of the example app already, and then you need to build the output using `npm run build` for use in the example app.
 
-## Advanced Usage
+### Local Testing in Other Projects
 
-`designSystemPrefix` is used to specify how to handle custom elements which are defined but exported as an element registry function, and later registered against a design system with a specific prefix. An example of this is [FAST component libraries](https://www.fast.design/docs/design-systems/creating-a-component-library). Export these with the magic string `%%prefix%%-` at the start of the tagname and then `designSystemPrefix` will override the `%%prefix%%`.
+While working on the LSP plugin you can test it out in any Typescript application you'd like, in addition to testing via the included `/example` application.
 
-In the config of this repository it is set to `example` because we use the `example` prefix as set in `./example/src/components.ts`. An example of a component exported in this way can be found in the `./example/src/components/button/` directory.
+1. You need to install the plugin as a dev dependency to your application. You can do this either in a similar way to the [NPM link](#npm-link) section, or use the `file:` syntax for a local installation. For an example of the latter method look at the `example/package.json` file.
+2. You need to set up your application as explained in [this section](#plugin-setup-and-usage). Again, you'll need to do any IDE specific setup such as configuring the `settings.json` of VSCode as explained previously.
+3. Run the `npm run bootstrap` and `npm run build:watch` commands in the LSP directory as explained previously.
