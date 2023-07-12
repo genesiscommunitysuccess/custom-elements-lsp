@@ -3,7 +3,7 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
 import { html } from '../../jest/utils';
 import {
   getWholeTextReplacementSpan,
-  replaceTemplateStringBinding,
+  replaceQuotesAndInterpolationContents,
   getPositionOfNthOccuranceEnd,
   parseAttrNamesFromRawString,
   getTokenSpanMatchingPattern,
@@ -36,7 +36,7 @@ describe('replaceTemplateStringBinding', () => {
 
   for (const [name, [input], expected] of testCases) {
     it(name, () => {
-      expect(replaceTemplateStringBinding(input)).toEqual(expected);
+      expect(replaceQuotesAndInterpolationContents(input)).toEqual(expected);
     });
   }
 });
