@@ -3,11 +3,12 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
 import { html } from '../../jest/utils';
 import {
   getWholeTextReplacementSpan,
-  replaceTemplateStringBinding,
+  replaceQuotesAndInterpolationContents,
   getPositionOfNthOccuranceEnd,
   parseAttrNamesFromRawString,
   getTokenSpanMatchingPattern,
   getTokenTypeWithInfo,
+  stringHasUnfinishedQuotedValue,
 } from './strings';
 
 describe('replaceTemplateStringBinding', () => {
@@ -17,19 +18,48 @@ describe('replaceTemplateStringBinding', () => {
     ['Returns input string the template binding is empty', ['test=${}'], 'test=${}'],
     [
       "Replaces template binding content with 'y' of the same length",
-      ['test="${_ => \'hello\'}"'],
-      'test="${yyyyyyyyyyyy}"',
+      ["test=${_ => 'hello'}"],
+      'test=${yyyyyyyyyyyy}',
     ],
     [
       'Replaces multiple template bindings',
-      ['test="${_ => \'hello\'}" test="${_ => \'hello\'}"'],
-      'test="${yyyyyyyyyyyy}" test="${yyyyyyyyyyyy}"',
+      ["test=${_ => 'hello'} test=${_ => 'hello'}"],
+      'test=${yyyyyyyyyyyy} test=${yyyyyyyyyyyy}',
     ],
+    [
+      'Replaces text inside of double quotes',
+      ['test="${_ => \'hello\'}"'],
+      'test="zzzzzzzzzzzzzzz"',
+    ],
+    ['Replaces text inside of single quotes', ["test='${_ => 'hello'}'"], "test='zzzzzzzzzzzzzzz'"],
   ];
 
   for (const [name, [input], expected] of testCases) {
     it(name, () => {
-      expect(replaceTemplateStringBinding(input)).toEqual(expected);
+      expect(replaceQuotesAndInterpolationContents(input)).toEqual(expected);
+    });
+  }
+});
+describe('stringHasUnfinishedQuotedValue', () => {
+  const testCases: [string, [string], boolean][] = [
+    ['Empty string returns false', [''], false],
+    ['Returns false if all quotes are matched', ['\'test val\' "another value"'], false],
+    ['Returns true for ending with unfinished single quote', ["'test val' 'another value"], true],
+    ['Returns true for ending with unfinished single quote', ["'test val' \"another value"], true],
+    ['Returns false for an attribute example', ['<person-avatar unused="zzzzzzzz"  '], false],
+    ['Returns false with correctly escaped quotes', ["<person-avatar unused='zzzzzzzz'  "], false],
+    [
+      'Returns false with correctly escaped double quotes',
+      ['<person-avatar unused="zzzzzzzz"  '],
+      false,
+    ],
+    ['Returns false with unbalanced quotes in a string', ["'\"'"], false],
+    ['Returns false with unbalanced quotes in multiple strings', ["'\"' '\"' \"'\""], false],
+  ];
+
+  for (const [name, [input], expected] of testCases) {
+    it(name, () => {
+      expect(stringHasUnfinishedQuotedValue(input)).toEqual(expected);
     });
   }
 });
@@ -324,12 +354,13 @@ describe('parseAttrNamesFromRawString', () => {
       ['?testone', ':test-two', '@test-event'],
     ],
     [
-      'Can apply all rules at once and returns ',
+      'Can apply all rules at once and returns',
       [
         'testone testone="test" ?testone="${x => true}" :testone="test-again" @testone="${(x,c) => x.event()}"',
       ],
       ['testone', 'testone', '?testone', ':testone', '@testone'],
     ],
+    ['Handles attribute names with whitespace in their value', ['testone="test one"'], ['testone']],
   ];
 
   for (const [name, [input], expected] of testCases) {
@@ -393,6 +424,16 @@ describe('getTokenTypeWithInfo', () => {
           <div></div>
         `,
         { line: 0, character: 5 },
+      ],
+      { key: 'none', params: undefined },
+    ],
+    [
+      'Key "none" if in an unfinished attribute value',
+      [
+        html`
+          <custom-element test="test at
+          `,
+        { line: 1, character: 39 },
       ],
       { key: 'none', params: undefined },
     ],
@@ -464,10 +505,14 @@ describe('getTokenTypeWithInfo', () => {
       ],
       { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
     ],
+    [
+      'Key "custom-element-attribute" if after a finished attribute',
+      [html`<person-avatar unused="zzzzzzzz"  `, { line: 0, character: 36 }],
+      { key: 'custom-element-attribute', params: { tagName: 'person-avatar' } },
+    ],
   ];
 
-  for (const test of tests) {
-    const [name, [context, lineAndChar], expected] = test;
+  for (const [name, [context, lineAndChar], expected] of tests) {
     it(name, () => {
       const result = getTokenTypeWithInfo(context, lineAndChar);
       expect(result).toEqual(expected);

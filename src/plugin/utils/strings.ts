@@ -2,20 +2,43 @@ import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 
 /**
- * Replace the content of a attribute binding in a template string interpolation region with `y`.
+ * Replace the content of a binding in a template string interpolation region with `y`.
+ * Replace the content of a attribute binding in a template string interpolation region with `z`.
  * @privateRemarks
  * Regions inside of a `${}` block are standard js/ts and hence are not the remit of the custom elements LSP plugin.
  * Therefore we do not care about the contents of the template string and transform all of the contained text to `y` (avoiding confusion with the `rawString` from the `TemplateContext`).
  * Ideally we would use `rawString` but it squashes multiple lines of strings into a single line, so `LineAndCharacter` would be off.
+ * Characters inside of string tokens are strings and hence we do not care about the contents of the string and transform all of the contained text to `z`.
  * @example
  * ```
- * `hello="${x => x.action()}"` -> `hello="${yyyyyyyyyyyyyyy}"`
+ * `hello="${x => x.action()}"` -> `hello="zzzzzzzzzzzzzzzzzz"`
+ * `${ref('test')}` -> `${yyyyyyyyyyy}`
  * ````
  */
-export function replaceTemplateStringBinding(line: string): string {
-  return line.replace(/\${(.+?)}/g, (...args) => {
-    return '${' + 'y'.repeat(args[1].length) + '}';
-  });
+export function replaceQuotesAndInterpolationContents(line: string): string {
+  return line
+    .replace(/\${(.+?)}/g, (...args) => '${' + 'y'.repeat(args[1].length) + '}')
+    .replace(/"(.+?)"/g, (...args) => '"' + 'z'.repeat(args[1].length) + '"')
+    .replace(/'(.+?)'/g, (...args) => "'" + 'z'.repeat(args[1].length) + "'");
+}
+
+/**
+ * Check whether the string ends with a trailing quote.
+ * @remarks
+ * If a string ends with a trailing quote, it is likely that the user is in the middle of typing a string. We can use this information to provide better completion behaviour. For example, we should not provide attribute autocompletion options if the user is writing an attribute value.
+ */
+export function stringHasUnfinishedQuotedValue(line: string): boolean {
+  let openStringType: '"' | "'" | null = null;
+  for (let i = 0; i < line.length; i += 1) {
+    if (line[i] === '"' || line[i] === "'") {
+      if (openStringType === null) {
+        openStringType = line[i] as '"' | "'";
+      } else if (openStringType === line[i]) {
+        openStringType = null;
+      }
+    }
+  }
+  return openStringType !== null;
 }
 
 /**
@@ -146,7 +169,7 @@ export function getPositionOfNthOccuranceEnd({
  * ```
  */
 export function parseAttrNamesFromRawString(rawString: string): string[] {
-  return replaceTemplateStringBinding(rawString)
+  return replaceQuotesAndInterpolationContents(rawString)
     .split(' ')
     .map((token) => {
       const attrRegex = /([\w-?:@]+)(?:=.+)?/g;
@@ -205,9 +228,16 @@ export function getTokenTypeWithInfo(
   context: TemplateContext,
   position: LineAndCharacter
 ): TokenUnderCursorType {
-  const processedLine = replaceTemplateStringBinding(
+  const processedLine = replaceQuotesAndInterpolationContents(
     context.rawText.substring(0, context.toOffset(position))
   );
+
+  if (stringHasUnfinishedQuotedValue(processedLine)) {
+    return {
+      key: 'none',
+      params: undefined,
+    };
+  }
 
   {
     let tagName: string | false;
