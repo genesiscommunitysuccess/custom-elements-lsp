@@ -17,14 +17,20 @@ describe('replaceTemplateStringBinding', () => {
     ['Returns input string the template binding is empty', ['test=${}'], 'test=${}'],
     [
       "Replaces template binding content with 'y' of the same length",
-      ['test="${_ => \'hello\'}"'],
-      'test="${yyyyyyyyyyyy}"',
+      ["test=${_ => 'hello'}"],
+      'test=${yyyyyyyyyyyy}',
     ],
     [
       'Replaces multiple template bindings',
-      ['test="${_ => \'hello\'}" test="${_ => \'hello\'}"'],
-      'test="${yyyyyyyyyyyy}" test="${yyyyyyyyyyyy}"',
+      ["test=${_ => 'hello'} test=${_ => 'hello'}"],
+      'test=${yyyyyyyyyyyy} test=${yyyyyyyyyyyy}',
     ],
+    [
+      'Replaces text inside of double quotes',
+      ['test="${_ => \'hello\'}"'],
+      'test="zzzzzzzzzzzzzzz"',
+    ],
+    ['Replaces text inside of single quotes', ["test='${_ => 'hello'}'"], "test='zzzzzzzzzzzzzzz'"],
   ];
 
   for (const [name, [input], expected] of testCases) {
@@ -324,12 +330,13 @@ describe('parseAttrNamesFromRawString', () => {
       ['?testone', ':test-two', '@test-event'],
     ],
     [
-      'Can apply all rules at once and returns ',
+      'Can apply all rules at once and returns',
       [
         'testone testone="test" ?testone="${x => true}" :testone="test-again" @testone="${(x,c) => x.event()}"',
       ],
       ['testone', 'testone', '?testone', ':testone', '@testone'],
     ],
+    ['Handles attribute names with whitespace in their value', ['testone="test one"'], ['testone']],
   ];
 
   for (const [name, [input], expected] of testCases) {
