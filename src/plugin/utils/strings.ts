@@ -20,10 +20,17 @@ export function replaceTemplateStringBinding(line: string): string {
 }
 
 export function stringHasUnfinishedQuotedValue(line: string): boolean {
-  const regex = /(?:["'].*)*["'](.*?)$/;
-  const captureGroup = line.match(regex)?.[1]?.trim();
-  console.log('captureGroup', captureGroup);
-  return !!captureGroup;
+  let openStringType: '"' | "'" | null = null;
+  for (let i = 0; i < line.length; i += 1) {
+    if (line[i] === '"' || line[i] === "'") {
+      if (openStringType === null) {
+        openStringType = line[i] as '"' | "'";
+      } else if (openStringType === line[i]) {
+        openStringType = null;
+      }
+    }
+  }
+  return openStringType !== null;
 }
 
 /**
@@ -216,8 +223,6 @@ export function getTokenTypeWithInfo(
   const processedLine = replaceTemplateStringBinding(
     context.rawText.substring(0, context.toOffset(position))
   );
-
-  console.log('getTokenTypeWithInfo', processedLine);
 
   if (stringHasUnfinishedQuotedValue(processedLine)) {
     return {

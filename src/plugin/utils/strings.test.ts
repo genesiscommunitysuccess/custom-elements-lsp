@@ -47,6 +47,14 @@ describe('stringHasUnfinishedQuotedValue', () => {
     ['Returns true for ending with unfinished single quote', ["'test val' 'another value"], true],
     ['Returns true for ending with unfinished single quote', ["'test val' \"another value"], true],
     ['Returns false for an attribute example', ['<person-avatar unused="zzzzzzzz"  '], false],
+    ['Returns false with correctly escaped quotes', ["<person-avatar unused='zzzzzzzz'  "], false],
+    [
+      'Returns false with correctly escaped double quotes',
+      ['<person-avatar unused="zzzzzzzz"  '],
+      false,
+    ],
+    ['Returns false with unbalanced quotes in a string', ["'\"'"], false],
+    ['Returns false with unbalanced quotes in multiple strings', ["'\"' '\"' \"'\""], false],
   ];
 
   for (const [name, [input], expected] of testCases) {
