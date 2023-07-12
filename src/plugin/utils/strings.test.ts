@@ -8,6 +8,7 @@ import {
   parseAttrNamesFromRawString,
   getTokenSpanMatchingPattern,
   getTokenTypeWithInfo,
+  stringHasUnfinishedQuotedValue,
 } from './strings';
 
 describe('replaceTemplateStringBinding', () => {
@@ -36,6 +37,21 @@ describe('replaceTemplateStringBinding', () => {
   for (const [name, [input], expected] of testCases) {
     it(name, () => {
       expect(replaceTemplateStringBinding(input)).toEqual(expected);
+    });
+  }
+});
+describe('stringHasUnfinishedQuotedValue', () => {
+  const testCases: [string, [string], boolean][] = [
+    ['Empty string returns false', [''], false],
+    ['Returns false if all quotes are matched', ['\'test val\' "another value"'], false],
+    ['Returns true for ending with unfinished single quote', ["'test val' 'another value"], true],
+    ['Returns true for ending with unfinished single quote', ["'test val' \"another value"], true],
+    ['Returns false for an attribute example', ['<person-avatar unused="zzzzzzzz"  '], false],
+  ];
+
+  for (const [name, [input], expected] of testCases) {
+    it(name, () => {
+      expect(stringHasUnfinishedQuotedValue(input)).toEqual(expected);
     });
   }
 });
@@ -403,6 +419,16 @@ describe('getTokenTypeWithInfo', () => {
       ],
       { key: 'none', params: undefined },
     ],
+    [
+      'Key "none" if in an unfinished attribute value',
+      [
+        html`
+          <custom-element test="test at
+          `,
+        { line: 1, character: 39 },
+      ],
+      { key: 'none', params: undefined },
+    ],
     // custom-element-name
     [
       'Key "custom-element-name" after an opening tag',
@@ -471,11 +497,16 @@ describe('getTokenTypeWithInfo', () => {
       ],
       { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
     ],
+    [
+      'Key "custom-element-attribute" if after a finished attribute',
+      [html`<person-avatar unused="zzzzzzzz"  `, { line: 0, character: 36 }],
+      { key: 'custom-element-attribute', params: { tagName: 'person-avatar' } },
+    ],
   ];
 
-  for (const test of tests) {
-    const [name, [context, lineAndChar], expected] = test;
+  for (const [name, [context, lineAndChar], expected] of tests) {
     it(name, () => {
+      debugger;
       const result = getTokenTypeWithInfo(context, lineAndChar);
       expect(result).toEqual(expected);
     });

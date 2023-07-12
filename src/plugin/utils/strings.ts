@@ -19,6 +19,13 @@ export function replaceTemplateStringBinding(line: string): string {
     .replace(/'(.+?)'/g, (...args) => "'" + 'z'.repeat(args[1].length) + "'");
 }
 
+export function stringHasUnfinishedQuotedValue(line: string): boolean {
+  const regex = /(?:["'].*)*["'](.*?)$/;
+  const captureGroup = line.match(regex)?.[1]?.trim();
+  console.log('captureGroup', captureGroup);
+  return !!captureGroup;
+}
+
 /**
  * Get a `TextSpan` object which is the span of the token at the given position, where the token matches the given pattern. Could be used to find the span of a custom element name, or an attribute name, etc.
  *
@@ -209,6 +216,15 @@ export function getTokenTypeWithInfo(
   const processedLine = replaceTemplateStringBinding(
     context.rawText.substring(0, context.toOffset(position))
   );
+
+  console.log('getTokenTypeWithInfo', processedLine);
+
+  if (stringHasUnfinishedQuotedValue(processedLine)) {
+    return {
+      key: 'none',
+      params: undefined,
+    };
+  }
 
   {
     let tagName: string | false;
