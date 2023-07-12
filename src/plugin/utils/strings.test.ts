@@ -514,7 +514,6 @@ describe('getTokenTypeWithInfo', () => {
 
   for (const [name, [context, lineAndChar], expected] of tests) {
     it(name, () => {
-      debugger;
       const result = getTokenTypeWithInfo(context, lineAndChar);
       expect(result).toEqual(expected);
     });
