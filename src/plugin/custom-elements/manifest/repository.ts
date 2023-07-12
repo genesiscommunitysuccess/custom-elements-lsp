@@ -98,6 +98,9 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     if (this.fastEnabled) {
       analyzerArgs.push('--fast');
     }
+    if (this.config.dependencies.length > 0) {
+      analyzerArgs.push('--dependencies');
+    }
     const manifest = await this.analyzer({
       argv: analyzerArgs,
       cwd: this.io.getNormalisedRootPath(),
