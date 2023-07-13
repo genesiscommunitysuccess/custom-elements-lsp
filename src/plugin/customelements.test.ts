@@ -239,7 +239,7 @@ describe('getQuickInfoAsPosition', () => {
       typeAndParam: {
         key: 'tag-name',
         params: {
-          isCustomElement: false,
+          isCustomElement: true,
         },
       },
     });

@@ -116,7 +116,6 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
       return undefined;
     }
 
-    // TODO: Need to impl toPosition
     const tokenEndPosition: LineAndCharacter = context.toPosition(
       maybeTokenSpan.start + maybeTokenSpan.length
     );

@@ -1,3 +1,5 @@
+import { TemplateContext } from 'typescript-template-language-service-decorator';
+import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import { html } from './utils';
 
 /**
@@ -97,5 +99,24 @@ describe('toOffset', () => {
       character: testCaseFive.rawText.split('\n')[4].indexOf('invalid-ce'),
     });
     expect(res2).toBe(73);
+  });
+});
+
+describe('toPosition', () => {
+  // Test values from the LSP
+  // Test case 5
+  // Info 219  [15:03:37.039] [CE] getQuickInfoAtPosition: {"line":3,"character":18} 50
+  // Info 224  [15:06:22.681] [CE] getQuickInfoAtPosition: {"line":4,"character":21} 83
+  // Test case 3
+  // Info 281  [15:07:03.043] [CE] getQuickInfoAtPosition: {"line":2,"character":13} 28
+
+  const testCases: [[TemplateContext, number], LineAndCharacter][] = [
+    [[getTestCaseFive(), 50], { line: 3, character: 18 }],
+    [[getTestCaseFive(), 83], { line: 4, character: 21 }],
+    [[testCaseThree, 28], { line: 2, character: 13 }],
+  ];
+
+  testCases.forEach(([[context, lineAndChar], expected], i) => {
+    it(`Case ${i}`, () => expect(context.toPosition(lineAndChar)).toEqual(expected));
   });
 });

@@ -1,3 +1,4 @@
+import { LineAndCharacter } from 'typescript';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { GlobalDataRepositoryImpl } from '../plugin/global-data/repository';
 import { GlobalDataServiceImpl } from '../plugin/global-data/service';
@@ -23,7 +24,6 @@ export const buildServices = (overrides: Partial<Services>): Services => ({
 });
 
 /**
-/**
  * Construct a logger which will output debug logs if the `TEST_LOG` environment
  * variable is set to `1`. Use via `npm run test:unit:verbose`.
  */
@@ -31,6 +31,19 @@ export function getLogger() {
   const debugLog = process.env.TEST_LOG === '1';
   return constructLogger(debugLog);
 }
+
+const toPosition =
+  (rawText: string) =>
+  (offset: number): LineAndCharacter => {
+    let rest = offset;
+    let line = 0;
+    const lines = rawText.split(/\n/g);
+    while (rest > lines[line].length) {
+      rest -= lines[line].length + 1;
+      line += 1;
+    }
+    return { line, character: rest };
+  };
 
 const toOffset =
   (rawText: string) =>
@@ -59,7 +72,7 @@ export const html = (
       getSourceFile: () => 'test.ts',
     } as any,
     toOffset: toOffset(rawText),
-    toPosition: jest.fn(),
+    toPosition: toPosition(rawText),
   };
 };
 
