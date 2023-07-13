@@ -181,16 +181,22 @@ export function parseAttrNamesFromRawString(rawString: string): string[] {
 
 const tokenParseHelper = (() => {
   const unfinishedTag = /<[^>]*$/;
-  // Like an unfinished tag, but with a hyphen
   const unfinishedCustomElement = /<.+-[^>]*$/m;
+  const finishedTagName = /^<[^>\s]+\s/m;
 
   // Unclosed tag, suggest any tag names
-  const suggestTags = (line: string) => unfinishedTag.test(line);
+  const suggestTags = (line: string): SuggestTagType => {
+    if (!unfinishedTag.test(line)) return 'none';
+    return unfinishedCustomElement.test(line) ? 'custom-element' : 'html';
+  };
   // Returns the currently written custom element tag name, or false if not found
-  const suggestCustomElements = (line: string) => {
-    if (!unfinishedCustomElement.test(line)) return false;
-    const lastTag = line.split(/</).pop() as string;
-    return lastTag.split(' ')[0].trim();
+  const suggestCustomElements = (line: string): string | false => {
+    const lastTagToken = line.split(/</).pop();
+    if (!lastTagToken) return false;
+    const lastTag = '<' + lastTagToken;
+    if (!finishedTagName.test(lastTag)) return false;
+    // TODO: Check for `-` so we know whether it's a custom element or not
+    return lastTagToken.split(' ')[0].trim();
   };
   return {
     suggestTags,
@@ -198,14 +204,18 @@ const tokenParseHelper = (() => {
   };
 })();
 
+type SuggestTagType = 'custom-element' | 'html' | 'none';
+
 export type TokenUnderCursorType =
   | {
       key: 'none';
       params: undefined;
     }
   | {
-      key: 'custom-element-name';
-      params: undefined;
+      key: 'tag-name';
+      params: {
+        isCustomElement: boolean;
+      };
     }
   | {
       key: 'custom-element-attribute';
@@ -251,10 +261,13 @@ export function getTokenTypeWithInfo(
     }
   }
 
-  if (tokenParseHelper.suggestTags(processedLine)) {
+  const suggestTagsType = tokenParseHelper.suggestTags(processedLine);
+  if (suggestTagsType !== 'none') {
     return {
-      key: 'custom-element-name',
-      params: undefined,
+      key: 'tag-name',
+      params: {
+        isCustomElement: suggestTagsType === 'custom-element',
+      },
     };
   }
 

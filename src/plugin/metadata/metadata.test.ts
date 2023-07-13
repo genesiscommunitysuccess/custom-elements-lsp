@@ -564,8 +564,10 @@ describe('getQuickInfoAtPosition', () => {
     const res = service.getQuickInfoAtPosition({
       tokenSpan,
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: true,
+        },
       },
       token: 'unknown-element',
       result: undefined,
@@ -610,8 +612,10 @@ describe('getQuickInfoAtPosition', () => {
     const res = service.getQuickInfoAtPosition({
       tokenSpan,
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: true,
+        },
       },
       token: 'custom-element',
       result: undefined,

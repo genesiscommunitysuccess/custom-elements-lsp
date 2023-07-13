@@ -31,7 +31,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
     let baseEntries: CompletionEntry[] = [];
 
     switch (key) {
-      case 'custom-element-name':
+      case 'tag-name':
         baseEntries = this.getTagCompletions();
         break;
 

@@ -221,8 +221,10 @@ describe('getQuickInfoAsPosition', () => {
         start: 1,
       },
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: true,
+        },
       },
     });
     expect(mockMetadataServices[2].getQuickInfoAtPosition as jest.Mock).toHaveBeenCalledWith({
@@ -235,8 +237,10 @@ describe('getQuickInfoAsPosition', () => {
         start: 1,
       },
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: false,
+        },
       },
     });
   });
