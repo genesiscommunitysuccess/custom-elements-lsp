@@ -533,7 +533,7 @@ describe('quickInfoForCEAttribute', () => {
 describe('getQuickInfoAtPosition', () => {
   const tokenSpan: TextSpan = { start: 6, length: 14 };
 
-  it('simply returns undefined for TokenUnderCursorType "none"', () => {
+  it('simply returns undefined for TokenType "none"', () => {
     const service = getMetadataService({});
     const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
     quickInfoCESpy.mockReturnValue(undefined);
@@ -588,7 +588,7 @@ describe('getQuickInfoAtPosition', () => {
     const res = service.getQuickInfoAtPosition({
       tokenSpan,
       typeAndParam: {
-        key: 'custom-element-attribute',
+        key: 'element-attribute',
         params: {
           tagName: 'attr',
         },
@@ -636,7 +636,7 @@ describe('getQuickInfoAtPosition', () => {
     const res = service.getQuickInfoAtPosition({
       tokenSpan,
       typeAndParam: {
-        key: 'custom-element-attribute',
+        key: 'element-attribute',
         params: {
           tagName: 'custom-element',
         },

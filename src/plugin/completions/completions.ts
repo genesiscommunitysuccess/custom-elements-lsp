@@ -35,7 +35,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         baseEntries = this.getTagCompletions();
         break;
 
-      case 'custom-element-attribute':
+      case 'element-attribute':
         if (!this.services.customElements.customElementKnown(params.tagName)) {
           baseEntries = this.getTagCompletions();
           break;
@@ -51,14 +51,14 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return {
       ...completions,
-      isMemberCompletion: key === 'custom-element-attribute',
+      isMemberCompletion: key === 'element-attribute',
       entries: completions.entries.concat(baseEntries),
     };
   }
 
   private getAttributeCompletions(tagName: string): CompletionEntry[] {
     const attrs = this.services.customElements.getCEAttributes(tagName);
-    this.logger.log(`custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
+    this.logger.log(`element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
 
     const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd('global-attributes', () =>
       this.services.globalData

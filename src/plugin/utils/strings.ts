@@ -206,7 +206,7 @@ const tokenParseHelper = (() => {
 
 type SuggestTagType = 'custom-element' | 'html' | 'none';
 
-export type TokenUnderCursorType =
+export type TokenType =
   | {
       key: 'none';
       params: undefined;
@@ -218,26 +218,26 @@ export type TokenUnderCursorType =
       };
     }
   | {
-      key: 'custom-element-attribute';
+      key: 'element-attribute';
       params: {
         tagName: string;
       };
     };
 
 /**
- * Returns the `TokenUnderCursorType` for the token under the cursor.
+ * Returns the `TokenType` for the token under the cursor.
  *
  * @example
  * ```
  * const res =getTokenTypeWithInfo({rawText: `<cus-el attr`, position: {line: 0, character: 13}})
- * // res.key -> 'custom-element-attribute'
+ * // res.key -> 'element-attribute'
  * // res.params.tagName -> 'cus-el'
  * ```
  */
 export function getTokenTypeWithInfo(
   context: TemplateContext,
   position: LineAndCharacter
-): TokenUnderCursorType {
+): TokenType {
   const processedLine = replaceQuotesAndInterpolationContents(
     context.rawText.substring(0, context.toOffset(position))
   );
@@ -253,7 +253,7 @@ export function getTokenTypeWithInfo(
     let tagName: string | false;
     if (((tagName = tokenParseHelper.suggestCustomElements(processedLine)), tagName)) {
       return {
-        key: 'custom-element-attribute',
+        key: 'element-attribute',
         params: {
           tagName,
         },

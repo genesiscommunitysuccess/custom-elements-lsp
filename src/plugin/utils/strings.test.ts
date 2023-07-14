@@ -9,7 +9,7 @@ import {
   getTokenSpanMatchingPattern,
   getTokenTypeWithInfo,
   stringHasUnfinishedQuotedValue,
-  TokenUnderCursorType,
+  TokenType,
 } from './strings';
 
 describe('replaceTemplateStringBinding', () => {
@@ -372,7 +372,7 @@ describe('parseAttrNamesFromRawString', () => {
 });
 
 describe('getTokenTypeWithInfo', () => {
-  const tests: [string, [TemplateContext, LineAndCharacter], TokenUnderCursorType][] = [
+  const tests: [string, [TemplateContext, LineAndCharacter], TokenType][] = [
     [
       'Key "none" for a blank template',
       [html``, { line: 0, character: 0 }],
@@ -469,29 +469,29 @@ describe('getTokenTypeWithInfo', () => {
       [html`<cus-elem`, { line: 0, character: 9 }],
       { key: 'tag-name', params: { isCustomElement: true } },
     ],
-    // custom-element-attribute, with custom element name
+    // element-attribute, with custom element name
     [
-      'Key "custom-element-attribute" after the start of a custom element, and the name',
+      'Key "element-attribute" after the start of a custom element, and the name',
       [html`<cus-elem `, { line: 0, character: 10 }],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" after a custom element accounting for another custom element',
+      'Key "element-attribute" after a custom element accounting for another custom element',
       [html`<ce-elem></ce-elem><cus-elem `, { line: 0, character: 29 }],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" and gets custom element name when attribute is present',
+      'Key "element-attribute" and gets custom element name when attribute is present',
       [html`<ce-elem></ce-elem><cus-elem attr`, { line: 0, character: 33 }],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" and gets custom element name when string attribute is present',
+      'Key "element-attribute" and gets custom element name when string attribute is present',
       [html`<ce-elem></ce-elem><cus-elem attr="value"`, { line: 0, character: 41 }],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" and gets custom element when cursor is inside of a fully closed element',
+      'Key "element-attribute" and gets custom element when cursor is inside of a fully closed element',
       [
         html`
           <ce-elem></ce-elem>
@@ -499,22 +499,22 @@ describe('getTokenTypeWithInfo', () => {
         `,
         { line: 2, character: 32 },
       ],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" and gets custom element when cursor is on the next line to an opening tag',
+      'Key "element-attribute" and gets custom element when cursor is on the next line to an opening tag',
       [
         html`
           <cus-elem
           `,
         { line: 2, character: 2 },
       ],
-      { key: 'custom-element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
     ],
     [
-      'Key "custom-element-attribute" if after a finished attribute',
+      'Key "element-attribute" if after a finished attribute',
       [html`<person-avatar unused="zzzzzzzz"  `, { line: 0, character: 36 }],
-      { key: 'custom-element-attribute', params: { tagName: 'person-avatar' } },
+      { key: 'element-attribute', params: { tagName: 'person-avatar' } },
     ],
   ];
 
