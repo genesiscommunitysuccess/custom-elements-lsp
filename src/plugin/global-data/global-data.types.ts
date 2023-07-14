@@ -1,13 +1,15 @@
 export type GlobalAttrType = 'string' | 'boolean' | 'wildcard';
 
 export interface GlobalDataService {
-  getAttributes(): [string, GlobalAttrType][];
   getAriaAttributes(): string[];
+  getAttributes(): [string, GlobalAttrType][];
   getEvents(): string[];
+  getHTMLElementTags(): string[];
 }
 
 export interface GlobalDataRepository {
-  getAttributes(): [string, GlobalAttrType][];
   getAriaAttributes(): string[];
+  getAttributes(): [string, GlobalAttrType][];
   getEvents(): string[];
+  getHTMLElementTags(): string[];
 }

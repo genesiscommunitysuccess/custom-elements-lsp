@@ -23,12 +23,13 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
   getQuickInfoAtPosition({ token, tokenSpan, typeAndParam }: QuickInfoCtx): QuickInfo | undefined {
     if (
-      typeAndParam.key === 'custom-element-name' &&
+      // TODO: add different branch for a non-custom element
+      typeAndParam.key === 'tag-name' &&
       this.services.customElements.customElementKnown(token)
     ) {
       return this.quickInfoForCustomElement(tokenSpan, token);
     } else if (
-      typeAndParam.key === 'custom-element-attribute' &&
+      typeAndParam.key === 'element-attribute' &&
       this.services.customElements.customElementKnown(typeAndParam.params.tagName)
     ) {
       return this.quickInfoForCEAttribute(tokenSpan, token, typeAndParam.params.tagName);

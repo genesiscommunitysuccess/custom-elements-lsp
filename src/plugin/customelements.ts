@@ -71,7 +71,9 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
 
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
     const typeAndParam = getTokenTypeWithInfo(context, position);
-    this.logger.log(`getCompletionsAtPosition: ${typeAndParam.key}, ${typeAndParam.params}`);
+    this.logger.log(
+      `getCompletionsAtPosition: ${typeAndParam.key}, ${JSON.stringify(typeAndParam.params)}`
+    );
 
     return this.completions.reduce(
       (acum: CompletionInfo, service) =>
@@ -114,7 +116,11 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
       return undefined;
     }
 
-    const tokenTypeWithInfo = getTokenTypeWithInfo(context, position);
+    const tokenEndPosition: LineAndCharacter = context.toPosition(
+      maybeTokenSpan.start + maybeTokenSpan.length
+    );
+
+    const tokenTypeWithInfo = getTokenTypeWithInfo(context, tokenEndPosition);
     if (tokenTypeWithInfo.key === 'none') {
       return undefined;
     }

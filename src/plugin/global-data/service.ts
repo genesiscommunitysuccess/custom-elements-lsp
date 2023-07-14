@@ -17,4 +17,8 @@ export class GlobalDataServiceImpl implements GlobalDataService {
   getEvents(): string[] {
     return this.repo.getEvents();
   }
+
+  getHTMLElementTags(): string[] {
+    return this.repo.getHTMLElementTags();
+  }
 }

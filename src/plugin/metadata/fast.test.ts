@@ -22,7 +22,7 @@ const getFastMetadataService = ({
 describe('getQuickInfoAtPosition', () => {
   const tokenSpan: TextSpan = { start: 6, length: 14 };
 
-  it('simply returns undefined for TokenUnderCursorType "none"', () => {
+  it('simply returns undefined for TokenType "none"', () => {
     const service = getFastMetadataService({});
     const quickFastAttrInfoSpy = jest.spyOn(service as any, 'quickInfoFASTAttribute');
     quickFastAttrInfoSpy.mockReturnValue(undefined);
@@ -48,9 +48,10 @@ describe('getQuickInfoAtPosition', () => {
     const res = service.getQuickInfoAtPosition({
       tokenSpan,
       typeAndParam: {
-        key: 'custom-element-attribute',
+        key: 'element-attribute',
         params: {
           tagName: 'custom-element',
+          isCustomElement: true,
         },
       },
       token: '',

@@ -1,6 +1,10 @@
 import { CompletionInfo } from 'typescript/lib/tsserverlibrary';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
-import { getGDServiceFromStubbedResource } from '../../jest/global-data';
+import {
+  getGDServiceFromStubbedResource,
+  globalDataAttributeAssersions,
+  globalDataNameCompletions,
+} from '../../jest/global-data';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { GlobalDataService } from '../global-data/global-data.types';
@@ -15,59 +19,6 @@ const getCompletionsService = (
     getLogger(),
     buildServices({ customElements: ceRes, globalData: gdRes })
   );
-
-const globalDataAttributeAssersions = [
-  {
-    insertText: 'data-$1="${$2}"$0',
-    isSnippet: true,
-    kind: 'parameter',
-    labelDetails: {
-      description: '[attr] Global',
-      detail: ' string',
-    },
-    name: 'data-*',
-    sortText: 'm',
-  },
-  {
-    insertText: 'class=""',
-    kind: 'parameter',
-    labelDetails: {
-      description: '[attr] Global',
-      detail: ' string',
-    },
-    name: 'class',
-    sortText: 'm',
-  },
-  {
-    insertText: 'autofocus',
-    kind: 'parameter',
-    labelDetails: {
-      description: '[attr] Global',
-      detail: ' boolean',
-    },
-    name: 'autofocus',
-    sortText: 'm',
-  },
-  {
-    insertText: 'aria-label=""',
-    kind: 'parameter',
-    labelDetails: {
-      description: '[attr] Aria',
-    },
-    name: 'aria-label',
-    sortText: 'z',
-  },
-  {
-    insertText: 'onclick=""',
-    kind: 'parameter',
-    labelDetails: {
-      description: '[attr] Event',
-      detail: ' event',
-    },
-    name: 'onclick',
-    sortText: 'z',
-  },
-];
 
 const baseCompletionInfo: CompletionInfo = {
   isGlobalCompletion: false,
@@ -95,7 +46,7 @@ describe('getCompletionsAtPosition', () => {
     expect(completions.entries).toHaveLength(0);
   });
 
-  it('Returns completions for the custom element tags if inside of an opening tag', () => {
+  it('Returns completions for the custom element and html tags if inside of an opening tag', () => {
     const service = getCompletionsService();
     const context = html`
       <
@@ -131,10 +82,11 @@ describe('getCompletionsAtPosition', () => {
           description: 'pkg',
         },
       },
+      ...globalDataNameCompletions,
     ]);
   });
 
-  it('Returns completions for the custom element tags if inside of an opening with an incomplete custom element', () => {
+  it('Returns completions for the custom element and html tags if inside of an opening with an incomplete custom element', () => {
     const service = getCompletionsService();
     const context = html`<custom-eleme`;
     const position = {
@@ -168,6 +120,45 @@ describe('getCompletionsAtPosition', () => {
           description: 'pkg',
         },
       },
+      ...globalDataNameCompletions,
+    ]);
+  });
+
+  it('Returns completions for the custom element and html tags if inside of an opening with an incomplete html element', () => {
+    const service = getCompletionsService();
+    const context = html`<im`;
+    const position = {
+      line: 0,
+      character: 3,
+    };
+    const typeAndParam = getTokenTypeWithInfo(context, position);
+
+    const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
+      context,
+      position,
+      typeAndParam,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'custom-element></custom-element>',
+        kind: 'type',
+        name: 'custom-element',
+        sortText: 'custom-element',
+        labelDetails: {
+          description: 'src/components/avatar/avatar.ts',
+        },
+      },
+      {
+        insertText: 'no-attr></no-attr>',
+        kind: 'type',
+        name: 'no-attr',
+        sortText: 'custom-element',
+        labelDetails: {
+          description: 'pkg',
+        },
+      },
+      ...globalDataNameCompletions,
     ]);
   });
 
@@ -351,6 +342,7 @@ describe('getCompletionsAtPosition', () => {
           description: 'pkg',
         },
       },
+      ...globalDataNameCompletions,
     ]);
   });
 });

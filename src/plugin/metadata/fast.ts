@@ -20,7 +20,7 @@ export class FASTMetadataService implements PartialMetadataService {
   }: QuickInfoCtx): QuickInfo | undefined {
     if (
       typeof result === 'undefined' &&
-      typeAndParam.key === 'custom-element-attribute' &&
+      typeAndParam.key === 'element-attribute' &&
       this.services.customElements.customElementKnown(typeAndParam.params.tagName)
     ) {
       return this.quickInfoFASTAttribute(tokenSpan, token, typeAndParam.params.tagName);

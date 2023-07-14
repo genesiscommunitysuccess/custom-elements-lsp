@@ -35,7 +35,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
     let entries = completions.entries;
 
     switch (key) {
-      case 'custom-element-attribute':
+      case 'element-attribute':
         entries = this.getUpdatedAttributeEntries(entries, position, context, params.tagName);
         this.logger.log(`entries: ${JSON.stringify(entries)}`);
         break;

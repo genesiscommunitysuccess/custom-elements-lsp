@@ -31,11 +31,11 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
     let baseEntries: CompletionEntry[] = [];
 
     switch (key) {
-      case 'custom-element-name':
+      case 'tag-name':
         baseEntries = this.getTagCompletions();
         break;
 
-      case 'custom-element-attribute':
+      case 'element-attribute':
         if (!this.services.customElements.customElementKnown(params.tagName)) {
           baseEntries = this.getTagCompletions();
           break;
@@ -51,14 +51,14 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
 
     return {
       ...completions,
-      isMemberCompletion: key === 'custom-element-attribute',
+      isMemberCompletion: key === 'element-attribute',
       entries: completions.entries.concat(baseEntries),
     };
   }
 
   private getAttributeCompletions(tagName: string): CompletionEntry[] {
     const attrs = this.services.customElements.getCEAttributes(tagName);
-    this.logger.log(`custom-element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
+    this.logger.log(`element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
 
     const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd('global-attributes', () =>
       this.services.globalData
@@ -86,16 +86,29 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
   }
 
   private getTagCompletions(): CompletionEntry[] {
-    return this.services.customElements
-      .getAllCEInfo({ getFullPath: false })
-      .map(({ tagName: name, path }) => ({
-        name: name,
-        insertText: `${name}></${name}>`,
-        kind: ScriptElementKind.typeElement,
-        sortText: 'custom-element',
-        labelDetails: {
-          description: path,
-        },
-      }));
+    return getStore(this.logger).TSUnsafeGetOrAdd('completion-tag-names', () =>
+      this.services.customElements
+        .getAllCEInfo({ getFullPath: false })
+        .map(({ tagName, path }) => ({
+          name: tagName,
+          insertText: `${tagName}></${tagName}>`,
+          kind: ScriptElementKind.typeElement,
+          sortText: 'custom-element',
+          labelDetails: {
+            description: path,
+          },
+        }))
+        .concat(
+          this.services.globalData.getHTMLElementTags().map((tagName) => ({
+            name: tagName,
+            insertText: `${tagName}></${tagName}>`,
+            kind: ScriptElementKind.constElement,
+            sortText: 'html-element',
+            labelDetails: {
+              description: 'HTML Element',
+            },
+          }))
+        )
+    );
   }
 }

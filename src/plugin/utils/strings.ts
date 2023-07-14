@@ -181,16 +181,21 @@ export function parseAttrNamesFromRawString(rawString: string): string[] {
 
 const tokenParseHelper = (() => {
   const unfinishedTag = /<[^>]*$/;
-  // Like an unfinished tag, but with a hyphen
   const unfinishedCustomElement = /<.+-[^>]*$/m;
+  const finishedTagName = /^<[^>\s]+\s/m;
 
   // Unclosed tag, suggest any tag names
-  const suggestTags = (line: string) => unfinishedTag.test(line);
+  const suggestTags = (line: string): SuggestTagType => {
+    if (!unfinishedTag.test(line)) return 'none';
+    return unfinishedCustomElement.test(line) ? 'custom-element' : 'html';
+  };
   // Returns the currently written custom element tag name, or false if not found
-  const suggestCustomElements = (line: string) => {
-    if (!unfinishedCustomElement.test(line)) return false;
-    const lastTag = line.split(/</).pop() as string;
-    return lastTag.split(' ')[0].trim();
+  const suggestCustomElements = (line: string): string | false => {
+    const lastTagToken = line.split(/</).pop();
+    if (!lastTagToken) return false;
+    const lastTag = '<' + lastTagToken;
+    if (!finishedTagName.test(lastTag)) return false;
+    return lastTagToken.split(' ')[0].trim();
   };
   return {
     suggestTags,
@@ -198,36 +203,42 @@ const tokenParseHelper = (() => {
   };
 })();
 
-export type TokenUnderCursorType =
+type SuggestTagType = 'custom-element' | 'html' | 'none';
+
+export type TokenType =
   | {
       key: 'none';
       params: undefined;
     }
   | {
-      key: 'custom-element-name';
-      params: undefined;
+      key: 'tag-name';
+      params: {
+        isCustomElement: boolean;
+      };
     }
   | {
-      key: 'custom-element-attribute';
+      // Covers attributes, properties, events, etc.
+      key: 'element-attribute';
       params: {
         tagName: string;
+        isCustomElement: boolean;
       };
     };
 
 /**
- * Returns the `TokenUnderCursorType` for the token under the cursor.
+ * Returns the `TokenType` for the token under the cursor.
  *
  * @example
  * ```
  * const res =getTokenTypeWithInfo({rawText: `<cus-el attr`, position: {line: 0, character: 13}})
- * // res.key -> 'custom-element-attribute'
+ * // res.key -> 'element-attribute'
  * // res.params.tagName -> 'cus-el'
  * ```
  */
 export function getTokenTypeWithInfo(
   context: TemplateContext,
   position: LineAndCharacter
-): TokenUnderCursorType {
+): TokenType {
   const processedLine = replaceQuotesAndInterpolationContents(
     context.rawText.substring(0, context.toOffset(position))
   );
@@ -243,18 +254,22 @@ export function getTokenTypeWithInfo(
     let tagName: string | false;
     if (((tagName = tokenParseHelper.suggestCustomElements(processedLine)), tagName)) {
       return {
-        key: 'custom-element-attribute',
+        key: 'element-attribute',
         params: {
           tagName,
+          isCustomElement: tagName.includes('-'),
         },
       };
     }
   }
 
-  if (tokenParseHelper.suggestTags(processedLine)) {
+  const suggestTagsType = tokenParseHelper.suggestTags(processedLine);
+  if (suggestTagsType !== 'none') {
     return {
-      key: 'custom-element-name',
-      params: undefined,
+      key: 'tag-name',
+      params: {
+        isCustomElement: suggestTagsType === 'custom-element',
+      },
     };
   }
 

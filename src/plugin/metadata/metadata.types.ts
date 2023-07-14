@@ -5,7 +5,7 @@ import {
   QuickInfo,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
-import { TokenUnderCursorType } from '../utils';
+import { TokenType } from '../utils';
 
 export interface MetadataService {
   getDefinitionAndBoundSpan(
@@ -23,6 +23,6 @@ export type QuickInfoCtx = {
   position: LineAndCharacter;
   tokenSpan: TextSpan;
   token: string;
-  typeAndParam: TokenUnderCursorType;
+  typeAndParam: TokenType;
   result: QuickInfo | undefined;
 };

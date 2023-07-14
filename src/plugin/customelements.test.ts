@@ -179,7 +179,7 @@ describe('getQuickInfoAsPosition', () => {
     expect(mockMetadataServices[1].getQuickInfoAtPosition).not.toHaveBeenCalled();
   });
 
-  it('returns undefined if the token under the cursor is TokenUnderCursorType => none', () => {
+  it('returns undefined if the token under the cursor is TokenType => none', () => {
     const mockMetadataServices = getMockMetadataServices();
     const service = buildLanguageService({
       metadata: mockMetadataServices,
@@ -221,8 +221,10 @@ describe('getQuickInfoAsPosition', () => {
         start: 1,
       },
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: true,
+        },
       },
     });
     expect(mockMetadataServices[2].getQuickInfoAtPosition as jest.Mock).toHaveBeenCalledWith({
@@ -235,8 +237,10 @@ describe('getQuickInfoAsPosition', () => {
         start: 1,
       },
       typeAndParam: {
-        key: 'custom-element-name',
-        params: undefined,
+        key: 'tag-name',
+        params: {
+          isCustomElement: true,
+        },
       },
     });
   });
