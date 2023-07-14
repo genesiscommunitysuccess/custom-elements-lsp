@@ -473,22 +473,22 @@ describe('getTokenTypeWithInfo', () => {
     [
       'Key "element-attribute" after the start of a custom element, and the name',
       [html`<cus-elem `, { line: 0, character: 10 }],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" after a custom element accounting for another custom element',
       [html`<ce-elem></ce-elem><cus-elem `, { line: 0, character: 29 }],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" and gets custom element name when attribute is present',
       [html`<ce-elem></ce-elem><cus-elem attr`, { line: 0, character: 33 }],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" and gets custom element name when string attribute is present',
       [html`<ce-elem></ce-elem><cus-elem attr="value"`, { line: 0, character: 41 }],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" and gets custom element when cursor is inside of a fully closed element',
@@ -499,7 +499,7 @@ describe('getTokenTypeWithInfo', () => {
         `,
         { line: 2, character: 32 },
       ],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" and gets custom element when cursor is on the next line to an opening tag',
@@ -509,12 +509,12 @@ describe('getTokenTypeWithInfo', () => {
           `,
         { line: 2, character: 2 },
       ],
-      { key: 'element-attribute', params: { tagName: 'cus-elem' } },
+      { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
     ],
     [
       'Key "element-attribute" if after a finished attribute',
       [html`<person-avatar unused="zzzzzzzz"  `, { line: 0, character: 36 }],
-      { key: 'element-attribute', params: { tagName: 'person-avatar' } },
+      { key: 'element-attribute', params: { tagName: 'person-avatar', isCustomElement: true } },
     ],
   ];
 

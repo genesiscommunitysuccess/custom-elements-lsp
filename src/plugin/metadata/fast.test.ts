@@ -51,6 +51,7 @@ describe('getQuickInfoAtPosition', () => {
         key: 'element-attribute',
         params: {
           tagName: 'custom-element',
+          isCustomElement: true,
         },
       },
       token: '',

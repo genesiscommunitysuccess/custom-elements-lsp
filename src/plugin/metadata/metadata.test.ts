@@ -591,6 +591,7 @@ describe('getQuickInfoAtPosition', () => {
         key: 'element-attribute',
         params: {
           tagName: 'attr',
+          isCustomElement: true,
         },
       },
       token: 'unknown-element',
@@ -639,6 +640,7 @@ describe('getQuickInfoAtPosition', () => {
         key: 'element-attribute',
         params: {
           tagName: 'custom-element',
+          isCustomElement: true,
         },
       },
       token: 'attr',

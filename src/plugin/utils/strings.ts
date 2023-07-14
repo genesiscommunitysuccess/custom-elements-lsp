@@ -195,7 +195,6 @@ const tokenParseHelper = (() => {
     if (!lastTagToken) return false;
     const lastTag = '<' + lastTagToken;
     if (!finishedTagName.test(lastTag)) return false;
-    // TODO: Check for `-` so we know whether it's a custom element or not
     return lastTagToken.split(' ')[0].trim();
   };
   return {
@@ -218,9 +217,11 @@ export type TokenType =
       };
     }
   | {
+      // Covers attributes, properties, events, etc.
       key: 'element-attribute';
       params: {
         tagName: string;
+        isCustomElement: boolean;
       };
     };
 
@@ -256,6 +257,7 @@ export function getTokenTypeWithInfo(
         key: 'element-attribute',
         params: {
           tagName,
+          isCustomElement: tagName.includes('-'),
         },
       };
     }

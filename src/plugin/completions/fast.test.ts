@@ -393,6 +393,7 @@ describe('getCompletionsAtPosition', () => {
         key: 'element-attribute',
         params: {
           tagName: 'custom-element',
+          isCustomElement: true,
         },
       },
     };
