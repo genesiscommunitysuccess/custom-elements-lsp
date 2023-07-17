@@ -1,5 +1,6 @@
 import { CompletionEntry, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
-import { GlobalAttrType } from '../global-data/global-data.types';
+import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
+import { GlobalAttrType, PlainElementAttribute } from '../global-data/global-data.types';
 
 export function constructGlobalAriaCompletion(name: string): CompletionEntry {
   return {
@@ -63,4 +64,25 @@ export function constructGlobalAttrCompletion(name: string, type: GlobalAttrType
         },
       };
   }
+}
+
+export function constructElementAttrCompletion(
+  attr: CustomElementAttribute | PlainElementAttribute
+): CompletionEntry {
+  const { name, type, referenceClass, deprecated } = {
+    referenceClass: 'HTML Element',
+    deprecated: false,
+    ...attr,
+  };
+  return {
+    name,
+    insertText: `${name}${type === 'boolean' ? '' : '=""'}`,
+    kind: ScriptElementKind.parameterElement,
+    sortText: 'a',
+    labelDetails: {
+      description: (deprecated ? '(deprecated) ' : '') + `[attr] ${referenceClass}`.trim(),
+      detail: ` ${type}`,
+    },
+    kindModifiers: deprecated ? 'deprecated' : '',
+  };
 }

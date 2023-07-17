@@ -3,7 +3,7 @@ import { CustomElementAttribute } from '../custom-elements/custom-elements.types
 export type HTMLAttrType = 'string' | 'boolean';
 export type GlobalAttrType = HTMLAttrType | 'wildcard';
 
-export type PlainElementAttrinute = Required<
+export type PlainElementAttribute = Required<
   Omit<CustomElementAttribute, 'referenceClass' | 'deprecated'>
 >;
 
@@ -12,7 +12,7 @@ export interface GlobalDataService {
   getAttributes(): [string, GlobalAttrType][];
   getEvents(): string[];
   getHTMLElementTags(): string[];
-  getHTMLAttributes(tagName: string): PlainElementAttrinute[];
+  getHTMLAttributes(tagName: string): PlainElementAttribute[];
 }
 
 export interface GlobalDataRepository {
@@ -20,5 +20,5 @@ export interface GlobalDataRepository {
   getAttributes(): [string, GlobalAttrType][];
   getEvents(): string[];
   getHTMLElementTags(): string[];
-  getHTMLAttributes(tagName: string): PlainElementAttrinute[];
+  getHTMLAttributes(tagName: string): PlainElementAttribute[];
 }

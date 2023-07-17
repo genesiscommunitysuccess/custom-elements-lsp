@@ -3,7 +3,7 @@ import {
   GlobalAttrType,
   GlobalDataRepository,
   GlobalDataService,
-  PlainElementAttrinute,
+  PlainElementAttribute,
 } from './global-data.types';
 
 export class GlobalDataServiceImpl implements GlobalDataService {
@@ -27,7 +27,7 @@ export class GlobalDataServiceImpl implements GlobalDataService {
     return this.repo.getHTMLElementTags();
   }
 
-  getHTMLAttributes(tagName: string): PlainElementAttrinute[] {
+  getHTMLAttributes(tagName: string): PlainElementAttribute[] {
     return this.repo.getHTMLAttributes(tagName);
   }
 }

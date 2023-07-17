@@ -4,7 +4,7 @@ import * as GlobalAriaAttributes from './data/attributes-aria';
 import * as GlobalAttributesEvents from './data/events';
 import { HTML_ATTRS } from './data/html-attributes';
 import * as GlobalHTMLTags from './data/tagnames';
-import { GlobalAttrType, GlobalDataRepository, PlainElementAttrinute } from './global-data.types';
+import { GlobalAttrType, GlobalDataRepository, PlainElementAttribute } from './global-data.types';
 
 export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   constructor(private logger: Logger) {
@@ -40,7 +40,7 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
     return this.globalHTMTags;
   }
 
-  getHTMLAttributes(tagName: string): PlainElementAttrinute[] {
+  getHTMLAttributes(tagName: string): PlainElementAttribute[] {
     if (!(tagName in HTML_ATTRS)) return [];
     const attrs = HTML_ATTRS[tagName];
     return attrs.map(({ name, type, desc }) => ({ name, type, description: desc }));

@@ -5,6 +5,7 @@ import { Services } from '../utils/services.types';
 import {
   CompletionCtx,
   CompletionsService,
+  constructElementAttrCompletion,
   constructGlobalAriaCompletion,
   constructGlobalAttrCompletion,
   constructGlobalEventCompletion,
@@ -36,11 +37,17 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         break;
 
       case 'element-attribute':
-        if (!this.services.customElements.customElementKnown(params.tagName)) {
+        const isUnknownCE =
+          params.isCustomElement &&
+          !this.services.customElements.customElementKnown(params.tagName);
+        const isUnknownPlainElement =
+          !params.isCustomElement &&
+          !this.services.globalData.getHTMLElementTags().includes(params.tagName);
+        if (isUnknownCE || isUnknownPlainElement) {
           baseEntries = this.getTagCompletions();
           break;
         }
-        baseEntries = this.getAttributeCompletions(params.tagName);
+        baseEntries = this.getAttributeCompletions(params.tagName, params.isCustomElement);
         break;
 
       case 'none':
@@ -56,9 +63,15 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
     };
   }
 
-  private getAttributeCompletions(tagName: string): CompletionEntry[] {
-    const attrs = this.services.customElements.getCEAttributes(tagName);
-    this.logger.log(`element-attribute: ${tagName}, ${JSON.stringify(attrs)}`);
+  private getAttributeCompletions(tagName: string, isCustomElement: boolean): CompletionEntry[] {
+    const attrs = isCustomElement
+      ? this.services.customElements.getCEAttributes(tagName)
+      : this.services.globalData.getHTMLAttributes(tagName);
+    this.logger.log(
+      `${
+        isCustomElement ? 'custom-element' : 'html-element'
+      }-attribute: ${tagName}, ${JSON.stringify(attrs)}`
+    );
 
     const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd('global-attributes', () =>
       this.services.globalData
@@ -68,21 +81,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         .concat(this.services.globalData.getEvents().map(constructGlobalEventCompletion))
     );
 
-    return attrs
-      .map(
-        ({ name, type, referenceClass, deprecated }): CompletionEntry => ({
-          name,
-          insertText: `${name}${type === 'boolean' ? '' : '=""'}`,
-          kind: ScriptElementKind.parameterElement,
-          sortText: 'a',
-          labelDetails: {
-            description: (deprecated ? '(deprecated) ' : '') + `[attr] ${referenceClass}`,
-            detail: ` ${type}`,
-          },
-          kindModifiers: deprecated ? 'deprecated' : '',
-        })
-      )
-      .concat(globalAttrs);
+    return attrs.map(constructElementAttrCompletion).concat(globalAttrs);
   }
 
   private getTagCompletions(): CompletionEntry[] {
