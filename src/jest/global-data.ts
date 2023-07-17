@@ -25,6 +25,18 @@ export const getGDServiceFromStubbedResource = () => {
     getHTMLElementTags() {
       return ['div', 'img', 'p', 'a'];
     },
+    getHTMLAttributes(tagName) {
+      if (tagName !== 'a') {
+        return [];
+      }
+      return [
+        {
+          name: 'href',
+          description: 'The URL of a linked resource.',
+          type: 'string',
+        },
+      ];
+    },
   };
 
   return new GlobalDataServiceImpl(getLogger(), resource);

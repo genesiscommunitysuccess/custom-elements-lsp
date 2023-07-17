@@ -1,5 +1,10 @@
 import { Logger } from 'typescript-template-language-service-decorator';
-import { GlobalAttrType, GlobalDataRepository, GlobalDataService } from './global-data.types';
+import {
+  GlobalAttrType,
+  GlobalDataRepository,
+  GlobalDataService,
+  PlainElementAttrinute,
+} from './global-data.types';
 
 export class GlobalDataServiceImpl implements GlobalDataService {
   constructor(private logger: Logger, private repo: GlobalDataRepository) {
@@ -20,5 +25,9 @@ export class GlobalDataServiceImpl implements GlobalDataService {
 
   getHTMLElementTags(): string[] {
     return this.repo.getHTMLElementTags();
+  }
+
+  getHTMLAttributes(tagName: string): PlainElementAttrinute[] {
+    return this.repo.getHTMLAttributes(tagName);
   }
 }
