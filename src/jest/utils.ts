@@ -61,7 +61,7 @@ export const html = (
   strings: TemplateStringsArray,
   ...values: ((...args: any[]) => any)[]
 ): TemplateContext => {
-  const rawText = String.raw({ raw: strings }, ...values) ?? '';
+  const rawText = String.raw({ raw: strings }, ...values.map((v) => '${' + v + '}')) ?? '';
 
   return {
     typescript: jest.fn() as any,

@@ -17,9 +17,9 @@ import { TemplateContext } from 'typescript-template-language-service-decorator'
  */
 export function replaceQuotesAndInterpolationContents(line: string): string {
   return line
-    .replace(/\${(.+?)}/g, (...args) => '${' + 'y'.repeat(args[1].length) + '}')
-    .replace(/"(.+?)"/g, (...args) => '"' + 'z'.repeat(args[1].length) + '"')
-    .replace(/'(.+?)'/g, (...args) => "'" + 'z'.repeat(args[1].length) + "'");
+    .replace(/\${(.*?)}/g, (...args) => '${' + 'y'.repeat(args[1].length) + '}')
+    .replace(/"(.*?)"/g, (...args) => '"' + 'z'.repeat(args[1].length) + '"')
+    .replace(/'(.*?)'/g, (...args) => "'" + 'z'.repeat(args[1].length) + "'");
 }
 
 /**
@@ -230,7 +230,7 @@ export type TokenType =
  *
  * @example
  * ```
- * const res =getTokenTypeWithInfo({rawText: `<cus-el attr`, position: {line: 0, character: 13}})
+ * const res =getTokenTypeWithInfo({rawText: `<cus-el attr `, position: {line: 0, character: 14}})
  * // res.key -> 'element-attribute'
  * // res.params.tagName -> 'cus-el'
  * ```

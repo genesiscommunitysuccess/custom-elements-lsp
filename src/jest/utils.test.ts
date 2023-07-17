@@ -1,5 +1,7 @@
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
+// eslint-disable-next-line camelcase
+import { STRINGS__TOKEN_TYPE_empty_attr } from './shaped-test-cases';
 import { html } from './utils';
 
 /**
@@ -118,5 +120,14 @@ describe('toPosition', () => {
 
   testCases.forEach(([[context, lineAndChar], expected], i) => {
     it(`Case ${i}`, () => expect(context.toPosition(lineAndChar)).toEqual(expected));
+  });
+});
+
+describe('rawText', () => {
+  it('Preserves the interpolation syntax characters ${}', () => {
+    // eslint-disable-next-line camelcase
+    expect(STRINGS__TOKEN_TYPE_empty_attr.rawText).toEqual(`
+  <person-avatar id="" @click="\${(x, c) => true}" ></person-avatar>
+`);
   });
 });

@@ -11,8 +11,14 @@ import {
   stringHasUnfinishedQuotedValue,
   TokenType,
 } from './strings';
+import {
+  // eslint-disable-next-line camelcase
+  STRINGS__TEXT_REPLACEMENT_SPAN_no_preceding_whitespace,
+  // eslint-disable-next-line camelcase
+  STRINGS__TOKEN_TYPE_empty_attr,
+} from '../../jest/shaped-test-cases';
 
-describe('replaceTemplateStringBinding', () => {
+describe('replaceQuotesAndInterpolationContents', () => {
   const testCases: [string, [string], string][] = [
     ['Empty string', [''], ''],
     ["Returns input string if it doesn't contain any template bindings", ['test ${}'], 'test ${}'],
@@ -33,6 +39,11 @@ describe('replaceTemplateStringBinding', () => {
       'test="zzzzzzzzzzzzzzz"',
     ],
     ['Replaces text inside of single quotes', ["test='${_ => 'hello'}'"], "test='zzzzzzzzzzzzzzz'"],
+    [
+      'Correctly replaces text if second matching quotes follow a first set of empty quotes',
+      ['<person-avatar id="" @click="${(x, c) => true}" '],
+      '<person-avatar id="" @click="zzzzzzzzzzzzzzzzz" ',
+    ],
   ];
 
   for (const [name, [input], expected] of testCases) {
@@ -196,13 +207,8 @@ describe('getWholeTextReplcaementSpan', () => {
     ],
     [
       'Returns the starting at index 0 if there is no white space preceding the cursor',
-      [
-        { line: 0, character: 8 },
-        // Formatters will try and spread html`testagain` onto a separate line so you'll
-        // have to manually fix that if you use a formatter
-        // eslint-disable-next-line
-        html`testagain`,
-      ],
+      // eslint-disable-next-line camelcase
+      [{ line: 0, character: 8 }, STRINGS__TEXT_REPLACEMENT_SPAN_no_preceding_whitespace],
       { start: 0, length: 8 },
     ],
   ];
@@ -432,8 +438,8 @@ describe('getTokenTypeWithInfo', () => {
       'Key "none" if in an unfinished attribute value',
       [
         html`
-          <custom-element test="test at
-          `,
+    <custom-element test="test at
+    `,
         { line: 1, character: 39 },
       ],
       { key: 'none', params: undefined },
@@ -505,8 +511,8 @@ describe('getTokenTypeWithInfo', () => {
       'Key "element-attribute" and gets custom element when cursor is on the next line to an opening tag',
       [
         html`
-          <cus-elem
-          `,
+    <cus-elem
+    `,
         { line: 2, character: 2 },
       ],
       { key: 'element-attribute', params: { tagName: 'cus-elem', isCustomElement: true } },
@@ -514,6 +520,12 @@ describe('getTokenTypeWithInfo', () => {
     [
       'Key "element-attribute" if after a finished attribute',
       [html`<person-avatar unused="zzzzzzzz"  `, { line: 0, character: 36 }],
+      { key: 'element-attribute', params: { tagName: 'person-avatar', isCustomElement: true } },
+    ],
+    [
+      'Key "element-attribute" if preceding tokens had empty quotes followed by matching quotes',
+      // eslint-disable-next-line camelcase
+      [STRINGS__TOKEN_TYPE_empty_attr, { line: 1, character: 50 }],
       { key: 'element-attribute', params: { tagName: 'person-avatar', isCustomElement: true } },
     ],
   ];
