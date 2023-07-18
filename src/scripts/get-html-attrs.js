@@ -1,4 +1,5 @@
 // Used as a manual step to generate the html attribute data in `html-attributes.ts`
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes
 const table = document.querySelector('section[aria-labelledby="attribute_list"] table');
 const rows = [...table.querySelectorAll('tr')];
 
