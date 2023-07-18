@@ -16,6 +16,7 @@ Update test steps to match your PR:
 ```
 1. Checkout branch
 2. `npm run bootstrap`
+3. `npm run test:unit`
 ```
 
 > These testing instructions assume that you've already setup the LSP in your IDE with the `example` app. If you haven't then follow the instructions in the `README.md`.
