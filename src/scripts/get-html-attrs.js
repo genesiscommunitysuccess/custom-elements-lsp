@@ -16,7 +16,7 @@ const tableData = rows
     return {
       name: name.innerText,
       desc: desc.innerText,
-      type: desc.innerText.includes('boolean') ? 'boolean' : 'string',
+      type: desc.innerText.toLowerCase().includes('boolean') ? 'boolean' : 'string',
       elemsArr,
     };
   })
