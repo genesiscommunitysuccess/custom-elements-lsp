@@ -162,6 +162,44 @@ describe('getCompletionsAtPosition', () => {
     ]);
   });
 
+  it('Returns completions for the custom element and html tags after an incomplete or unknown html element', () => {
+    const service = getCompletionsService();
+    const context = html`<im `;
+    const position = {
+      line: 0,
+      character: 4,
+    };
+    const typeAndParam = getTokenTypeWithInfo(context, position);
+
+    const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
+      context,
+      position,
+      typeAndParam,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'custom-element></custom-element>',
+        kind: 'type',
+        name: 'custom-element',
+        sortText: 'custom-element',
+        labelDetails: {
+          description: 'src/components/avatar/avatar.ts',
+        },
+      },
+      {
+        insertText: 'no-attr></no-attr>',
+        kind: 'type',
+        name: 'no-attr',
+        sortText: 'custom-element',
+        labelDetails: {
+          description: 'pkg',
+        },
+      },
+      ...globalDataNameCompletions,
+    ]);
+  });
+
   it('Returns attribute completions when past a valid custom element name which has defined attributes', () => {
     const service = getCompletionsService();
     const context = html`<custom-element `;
@@ -204,6 +242,37 @@ describe('getCompletionsAtPosition', () => {
     ]);
   });
 
+  it('Returns attribute completions when past a valid plain element name which has defined attributes', () => {
+    const service = getCompletionsService();
+    const context = html`<a `;
+    const position = {
+      line: 0,
+      character: 3,
+    };
+    const typeAndParam = getTokenTypeWithInfo(context, position);
+
+    const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
+      context,
+      position,
+      typeAndParam,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'href=""',
+        kind: 'parameter',
+        kindModifiers: '',
+        labelDetails: {
+          description: '[attr] HTML Element',
+          detail: ' string',
+        },
+        name: 'href',
+        sortText: 'a',
+      },
+      ...globalDataAttributeAssersions,
+    ]);
+  });
+
   it('Returns attribute completions when writing an attribute', () => {
     const service = getCompletionsService();
     const context = html`<custom-element col`;
@@ -241,6 +310,37 @@ describe('getCompletionsAtPosition', () => {
         name: 'activated',
         sortText: 'a',
         kindModifiers: 'deprecated',
+      },
+      ...globalDataAttributeAssersions,
+    ]);
+  });
+
+  it('Returns attribute completions when past a valid plain element name and writing a known attribute', () => {
+    const service = getCompletionsService();
+    const context = html`<a hr`;
+    const position = {
+      line: 0,
+      character: 5,
+    };
+    const typeAndParam = getTokenTypeWithInfo(context, position);
+
+    const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
+      context,
+      position,
+      typeAndParam,
+    });
+
+    expect(completions.entries).toEqual([
+      {
+        insertText: 'href=""',
+        kind: 'parameter',
+        kindModifiers: '',
+        labelDetails: {
+          description: '[attr] HTML Element',
+          detail: ' string',
+        },
+        name: 'href',
+        sortText: 'a',
       },
       ...globalDataAttributeAssersions,
     ]);
@@ -296,6 +396,24 @@ describe('getCompletionsAtPosition', () => {
     const position = {
       line: 0,
       character: 28,
+    };
+    const typeAndParam = getTokenTypeWithInfo(context, position);
+
+    const completions = service.getCompletionsAtPosition(baseCompletionInfo, {
+      context,
+      position,
+      typeAndParam,
+    });
+
+    expect(completions.entries).toEqual([...globalDataAttributeAssersions]);
+  });
+
+  it('Returns only the global attribute completions when we try and complete attributes on a plain element with no attributes', () => {
+    const service = getCompletionsService();
+    const context = html`<div `;
+    const position = {
+      line: 0,
+      character: 5,
     };
     const typeAndParam = getTokenTypeWithInfo(context, position);
 
