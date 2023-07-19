@@ -2,11 +2,14 @@ import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { html } from '../../jest/utils';
 import {
+  constructElementAttrCompletion,
   constructGlobalAriaCompletion,
   constructGlobalAttrCompletion,
   constructGlobalEventCompletion,
 } from './helpers';
 import { getTokenTypeWithInfo } from '../utils';
+import { PlainElementAttribute } from '../global-data/global-data.types';
+import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
 
 describe('constructGlobalAriaCompletion', () => {
   it('returns CompletionEntry', () => {
@@ -75,6 +78,48 @@ describe('constructGlobalAttrCompletion', () => {
       },
       name: 'test-*',
       sortText: 'm',
+    });
+  });
+});
+
+describe('constructElementAttrCompletion', () => {
+  it('returns CompletionEntry for a plain html attribute', () => {
+    const attrDef: PlainElementAttribute = {
+      name: 'test',
+      description: 'test description',
+      type: 'boolean',
+    };
+    expect(constructElementAttrCompletion(attrDef)).toEqual({
+      insertText: 'test',
+      kind: 'parameter',
+      kindModifiers: '',
+      labelDetails: {
+        description: '[attr] HTML Element',
+        detail: ' boolean',
+      },
+      name: 'test',
+      sortText: 'a',
+    });
+  });
+
+  it('returns CompletionEntry for a custom element attribute', () => {
+    const attrDef: CustomElementAttribute = {
+      name: 'test',
+      description: 'test description',
+      type: 'string',
+      deprecated: true,
+      referenceClass: 'ClassName',
+    };
+    expect(constructElementAttrCompletion(attrDef)).toEqual({
+      insertText: 'test=""',
+      kind: 'parameter',
+      kindModifiers: 'deprecated',
+      labelDetails: {
+        description: '(deprecated) [attr] ClassName',
+        detail: ' string',
+      },
+      name: 'test',
+      sortText: 'a',
     });
   });
 });

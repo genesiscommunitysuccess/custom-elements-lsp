@@ -2,8 +2,9 @@ import { Logger } from 'typescript-template-language-service-decorator';
 import { GLOBAL_ATTR } from './data/attributes';
 import * as GlobalAriaAttributes from './data/attributes-aria';
 import * as GlobalAttributesEvents from './data/events';
+import { HTML_ATTRS } from './data/html-attributes';
 import * as GlobalHTMLTags from './data/tagnames';
-import { GlobalAttrType, GlobalDataRepository } from './global-data.types';
+import { GlobalAttrType, GlobalDataRepository, PlainElementAttribute } from './global-data.types';
 
 export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   constructor(private logger: Logger) {
@@ -37,5 +38,11 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
 
   getHTMLElementTags(): string[] {
     return this.globalHTMTags;
+  }
+
+  getHTMLAttributes(tagName: string): PlainElementAttribute[] {
+    if (!(tagName in HTML_ATTRS)) return [];
+    const attrs = HTML_ATTRS[tagName];
+    return attrs.map(({ name, type, desc }) => ({ name, type, description: desc }));
   }
 }
