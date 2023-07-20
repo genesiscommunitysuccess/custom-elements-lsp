@@ -1,13 +1,9 @@
-import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
-import { TemplateContext } from 'typescript-template-language-service-decorator';
-import { html } from '../../jest/utils';
 import {
   constructElementAttrCompletion,
   constructGlobalAriaCompletion,
   constructGlobalAttrCompletion,
   constructGlobalEventCompletion,
 } from './helpers';
-import { getTokenTypeWithInfo } from '../utils';
 import { PlainElementAttribute } from '../global-data/global-data.types';
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
 
@@ -88,6 +84,7 @@ describe('constructElementAttrCompletion', () => {
       name: 'test',
       description: 'test description',
       type: 'boolean',
+      deprecated: false,
     };
     expect(constructElementAttrCompletion(attrDef)).toEqual({
       insertText: 'test',

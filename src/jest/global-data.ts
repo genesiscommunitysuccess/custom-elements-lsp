@@ -34,6 +34,7 @@ export const getGDServiceFromStubbedResource = () => {
           name: 'href',
           description: 'The URL of a linked resource.',
           type: 'string',
+          deprecated: false,
         },
       ];
     },

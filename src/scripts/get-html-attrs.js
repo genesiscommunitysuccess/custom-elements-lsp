@@ -15,9 +15,10 @@ const tableData = rows
       .split(',')
       .map((x) => x.trim());
     return {
-      name: name.innerText,
+      name: name.innerText.split('\n')[0].trim(),
       desc: desc.innerText,
       type: desc.innerText.toLowerCase().includes('boolean') ? 'boolean' : 'string',
+      deprecated: name.innerText.toLowerCase().includes('deprecated'),
       elemsArr,
     };
   })
@@ -28,7 +29,7 @@ const allElems = new Set(tableData.reduce((elems, row) => elems.concat(row.elems
 const elemAttrs = [...allElems.keys()].reduce((acum, elem) => {
   const attrs = tableData
     .filter(({ elemsArr }) => elemsArr.includes(elem))
-    .map(({ name, desc, type }) => ({ name, desc, type }));
+    .map(({ name, desc, type, deprecated }) => ({ name, desc, type, deprecated }));
   return {
     ...acum,
     [elem]: attrs,

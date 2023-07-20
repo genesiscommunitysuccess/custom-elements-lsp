@@ -48,7 +48,12 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   getHTMLAttributes(tagName: string): PlainElementAttribute[] {
     if (!(tagName in HTML_ATTRS)) return [];
     const attrs = HTML_ATTRS[tagName];
-    return attrs.map(({ name, type, desc }) => ({ name, type, description: desc }));
+    return attrs.map(({ name, type, desc, deprecated }) => ({
+      name,
+      type,
+      description: desc,
+      deprecated,
+    }));
   }
 
   getHTMLInfo(tagName: string): GlobalDataInfo | undefined {

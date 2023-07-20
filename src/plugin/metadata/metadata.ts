@@ -121,7 +121,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
         { kind: 'text', text: `(attribute) ${attrName}` },
         {
           kind: 'text',
-          text: `\n\`${maybeAttr.type}\``,
+          text: `\n\`${maybeAttr.type}\`${maybeAttr.deprecated ? ' (deprecated)' : ''}`,
         },
       ],
       documentation: maybeAttr.description
@@ -140,10 +140,13 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
     const tags: JSDocTagInfo[] = [];
     buildAndAddJSDocTag(tags, 'attributes', () =>
-      this.services.globalData.getHTMLAttributes(tagName).map(({ name, type }) => ({
-        kind: 'text',
-        text: `${name} \`${type}\``,
-      }))
+      this.services.globalData
+        .getHTMLAttributes(tagName)
+        .filter(({ deprecated }) => !deprecated)
+        .map(({ name, type }) => ({
+          kind: 'text',
+          text: `${name} \`${type}\``,
+        }))
     );
 
     return {
