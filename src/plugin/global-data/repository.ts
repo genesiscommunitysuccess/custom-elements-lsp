@@ -3,7 +3,7 @@ import { GLOBAL_ATTR } from './data/attributes';
 import * as GlobalAriaAttributes from './data/attributes-aria';
 import * as GlobalAttributesEvents from './data/events';
 import { HTML_ATTRS } from './data/html-attributes';
-import * as GlobalHTMLTags from './data/tagnames';
+import { GLOBAL_HTML_ELEMENTS } from './data/tagnames';
 import { GlobalAttrType, GlobalDataRepository, PlainElementAttribute } from './global-data.types';
 
 export class GlobalDataRepositoryImpl implements GlobalDataRepository {
@@ -21,7 +21,7 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
     this.globalAttributes = Object.entries(GLOBAL_ATTR);
     this.globalEvents = [...Object.values(GlobalAttributesEvents)];
     this.ariaAttributes = [...Object.values(GlobalAriaAttributes)];
-    this.globalHTMTags = [...Object.values(GlobalHTMLTags)];
+    this.globalHTMTags = [...Object.keys(GLOBAL_HTML_ELEMENTS)];
   }
 
   getAttributes(): [string, GlobalAttrType][] {
