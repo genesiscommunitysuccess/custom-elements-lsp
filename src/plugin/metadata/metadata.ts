@@ -23,16 +23,29 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
   getQuickInfoAtPosition({ token, tokenSpan, typeAndParam }: QuickInfoCtx): QuickInfo | undefined {
     if (
-      // TODO: add different branch for a non-custom element
       typeAndParam.key === 'tag-name' &&
+      typeAndParam.params.isCustomElement &&
       this.services.customElements.customElementKnown(token)
     ) {
       return this.quickInfoForCustomElement(tokenSpan, token);
     } else if (
+      typeAndParam.key === 'tag-name' &&
+      !typeAndParam.params.isCustomElement &&
+      this.services.globalData.getHTMLElementTags().includes(token)
+    ) {
+      return this.quickInfoForPlainHTMLElement(tokenSpan, token);
+    } else if (
       typeAndParam.key === 'element-attribute' &&
+      typeAndParam.params.isCustomElement &&
       this.services.customElements.customElementKnown(typeAndParam.params.tagName)
     ) {
       return this.quickInfoForCEAttribute(tokenSpan, token, typeAndParam.params.tagName);
+    } else if (
+      typeAndParam.key === 'element-attribute' &&
+      !typeAndParam.params.isCustomElement &&
+      this.services.globalData.getHTMLElementTags().includes(typeAndParam.params.tagName)
+    ) {
+      return this.quickInfoForPlainHTMLAttribute(tokenSpan, token, typeAndParam.params.tagName);
     }
 
     return undefined;
@@ -89,6 +102,69 @@ export class CoreMetadataServiceImpl implements MetadataService {
     };
   }
 
+  private quickInfoForPlainHTMLAttribute(
+    tokenSpan: TextSpan,
+    attrName: string,
+    tagName: string
+  ): QuickInfo | undefined {
+    const attrs = this.services.globalData.getHTMLAttributes(tagName);
+    const maybeAttr = attrs.find(({ name }) => name === attrName);
+    if (!maybeAttr) {
+      return undefined;
+    }
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.parameterElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `(attribute) ${attrName}` },
+        {
+          kind: 'text',
+          text: `\n\`${maybeAttr.type}\`${maybeAttr.deprecated ? ' (deprecated)' : ''}`,
+        },
+      ],
+      documentation: maybeAttr.description
+        ? [{ kind: 'text', text: '\n' + maybeAttr.description }]
+        : [],
+    };
+  }
+
+  private quickInfoForPlainHTMLElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
+    const htmlInfo = this.services.globalData.getHTMLInfo(tagName);
+    if (!htmlInfo) {
+      throw new Error(`Unable to get quickinfo for unknown element: "${tagName}"`);
+    }
+
+    const { description } = htmlInfo;
+
+    const tags: JSDocTagInfo[] = [];
+    buildAndAddJSDocTag(tags, 'attributes', () =>
+      this.services.globalData
+        .getHTMLAttributes(tagName)
+        .filter(({ deprecated }) => !deprecated)
+        .map(({ name, type }) => ({
+          kind: 'text',
+          text: `${name} \`${type}\``,
+        }))
+    );
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.classElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `HTML Element declaration \`${tagName}\` ` },
+        {
+          kind: 'text',
+          text: `\n\`<${tagName}>\``,
+        },
+      ],
+      documentation: [{ kind: 'text', text: description }],
+      tags,
+    };
+  }
+
   private quickInfoForCustomElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
     const customElementInfo = this.services.customElements
       .getAllCEInfo({ getFullPath: true })
@@ -113,7 +189,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .filter(({ deprecated }) => !deprecated)
         .map(({ name, type }) => ({
           kind: 'text',
-          text: `- ${name} \`${type}\`\r\n`,
+          text: `${name} \`${type}\``,
         }))
     );
     buildAndAddJSDocTag(tags, 'properties', () =>
@@ -122,13 +198,13 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .filter(({ deprecated, privacy = 'public' }) => !(deprecated || privacy !== 'public'))
         .map(({ name, type, isStatic }) => ({
           kind: 'text',
-          text: `- ${name} \`${type}\`${isStatic ? ' (static)' : ''}\r\n`,
+          text: `${name} \`${type}\`${isStatic ? ' (static)' : ''}`,
         }))
     );
     buildAndAddJSDocTag(tags, 'events', () =>
       this.services.customElements.getCEEvents(tagName).map(({ name }) => ({
         kind: 'text',
-        text: `- ${name}\r\n`,
+        text: `${name}`,
       }))
     );
 

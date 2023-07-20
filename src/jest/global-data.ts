@@ -34,8 +34,25 @@ export const getGDServiceFromStubbedResource = () => {
           name: 'href',
           description: 'The URL of a linked resource.',
           type: 'string',
+          deprecated: false,
+        },
+        {
+          name: 'align',
+          description: 'Set vertical alignment.',
+          type: 'string',
+          deprecated: true,
         },
       ];
+    },
+    getHTMLInfo(tagName) {
+      if (tagName !== 'a') {
+        return undefined;
+      }
+      return {
+        tagName: 'a',
+        description:
+          'Together with its href attribute, creates a hyperlink to web pages, files, email addresses, locations within the current page, or anything else a URL can address.',
+      };
     },
   };
 

@@ -71,7 +71,6 @@ export function constructElementAttrCompletion(
 ): CompletionEntry {
   const { name, type, referenceClass, deprecated } = {
     referenceClass: 'HTML Element',
-    deprecated: false,
     ...attr,
   };
   return {

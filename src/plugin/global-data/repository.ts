@@ -3,8 +3,13 @@ import { GLOBAL_ATTR } from './data/attributes';
 import * as GlobalAriaAttributes from './data/attributes-aria';
 import * as GlobalAttributesEvents from './data/events';
 import { HTML_ATTRS } from './data/html-attributes';
-import * as GlobalHTMLTags from './data/tagnames';
-import { GlobalAttrType, GlobalDataRepository, PlainElementAttribute } from './global-data.types';
+import { GLOBAL_HTML_ELEMENTS } from './data/tagnames';
+import {
+  GlobalAttrType,
+  GlobalDataInfo,
+  GlobalDataRepository,
+  PlainElementAttribute,
+} from './global-data.types';
 
 export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   constructor(private logger: Logger) {
@@ -21,7 +26,7 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
     this.globalAttributes = Object.entries(GLOBAL_ATTR);
     this.globalEvents = [...Object.values(GlobalAttributesEvents)];
     this.ariaAttributes = [...Object.values(GlobalAriaAttributes)];
-    this.globalHTMTags = [...Object.values(GlobalHTMLTags)];
+    this.globalHTMTags = [...Object.keys(GLOBAL_HTML_ELEMENTS)];
   }
 
   getAttributes(): [string, GlobalAttrType][] {
@@ -43,6 +48,19 @@ export class GlobalDataRepositoryImpl implements GlobalDataRepository {
   getHTMLAttributes(tagName: string): PlainElementAttribute[] {
     if (!(tagName in HTML_ATTRS)) return [];
     const attrs = HTML_ATTRS[tagName];
-    return attrs.map(({ name, type, desc }) => ({ name, type, description: desc }));
+    return attrs.map(({ name, type, desc, deprecated }) => ({
+      name,
+      type,
+      description: desc,
+      deprecated,
+    }));
+  }
+
+  getHTMLInfo(tagName: string): GlobalDataInfo | undefined {
+    if (!(tagName in GLOBAL_HTML_ELEMENTS)) return undefined;
+    return {
+      tagName,
+      description: GLOBAL_HTML_ELEMENTS[tagName].desc,
+    };
   }
 }

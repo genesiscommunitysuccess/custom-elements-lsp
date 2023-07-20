@@ -14,7 +14,10 @@ export function buildAndAddJSDocTag(
   name: string,
   fn: () => JSDocTagInfo['text']
 ): boolean {
-  const text = fn();
+  const text = fn()?.map(({ kind, text: tagText }) => ({
+    kind,
+    text: `- ${tagText}\r\n`,
+  }));
   if (typeof text === 'undefined' || text.length === 0) {
     return false;
   }

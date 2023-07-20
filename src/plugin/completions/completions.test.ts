@@ -269,6 +269,17 @@ describe('getCompletionsAtPosition', () => {
         name: 'href',
         sortText: 'a',
       },
+      {
+        insertText: 'align=""',
+        kind: 'parameter',
+        kindModifiers: 'deprecated',
+        labelDetails: {
+          description: '(deprecated) [attr] HTML Element',
+          detail: ' string',
+        },
+        name: 'align',
+        sortText: 'a',
+      },
       ...globalDataAttributeAssersions,
     ]);
   });
@@ -340,6 +351,17 @@ describe('getCompletionsAtPosition', () => {
           detail: ' string',
         },
         name: 'href',
+        sortText: 'a',
+      },
+      {
+        insertText: 'align=""',
+        kind: 'parameter',
+        kindModifiers: 'deprecated',
+        labelDetails: {
+          description: '(deprecated) [attr] HTML Element',
+          detail: ' string',
+        },
+        name: 'align',
         sortText: 'a',
       },
       ...globalDataAttributeAssersions,
