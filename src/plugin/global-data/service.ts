@@ -1,6 +1,7 @@
 import { Logger } from 'typescript-template-language-service-decorator';
 import {
   GlobalAttrType,
+  GlobalDataInfo,
   GlobalDataRepository,
   GlobalDataService,
   PlainElementAttribute,
@@ -29,5 +30,9 @@ export class GlobalDataServiceImpl implements GlobalDataService {
 
   getHTMLAttributes(tagName: string): PlainElementAttribute[] {
     return this.repo.getHTMLAttributes(tagName);
+  }
+
+  getHTMLInfo(tagName: string): GlobalDataInfo | undefined {
+    return this.repo.getHTMLInfo(tagName);
   }
 }

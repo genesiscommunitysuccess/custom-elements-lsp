@@ -37,6 +37,16 @@ export const getGDServiceFromStubbedResource = () => {
         },
       ];
     },
+    getHTMLInfo(tagName) {
+      if (tagName !== 'a') {
+        return undefined;
+      }
+      return {
+        tagName: 'a',
+        description:
+          'Together with its href attribute, creates a hyperlink to web pages, files, email addresses, locations within the current page, or anything else a URL can address.',
+      };
+    },
   };
 
   return new GlobalDataServiceImpl(getLogger(), resource);
