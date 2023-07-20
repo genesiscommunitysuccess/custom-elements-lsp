@@ -133,7 +133,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
   private quickInfoForPlainHTMLElement(tokenSpan: TextSpan, tagName: string): QuickInfo {
     const htmlInfo = this.services.globalData.getHTMLInfo(tagName);
     if (!htmlInfo) {
-      throw new Error(`Unable to get quickinfo for unknown plain element: "${tagName}"`);
+      throw new Error(`Unable to get quickinfo for unknown element: "${tagName}"`);
     }
 
     const { description } = htmlInfo;

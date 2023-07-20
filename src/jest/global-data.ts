@@ -36,6 +36,12 @@ export const getGDServiceFromStubbedResource = () => {
           type: 'string',
           deprecated: false,
         },
+        {
+          name: 'align',
+          description: 'Set vertical alignment.',
+          type: 'string',
+          deprecated: true,
+        },
       ];
     },
     getHTMLInfo(tagName) {

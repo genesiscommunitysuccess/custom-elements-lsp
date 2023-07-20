@@ -293,6 +293,65 @@ describe('getDefinitionAndBoundSpan', () => {
   });
 });
 
+describe('quickInfoForPlainHTMLElement', () => {
+  const tokenSpan: TextSpan = { start: 6, length: 14 };
+
+  const baseQuickInfoResponse = {
+    displayParts: [
+      {
+        kind: 'text',
+        text: 'HTML Element declaration `a` ',
+      },
+      {
+        kind: 'text',
+        text: '\n`<a>`',
+      },
+    ],
+    documentation: [
+      {
+        kind: 'text',
+        text: 'Together with its href attribute, creates a hyperlink to web pages, files, email addresses, locations within the current page, or anything else a URL can address.',
+      },
+    ],
+    tags: [],
+    kind: 'class',
+    kindModifiers: 'declare',
+    textSpan: tokenSpan,
+  };
+
+  it('throws an error for an unknown element', () => {
+    const service = getMetadataService({});
+    let err;
+    try {
+      (service as any).quickInfoForPlainHTMLElement(tokenSpan, 'unknownelement');
+    } catch (error) {
+      err = error;
+    }
+    expect((err as Error).message).toBe(
+      'Unable to get quickinfo for unknown element: "unknownelement"'
+    );
+  });
+
+  it('Returns quickinfo with non-deprecated attributes, and a header indicating the attribute section', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForPlainHTMLElement(tokenSpan, 'a');
+    expect(res).toEqual({
+      ...baseQuickInfoResponse,
+      tags: [
+        {
+          name: 'attributes',
+          text: [
+            {
+              kind: 'text',
+              text: '- href `string`\r\n',
+            },
+          ],
+        },
+      ],
+    });
+  });
+});
+
 describe('quickInfoForCustomElement', () => {
   const tokenSpan: TextSpan = { start: 6, length: 14 };
 
@@ -530,6 +589,65 @@ describe('quickInfoForCEAttribute', () => {
   });
 });
 
+describe('quickInfoForPlainHTMLAttribute', () => {
+  const tokenSpan: TextSpan = { start: 6, length: 14 };
+
+  it('returns undefined for an unknown tag', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForPlainHTMLAttribute(
+      tokenSpan,
+      'href',
+      'unknownelement'
+    );
+    expect(res).toBeUndefined();
+  });
+
+  it('returns undefined for an unknown attribute on a known tag', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForPlainHTMLAttribute(tokenSpan, 'unknown', 'a');
+    expect(res).toBeUndefined();
+  });
+
+  it('returns undefined for a custom elements dialect binding (e.g. FAST)', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForPlainHTMLAttribute(
+      tokenSpan,
+      ':member',
+      'custom-element'
+    );
+    expect(res).toBeUndefined();
+  });
+
+  it('returns quickinfo for a known plain attribute on a known element', () => {
+    const service = getMetadataService({});
+    const res = (service as any).quickInfoForPlainHTMLAttribute(tokenSpan, 'href', 'a');
+    expect(res).toEqual({
+      displayParts: [
+        {
+          kind: 'text',
+          text: '(attribute) href',
+        },
+        {
+          kind: 'text',
+          text: '\n`string`',
+        },
+      ],
+      documentation: [
+        {
+          kind: 'text',
+          text: '\nThe URL of a linked resource.',
+        },
+      ],
+      kind: 'parameter',
+      kindModifiers: 'declare',
+      textSpan: {
+        length: 14,
+        start: 6,
+      },
+    });
+  });
+});
+
 describe('getQuickInfoAtPosition', () => {
   const tokenSpan: TextSpan = { start: 6, length: 14 };
 
@@ -579,6 +697,30 @@ describe('getQuickInfoAtPosition', () => {
     expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
   });
 
+  it('returns undefined for a plain element name which is unknown', () => {
+    const service = getMetadataService({});
+    const quickInfoPlainElementSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLElement');
+    quickInfoPlainElementSpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'tag-name',
+        params: {
+          isCustomElement: false,
+        },
+      },
+      token: 'invalidelement',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toBeUndefined();
+    expect(quickInfoPlainElementSpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
   it('returns undefined for a custom element attribute, with an unknown element', () => {
     const service = getMetadataService({});
     const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForCustomElement');
@@ -601,6 +743,31 @@ describe('getQuickInfoAtPosition', () => {
     });
     expect(res).toBeUndefined();
     expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns undefined for a plain element attribute name which is unknown', () => {
+    const service = getMetadataService({});
+    const quickInfoPlainElementSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLElement');
+    quickInfoPlainElementSpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'element-attribute',
+        params: {
+          isCustomElement: false,
+          tagName: 'unknownelement',
+        },
+      },
+      token: 'href',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toBeUndefined();
+    expect(quickInfoPlainElementSpy).toHaveBeenCalledTimes(0);
     expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
   });
 
@@ -641,6 +808,55 @@ describe('getQuickInfoAtPosition', () => {
         params: {
           tagName: 'custom-element',
           isCustomElement: true,
+        },
+      },
+      token: 'attr',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toEqual('b');
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(0);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('returns the result from quickInfoForPlainHTMLElement if quickinfo for name for a known element', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'tag-name',
+        params: {
+          isCustomElement: false,
+        },
+      },
+      token: 'p',
+      result: undefined,
+      context: html``,
+      position: { line: 0, character: 0 },
+    });
+    expect(res).toEqual('a');
+    expect(quickInfoCESpy).toHaveBeenCalledTimes(1);
+    expect(quickInfoAttrSpy).toHaveBeenCalledTimes(0);
+  });
+
+  it('returns the result from quickInfoForPlainHTMLAttribute if quickinfo for attribute for a known element', () => {
+    const service = getMetadataService({});
+    const quickInfoCESpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLElement');
+    quickInfoCESpy.mockReturnValue('a');
+    const quickInfoAttrSpy = jest.spyOn(service as any, 'quickInfoForPlainHTMLAttribute');
+    quickInfoAttrSpy.mockReturnValue('b');
+    const res = service.getQuickInfoAtPosition({
+      tokenSpan,
+      typeAndParam: {
+        key: 'element-attribute',
+        params: {
+          tagName: 'p',
+          isCustomElement: false,
         },
       },
       token: 'attr',
