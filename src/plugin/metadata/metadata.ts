@@ -36,9 +36,16 @@ export class CoreMetadataServiceImpl implements MetadataService {
       return this.quickInfoForPlainHTMLElement(tokenSpan, token);
     } else if (
       typeAndParam.key === 'element-attribute' &&
+      typeAndParam.params.isCustomElement &&
       this.services.customElements.customElementKnown(typeAndParam.params.tagName)
     ) {
       return this.quickInfoForCEAttribute(tokenSpan, token, typeAndParam.params.tagName);
+    } else if (
+      typeAndParam.key === 'element-attribute' &&
+      !typeAndParam.params.isCustomElement &&
+      this.services.globalData.getHTMLElementTags().includes(typeAndParam.params.tagName)
+    ) {
+      return this.quickInfoForPlainHTMLAttribute(tokenSpan, token, typeAndParam.params.tagName);
     }
 
     return undefined;
@@ -87,6 +94,34 @@ export class CoreMetadataServiceImpl implements MetadataService {
         {
           kind: 'text',
           text: `\n\`${maybeAttr.type}\`${maybeAttr.deprecated ? ' (deprecated)' : ''}`,
+        },
+      ],
+      documentation: maybeAttr.description
+        ? [{ kind: 'text', text: '\n' + maybeAttr.description }]
+        : [],
+    };
+  }
+
+  private quickInfoForPlainHTMLAttribute(
+    tokenSpan: TextSpan,
+    attrName: string,
+    tagName: string
+  ): QuickInfo | undefined {
+    const attrs = this.services.globalData.getHTMLAttributes(tagName);
+    const maybeAttr = attrs.find(({ name }) => name === attrName);
+    if (!maybeAttr) {
+      return undefined;
+    }
+
+    return {
+      textSpan: tokenSpan,
+      kind: ScriptElementKind.parameterElement,
+      kindModifiers: 'declare',
+      displayParts: [
+        { kind: 'text', text: `(attribute) ${attrName}` },
+        {
+          kind: 'text',
+          text: `\n\`${maybeAttr.type}\``,
         },
       ],
       documentation: maybeAttr.description
