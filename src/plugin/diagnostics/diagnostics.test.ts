@@ -30,7 +30,7 @@ describe('getDiagnosticsService', () => {
     const context = html``;
     const root = parse(context.text);
     const unknownTagSpy = jest.spyOn(service as any, 'diagnosticsUnknownTags');
-    const unknownCEAttributeSpy = jest.spyOn(service as any, 'getInvalidCEAttribute');
+    const unknownCEAttributeSpy = jest.spyOn(service as any, 'diagnosticsInvalidElemAttribute');
     const result = service.getSemanticDiagnostics({ context, diagnostics: [], root });
     expect(result.length).toEqual(0);
     expect(unknownTagSpy).toHaveBeenCalledTimes(1);
@@ -254,12 +254,12 @@ describe('diagnosticsUnknownTags', () => {
   });
 });
 
-describe('getInvalidCEAttribute', () => {
+describe('diagnosticsInvalidElemAttribute', () => {
   it('No diagnostics for an empty template', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -273,7 +273,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -285,7 +285,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -299,7 +299,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -313,7 +313,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -338,7 +338,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -377,7 +377,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -414,7 +414,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -459,7 +459,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -482,7 +482,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 });

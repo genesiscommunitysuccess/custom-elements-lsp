@@ -31,7 +31,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
     const diagnostics = prevDiagnostics
       .concat(this.diagnosticsUnknownTags(context, elementList))
-      .concat(this.getInvalidCEAttribute(context, elementList));
+      .concat(this.diagnosticsInvalidElemAttribute(context, elementList));
     return diagnostics;
   }
 
@@ -108,15 +108,17 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  private getInvalidCEAttribute(
+  private diagnosticsInvalidElemAttribute(
     context: TemplateContext,
     elementList: HTMLElement[]
   ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
-    const ceNames = this.services.customElements.getCENames();
+    const validTagNames = this.services.customElements
+      .getCENames()
+      .concat(this.services.globalData.getHTMLElementTags());
 
     const tagsAndAttrs = elementList
-      .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
+      .filter((elem) => validTagNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
         attrs: parseAttrNamesFromRawString(elem.rawAttrs),
@@ -185,12 +187,14 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .map(({ tagName, tagNameOccurrence, attrs }) => {
         const attrOccurences: Map<string, number> = new Map();
 
-        const ceAttrs = this.services.customElements.getCEAttributes(tagName);
+        const elemsAttrs = tagName.includes('-')
+          ? this.services.customElements.getCEAttributes(tagName)
+          : this.services.globalData.getHTMLAttributes(tagName);
         // Construct a map from tuples of [key, value] => [attrName, attrDef]
         // concatenating this elements attributes with the global attributes
         const attrMap = new Map(
-          ceAttrs
-            .map((ceAttr) => [ceAttr.name, ceAttr] as const)
+          elemsAttrs
+            .map((elemAttr) => [elemAttr.name, elemAttr] as const)
             .concat(this.buildGlobalAttributeArray())
         );
 
@@ -229,6 +233,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     start: number,
     length: number
   ): Diagnostic {
+    const isCE = tagName.includes('-');
     switch (classification) {
       case 'valid':
         throw new Error(
@@ -238,7 +243,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         return {
           category: DiagnosticCategory.Error,
           code: UNKNOWN_ATTRIBUTE,
-          messageText: `Unknown attribute "${attrName}" for custom element "${tagName}"`,
+          messageText: `Unknown attribute "${attrName}" for ${
+            isCE ? 'custom ' : ''
+          }element "${tagName}"`,
           file,
           start,
           length,
@@ -257,7 +264,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         return {
           category: DiagnosticCategory.Warning,
           code: DEPRECATED_ATTRIBUTE,
-          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for element ${tagName}`,
+          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for ${
+            isCE ? 'custom ' : ''
+          }element ${tagName}`,
           file,
           start,
           length,
