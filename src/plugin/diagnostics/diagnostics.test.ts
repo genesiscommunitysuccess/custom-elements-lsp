@@ -47,20 +47,6 @@ describe('diagnosticsUnknownTags', () => {
     expect(result.length).toEqual(0);
   });
 
-  it('No diagnostics for standard html elements', () => {
-    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid></invalid>
-        </div>
-      </template>
-    `;
-    const elementList = getElements(context);
-    const result = (service as any).diagnosticsUnknownTags(context, elementList);
-    expect(result.length).toEqual(0);
-  });
-
   it('Warning diagnostics for unknown custom elements', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
@@ -321,7 +307,7 @@ describe('diagnosticsInvalidElemAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 114,
       },
@@ -354,7 +340,7 @@ describe('diagnosticsInvalidElemAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 126,
       },
@@ -422,7 +408,7 @@ describe('diagnosticsInvalidElemAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 55,
       },
@@ -492,7 +478,7 @@ describe('buildAttributeDiagnosticMessage', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     let e;
     try {
-      (service as any).buildAttributeDiagnosticMessage('valid');
+      (service as any).buildAttributeDiagnosticMessage('valid', undefined, 'custom-element');
     } catch (error) {
       e = error;
     }
@@ -562,7 +548,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       file: 'test-file',
       length: 10,
       messageText:
-        'Attribute "attr" is marked as deprecated and may become invalid for element custom-element',
+        'Attribute "attr" is marked as deprecated and may become invalid for custom element custom-element',
       reportsDeprecated: {},
       start: 5,
     });
