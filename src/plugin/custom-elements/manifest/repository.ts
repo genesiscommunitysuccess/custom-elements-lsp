@@ -8,40 +8,6 @@ import { ManifestRepository, SourceAnalyzerConfig } from '../custom-elements.typ
 import { AnalyzerCLI, getAnalyzerCLI, getGlobby } from './analyzer';
 
 /**
- * Thin wrapper implementing the `ManifestRepository` interface which
- * reads in a manifest at a given path and exposes it
- */
-export class StaticCEManifestRepository implements ManifestRepository {
-  private subscriber: (() => void) | undefined;
-  constructor(private logger: Logger, private io: IOService) {
-    this.logger.log(`Setting up StaticCEManifestRepository`);
-    this.loadManifest();
-  }
-
-  private loadManifest(): void {
-    const maybeSchema = this.io.readFile(this.io.getNormalisedRootPath() + 'ce.json');
-    if (!maybeSchema) {
-      throw new Error(`Searched for schema at ${this.io.getNormalisedRootPath()}/ce.json`);
-    }
-
-    const schema = JSON.parse(maybeSchema);
-    this.manifest = schema as Package;
-    this.logger.log(`Finished reading manifest in StaticCEManifestRepository`);
-
-    this.subscriber?.();
-  }
-
-  registerCallbackForPostUpdate(callback: () => void): void {
-    this.subscriber = callback;
-  }
-  async requestUpdate(): Promise<void> {
-    this.loadManifest();
-  }
-
-  manifest: Package = { schemaVersion: '0.1.0', modules: [] };
-}
-
-/**
  * Sets the defaults values for `SourceAnalyzerConfig` for values which are not configured by the user.
  */
 export const mixinParserConfigDefaults = (
