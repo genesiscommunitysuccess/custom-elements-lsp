@@ -23,7 +23,7 @@ export const getGDServiceFromStubbedResource = () => {
       return ['onclick'];
     },
     getHTMLElementTags() {
-      return ['div', 'img', 'p', 'a'];
+      return ['div', 'img', 'p', 'a', 'template'];
     },
     getHTMLAttributes(tagName) {
       if (tagName !== 'a') {
@@ -147,6 +147,15 @@ export const globalDataNameCompletions: CompletionEntry[] = [
       description: 'HTML Element',
     },
     name: 'a',
+    sortText: 'html-element',
+  },
+  {
+    insertText: 'template></template>',
+    kind: ScriptElementKind.constElement,
+    labelDetails: {
+      description: 'HTML Element',
+    },
+    name: 'template',
     sortText: 'html-element',
   },
 ];

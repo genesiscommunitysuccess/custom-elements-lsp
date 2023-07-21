@@ -29,7 +29,7 @@ describe('getDiagnosticsService', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const root = parse(context.text);
-    const unknownTagSpy = jest.spyOn(service as any, 'getUnknownCETag');
+    const unknownTagSpy = jest.spyOn(service as any, 'diagnosticsUnknownTags');
     const unknownCEAttributeSpy = jest.spyOn(service as any, 'getInvalidCEAttribute');
     const result = service.getSemanticDiagnostics({ context, diagnostics: [], root });
     expect(result.length).toEqual(0);
@@ -38,12 +38,12 @@ describe('getDiagnosticsService', () => {
   });
 });
 
-describe('getUnknownCETag', () => {
+describe('diagnosticsUnknownTags', () => {
   it('No diagnostics for an empty template', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -57,7 +57,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -72,7 +72,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -104,7 +104,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -136,7 +136,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -169,7 +169,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -207,7 +207,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -221,7 +221,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -240,7 +240,7 @@ describe('getUnknownCETag', () => {
       <template><no-at test-attr="test"></no-at></template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
