@@ -1,66 +1,45 @@
 #!/usr/bin/env node
 
-// TODO: Handle --watch
+/**
+ * This script instantiates the manifest repository and outputs the manifest to `ce.json` file. This allows you to test
+ * out the glob paths and check the output that the LSP would be
+ * seeing, which is useful if you're not receiving the results
+ * in the LSP that you expect.
+ */
 
-import { readFileSync, writeFileSync, renameSync, unlinkSync } from 'fs';
-import path from 'path';
-import { cli } from '@custom-elements-manifest/analyzer/cli.js';
-import { globby } from 'globby';
 import minimist from 'minimist-lite';
+import { readFileSync, writeFileSync } from 'fs';
+import {
+  LiveUpdatingCEManifestRepository,
+  mixinParserConfigDefaults,
+} from '../../out/plugin/custom-elements/manifest/repository.js';
 
-const IN_FILE = 'custom-elements.json';
 const OUT_FILE = 'ce.json';
 
 const args = minimist(process.argv.slice(2));
+console.log(`args: ${JSON.stringify(args)}`);
 
-if (!args.src) {
-  console.error('Missing --src argument');
-  process.exit(1);
-}
+const logger = {
+  log: (msg) => console.log(`[log] ${msg}`),
+};
 
-const analyzeArgs = [
-  'analyze',
-  '--outdir',
-  '.',
-  '--fast', // TODO: don't hard code this if we ever want to be generic
-  '--globs',
-  args.src,
-];
-
-if (args.dependencies) {
-  analyzeArgs.push('--dependencies');
-}
-
-// https://custom-elements-manifest.open-wc.org/analyzer/config/
-// TODO: Allow to set some variables from the node api
-await cli({
-  argv: analyzeArgs,
+const config = mixinParserConfigDefaults({
+  timeout: 1000,
+  src: args.src ?? 'src/**/*.{js,ts}',
+  dependencies: JSON.parse(args.dependencies ?? '[]'),
 });
 
-if (!args.lib) {
-  renameSync(IN_FILE, OUT_FILE);
-  console.log('customelments-analyze written to ' + OUT_FILE);
-  process.exit(0);
-}
+const io = {
+  readFile: (path) => {
+    return readFileSync(path, 'utf8');
+  },
+  getNormalisedRootPath: () => process.cwd() + '/',
+};
 
-// Fuse lib files into the manifest
+const manifestRepo = new LiveUpdatingCEManifestRepository(logger, io, config, !!args.fastEnabled);
+await manifestRepo.analyzeAndUpdate();
 
-// TODO: Nee to remove custom-elements.json too
+writeFileSync(OUT_FILE, JSON.stringify(manifestRepo.manifest, null, 2));
 
-const libFiles = await globby(args.lib, { cwd: process.cwd() });
-
-const manifest = JSON.parse(readFileSync(IN_FILE, 'utf8'));
-
-for (const libFile of libFiles) {
-  const libDir = path.dirname(libFile);
-  const lib = JSON.parse(readFileSync(libFile, 'utf8'));
-
-  lib.modules.forEach((mod) => {
-    mod.path = path.join(libDir, mod.path);
-    manifest.modules.push(mod);
-  });
-}
-
-writeFileSync(OUT_FILE, JSON.stringify(manifest, null, 2));
-unlinkSync(IN_FILE);
-console.log('customelments-analyze written to ' + OUT_FILE);
+// Exit manually as manifestRepo is using chockidar watch
+process.exit(0);

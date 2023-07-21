@@ -87,9 +87,15 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
 
     const modules: Package['modules'] = [];
     const globby = await getGlobby();
+    this.logger.log(
+      `Looking for dependencies in ${
+        this.config.dependencies
+      } from path: ${this.io.getNormalisedRootPath()}`
+    );
     const libFiles = await globby(this.config.dependencies, {
       cwd: this.io.getNormalisedRootPath(),
     });
+    this.logger.log(`libFiles: ${JSON.stringify(libFiles)}`);
     for (const libFile of libFiles) {
       const libDir = path.dirname(libFile);
       this.logger.log(`Found dependency ${libFile} in ${libDir}`);
