@@ -4,7 +4,7 @@
     "bootstrap:module": "npm i && npm run build && npm run lsp:analyze",
     "build": "tsc && vite build",
     "dev": "npm run build && npm run start",
-		"lsp:analyze": "customelements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
+    "lsp:analyze": "customelements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
     "preview": "vite preview",
     "start": "vite"
   },
