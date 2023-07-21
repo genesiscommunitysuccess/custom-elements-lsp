@@ -5,7 +5,9 @@ const rootTemplate = html`
   <template @avatar-selected=${(x, c) => x.avatarSelected(c.event)}>
     <theme-picker background="FFFFFF" background="000000"></theme-picker>
 
-    <h1>${(x) => (x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : '')}</h1>
+    <h1 id="test" habbotel="" id="">
+      ${(x) => (x.selectedAvatarName ? `Selected: ${x.selectedAvatarName}` : '')}
+    </h1>
 
     <person-avatar
       id="test"
@@ -43,6 +45,10 @@ const rootTemplate = html`
     <example-counter display-text="Reverse" reverse></example-counter>
 
     <priority-selector></priority-selector>
+
+    <banana></banana>
+    <caption align="" data-test="${(x) => true}"></caption>
+    <video loop="true"></video>
   </template>
 `;
 

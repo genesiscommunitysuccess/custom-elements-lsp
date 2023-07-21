@@ -44,7 +44,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     if (diag.code !== UNKNOWN_ATTRIBUTE) {
       return diag;
     }
-    const msgRegex = /Unknown attribute "(.+)" for custom element "(.+)"/;
+    const msgRegex = /Unknown attribute "(.+)" for (?:custom )?element "(.+)"/;
     const res = msgRegex.exec(diag.messageText as string);
     if (!res) {
       this.logger.log(
@@ -94,7 +94,9 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
       ...diag,
       category: DiagnosticCategory.Warning,
       code: UNKNOWN_EVENT,
-      messageText: `Unknown event binding "@${attr}" for custom element "${tagName}"`,
+      messageText: `Unknown event binding "@${attr}" for ${
+        tagName.includes('-') ? 'custom ' : ''
+      }element "${tagName}"`,
     };
   }
 }

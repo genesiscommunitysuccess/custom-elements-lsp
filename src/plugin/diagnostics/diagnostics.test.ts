@@ -29,8 +29,8 @@ describe('getDiagnosticsService', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const root = parse(context.text);
-    const unknownTagSpy = jest.spyOn(service as any, 'getUnknownCETag');
-    const unknownCEAttributeSpy = jest.spyOn(service as any, 'getInvalidCEAttribute');
+    const unknownTagSpy = jest.spyOn(service as any, 'diagnosticsUnknownTags');
+    const unknownCEAttributeSpy = jest.spyOn(service as any, 'diagnosticsInvalidElemAttribute');
     const result = service.getSemanticDiagnostics({ context, diagnostics: [], root });
     expect(result.length).toEqual(0);
     expect(unknownTagSpy).toHaveBeenCalledTimes(1);
@@ -38,26 +38,12 @@ describe('getDiagnosticsService', () => {
   });
 });
 
-describe('getUnknownCETag', () => {
+describe('diagnosticsUnknownTags', () => {
   it('No diagnostics for an empty template', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
-    expect(result.length).toEqual(0);
-  });
-
-  it('No diagnostics for standard html elements', () => {
-    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid></invalid>
-        </div>
-      </template>
-    `;
-    const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -72,7 +58,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -93,6 +79,38 @@ describe('getUnknownCETag', () => {
     ]);
   });
 
+  it('Error diagnostics for unknown elements', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template>
+        <div>
+          <banana></banana>
+          <apple></apple>
+        </div>
+      </template>
+    `;
+    const elementList = getElements(context);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 1005,
+        file: 'test.ts',
+        length: 6,
+        messageText: 'Unknown element: banana',
+        start: 43,
+      },
+      {
+        category: 1,
+        code: 1005,
+        file: 'test.ts',
+        length: 5,
+        messageText: 'Unknown element: apple',
+        start: 71,
+      },
+    ]);
+  });
+
   it('Correct warnings when one unknown tag is a substring of another unknown tag', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
@@ -104,7 +122,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -136,7 +154,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -169,7 +187,7 @@ describe('getUnknownCETag', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -198,16 +216,19 @@ describe('getUnknownCETag', () => {
     ]);
   });
 
-  it('No diagnostics when we only have known custom elements', () => {
+  it('No diagnostics when we only have known elements', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
       <template>
         <no-attr></no-attr>
         <custom-element activated></custom-element>
+        <div>
+          <p>Hello</p>
+        </div>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -218,10 +239,13 @@ describe('getUnknownCETag', () => {
         <no-attr></no-attr>
         <custom-element activated></custom-element>
         <no-at></no-at>
+        <div>
+          <p>Hello</p>
+        </div>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -237,10 +261,13 @@ describe('getUnknownCETag', () => {
   it('Diagnostics for an unknown element if attributes are set', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
-      <template><no-at test-attr="test"></no-at></template>
+      <template>
+        <no-at test-attr="test"></no-at>
+        <noat test-attr="test"></noat>
+      </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getUnknownCETag(context, elementList);
+    const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -248,18 +275,26 @@ describe('getUnknownCETag', () => {
         file: 'test.ts',
         length: 5,
         messageText: 'Unknown custom element: no-at',
-        start: 18,
+        start: 27,
+      },
+      {
+        category: 1,
+        code: 1005,
+        file: 'test.ts',
+        length: 4,
+        messageText: 'Unknown element: noat',
+        start: 68,
       },
     ]);
   });
 });
 
-describe('getInvalidCEAttribute', () => {
+describe('diagnosticsInvalidElemAttribute', () => {
   it('No diagnostics for an empty template', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html``;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -273,7 +308,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -285,7 +320,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -296,10 +331,11 @@ describe('getInvalidCEAttribute', () => {
         <unknown-element></unknown-element>
         <no-attr></no-attr>
         <custom-element colour="red"></custom-element>
+        <a href="test"></a>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 
@@ -313,7 +349,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -321,24 +357,25 @@ describe('getInvalidCEAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 114,
       },
     ]);
   });
 
-  it('Diagnostics for invalid attributes on known custom elements', () => {
+  it('Diagnostics for invalid attributes on known elements', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     const context = html`
       <template>
         <unknown-element></unknown-element>
         <no-attr invalidattr></no-attr>
         <custom-element activated colour="red" alsoinvalid="test"></custom-element>
+        <a href="test" invalidattr></a>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -354,7 +391,7 @@ describe('getInvalidCEAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 126,
       },
@@ -366,6 +403,14 @@ describe('getInvalidCEAttribute', () => {
         messageText: 'Unknown attribute "alsoinvalid" for custom element "custom-element"',
         start: 149,
       },
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute "invalidattr" for element "a"',
+        start: 209,
+      },
     ]);
   });
 
@@ -374,10 +419,11 @@ describe('getInvalidCEAttribute', () => {
     const context = html`
       <template>
         <no-attr invalidattr invalidattr invalidattr></no-attr>
+        <a href="test" invalidattr invalidattr></a>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -403,6 +449,22 @@ describe('getInvalidCEAttribute', () => {
         messageText: 'Unknown attribute "invalidattr" for custom element "no-attr"',
         start: 59,
       },
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute "invalidattr" for element "a"',
+        start: 105,
+      },
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 11,
+        messageText: 'Unknown attribute "invalidattr" for element "a"',
+        start: 117,
+      },
     ]);
   });
 
@@ -411,10 +473,11 @@ describe('getInvalidCEAttribute', () => {
     const context = html`
       <template>
         <custom-element colour="red" activated colour="blue" activated></custom-element>
+        <a href="test" href="test2"></a>
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 0,
@@ -422,7 +485,7 @@ describe('getInvalidCEAttribute', () => {
         file: 'test.ts',
         length: 9,
         messageText:
-          'Attribute "activated" is marked as deprecated and may become invalid for element custom-element',
+          'Attribute "activated" is marked as deprecated and may become invalid for custom element custom-element',
         reportsDeprecated: {},
         start: 55,
       },
@@ -446,6 +509,16 @@ describe('getInvalidCEAttribute', () => {
         reportsUnnecessary: {},
         start: 79,
       },
+      {
+        category: 0,
+        code: 1002,
+        file: 'test.ts',
+        length: 4,
+        messageText:
+          'Duplicate setting of attribute "href" which overrides the same attribute previously set on tag "a"',
+        reportsUnnecessary: {},
+        start: 130,
+      },
     ]);
   });
 
@@ -459,7 +532,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
         category: 1,
@@ -482,7 +555,7 @@ describe('getInvalidCEAttribute', () => {
       </template>
     `;
     const elementList = getElements(context);
-    const result = (service as any).getInvalidCEAttribute(context, elementList);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
 });
@@ -492,7 +565,7 @@ describe('buildAttributeDiagnosticMessage', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
     let e;
     try {
-      (service as any).buildAttributeDiagnosticMessage('valid');
+      (service as any).buildAttributeDiagnosticMessage('valid', undefined, 'custom-element');
     } catch (error) {
       e = error;
     }
@@ -518,6 +591,27 @@ describe('buildAttributeDiagnosticMessage', () => {
       file: 'test-file',
       length: 10,
       messageText: 'Unknown attribute "attr" for custom element "custom-element"',
+      start: 5,
+    });
+  });
+
+  it('Message does not refer to custom element for an issue on a base html tag', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const res = (service as any).buildAttributeDiagnosticMessage(
+      'unknown',
+      'attr',
+      'p',
+      'test-file',
+      5,
+      10
+    );
+
+    expect(res).toEqual({
+      category: 1,
+      code: UNKNOWN_ATTRIBUTE,
+      file: 'test-file',
+      length: 10,
+      messageText: 'Unknown attribute "attr" for element "p"',
       start: 5,
     });
   });
@@ -562,7 +656,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       file: 'test-file',
       length: 10,
       messageText:
-        'Attribute "attr" is marked as deprecated and may become invalid for element custom-element',
+        'Attribute "attr" is marked as deprecated and may become invalid for custom element custom-element',
       reportsDeprecated: {},
       start: 5,
     });

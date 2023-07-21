@@ -14,6 +14,7 @@ import {
   DUPLICATE_ATTRIBUTE,
   UNKNOWN_ATTRIBUTE,
   UNKNOWN_CUSTOM_ELEMENT,
+  UNKNOWN_HTML_ELEMENT,
 } from '../constants/diagnostic-codes';
 import { Services } from '../utils/services.types';
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
@@ -29,33 +30,35 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     const elementList = root.querySelectorAll('*');
 
     const diagnostics = prevDiagnostics
-      .concat(this.getUnknownCETag(context, elementList))
-      .concat(this.getInvalidCEAttribute(context, elementList));
+      .concat(this.diagnosticsUnknownTags(context, elementList))
+      .concat(this.diagnosticsInvalidElemAttribute(context, elementList));
     return diagnostics;
   }
 
   /**
-   * Get any diagnostic items for custom elements in the tagged template which don't exist
-   * in the cache. Return as warnings due to the fact that the custom element may be defined,
-   * but not in the cache
+   * Get any diagnostic items for elements in the tagged template which don't exist
+   * in the cache. Return as warnings for custom elements due to the fact that the custom element may be defined,
+   * but not in the cache. Errors for unknown html tags.
    * @param context - TemplateContext from the template language service
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  private getUnknownCETag(context: TemplateContext, elementList: HTMLElement[]): Diagnostic[] {
+  private diagnosticsUnknownTags(
+    context: TemplateContext,
+    elementList: HTMLElement[]
+  ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
 
-    const customElementTags = elementList.filter((elem) => elem.tagName.includes('-'));
-    this.logger.log(`getUnknownCETag: customElementTags: ${customElementTags.length}`);
-
-    const ceNames = this.services.customElements.getCENames();
-    const invalidCETags = customElementTags
-      .filter((elem) => !ceNames.includes(elem.tagName.toLowerCase()))
+    const validTagNames = this.services.customElements
+      .getCENames()
+      .concat(this.services.globalData.getHTMLElementTags());
+    const invalidTagNames = elementList
+      .filter((elem) => !validTagNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => elem.tagName.toLowerCase());
-    const checkTags = [...new Set(invalidCETags)];
+    const checkTags = [...new Set(invalidTagNames)];
 
-    this.logger.log(`getUnknownCETag: checkTags: ${checkTags}`);
-    this.logger.log(`getUnknownCETag: rawText: ${context.rawText}`);
+    this.logger.log(`diagnosticsUnknownTags: checkTags: ${checkTags}`);
+    this.logger.log(`diagnosticsUnknownTags: rawText: ${context.rawText}`);
 
     // Loop over each line and build one tag with location object
     // for every match on every line (so a line with two of the same invalid
@@ -83,17 +86,20 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       })
       .flat();
 
-    return tagsWithLocations.map(({ tag, row, column }) => ({
-      category: DiagnosticCategory.Warning,
-      code: UNKNOWN_CUSTOM_ELEMENT,
-      file: sourceFile,
-      start: context.toOffset({
-        line: row,
-        character: column,
-      }),
-      length: tag.length,
-      messageText: `Unknown custom element: ${tag}`,
-    }));
+    return tagsWithLocations.map(({ tag, row, column }) => {
+      const isCE = tag.includes('-');
+      return {
+        category: isCE ? DiagnosticCategory.Warning : DiagnosticCategory.Error,
+        code: isCE ? UNKNOWN_CUSTOM_ELEMENT : UNKNOWN_HTML_ELEMENT,
+        file: sourceFile,
+        start: context.toOffset({
+          line: row,
+          character: column,
+        }),
+        length: tag.length,
+        messageText: `Unknown ${isCE ? 'custom ' : ''}element: ${tag}`,
+      };
+    });
   }
 
   /**
@@ -102,15 +108,17 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
    * @param elementList - List of HTMLElements from the template, `HTMLElement` is `from node-html-parser` **not** the standard DOM API.
    * @returns - Array of Diagnostics
    */
-  private getInvalidCEAttribute(
+  private diagnosticsInvalidElemAttribute(
     context: TemplateContext,
     elementList: HTMLElement[]
   ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
-    const ceNames = this.services.customElements.getCENames();
+    const validTagNames = this.services.customElements
+      .getCENames()
+      .concat(this.services.globalData.getHTMLElementTags());
 
     const tagsAndAttrs = elementList
-      .filter((elem) => elem.tagName.includes('-') && ceNames.includes(elem.tagName.toLowerCase()))
+      .filter((elem) => validTagNames.includes(elem.tagName.toLowerCase()))
       .map((elem) => ({
         tagName: elem.tagName.toLowerCase(),
         attrs: parseAttrNamesFromRawString(elem.rawAttrs),
@@ -179,12 +187,14 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .map(({ tagName, tagNameOccurrence, attrs }) => {
         const attrOccurences: Map<string, number> = new Map();
 
-        const ceAttrs = this.services.customElements.getCEAttributes(tagName);
+        const elemsAttrs = tagName.includes('-')
+          ? this.services.customElements.getCEAttributes(tagName)
+          : this.services.globalData.getHTMLAttributes(tagName);
         // Construct a map from tuples of [key, value] => [attrName, attrDef]
         // concatenating this elements attributes with the global attributes
         const attrMap = new Map(
-          ceAttrs
-            .map((ceAttr) => [ceAttr.name, ceAttr] as const)
+          elemsAttrs
+            .map((elemAttr) => [elemAttr.name, elemAttr] as const)
             .concat(this.buildGlobalAttributeArray())
         );
 
@@ -223,6 +233,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     start: number,
     length: number
   ): Diagnostic {
+    const isCE = tagName.includes('-');
     switch (classification) {
       case 'valid':
         throw new Error(
@@ -232,7 +243,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         return {
           category: DiagnosticCategory.Error,
           code: UNKNOWN_ATTRIBUTE,
-          messageText: `Unknown attribute "${attrName}" for custom element "${tagName}"`,
+          messageText: `Unknown attribute "${attrName}" for ${
+            isCE ? 'custom ' : ''
+          }element "${tagName}"`,
           file,
           start,
           length,
@@ -251,7 +264,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         return {
           category: DiagnosticCategory.Warning,
           code: DEPRECATED_ATTRIBUTE,
-          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for element ${tagName}`,
+          messageText: `Attribute "${attrName}" is marked as deprecated and may become invalid for ${
+            isCE ? 'custom ' : ''
+          }element ${tagName}`,
           file,
           start,
           length,
