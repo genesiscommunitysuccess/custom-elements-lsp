@@ -85,14 +85,14 @@ In the config of this repository it is set to `example` because we use the `exam
 
 If the results of the LSP are not what you're expecting (e.g. incorrect or missing information) then it may be because the source and dependencies paths have an issue, and the plugin is not able to correctly find the files to parse.
 
-You can generate a copy of the manifest file that the plugin is using by running the analyzer executable script which is provided with this plugin with the `customelements-analyze` command.
+You can generate a copy of the manifest file that the plugin is using by running the analyzer executable script which is provided with this plugin with the `custom-elements-analyze` command.
 
 1. Set up a npm script in your `package.json` to execute the command. For example:
 
 ```json
 {
   "scripts": {
-    "lsp:analyze": "customelements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
+    "lsp:analyze": "custom-elements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
   },
 }
 ```
