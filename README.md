@@ -79,6 +79,33 @@ If you have an LSP setup for typescript this should work straight away using the
 
 In the config of this repository it is set to `example` because we use the `example` prefix as set in `./example/src/components.ts`. An example of a component exported in this way can be found in the `./example/src/components/button/` directory.
 
+### Troubleshooting
+
+#### Analyzer Script
+
+If the results of the LSP are not what you're expecting (e.g. incorrect or missing information) then it may be because the source and dependencies paths have an issue, and the plugin is not able to correctly find the files to parse.
+
+You can generate a copy of the manifest file that the plugin is using by running the analyzer executable script which is provided with this plugin with the `custom-elements-analyze` command.
+
+1. Set up a npm script in your `package.json` to execute the command. For example:
+
+```json
+{
+  "scripts": {
+    "lsp:analyze": "custom-elements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
+  },
+}
+```
+
+This example has the `--src` and `--dependencies` parameters matching the configuration in `./example/src/tsconfig.json`. This `package.json` needs to be the same location on the filesystem that the `srcRouteFromTSServer` relative path gets you to, as explained in [the setup section](#plugin-setup-and-usage).
+
+> Take care with the syntax for specifying an array of globs for the dependencies. You are required to quote the array and also quote the individual items as strings. Refer back to the example given to double check.
+
+2. Run the npm script `npm run lsp:analyze`.
+3. Check `ce.json` to see what components have issues, or are missing from the manifest.
+4. If there are any issues then you can change the glob patterns and repeat from step 1 until you're happy.
+5. Once you are receiving the correct output from the script you can update your `tsconfig.json` to fix the issue in the LSP plugin.
+
 ## Plugin Development
 
 This section helps you to set up the LSP plugin locally so you can contribute to it. Playground based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin
