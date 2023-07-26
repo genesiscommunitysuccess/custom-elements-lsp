@@ -49,6 +49,8 @@ const rootTemplate = html`
     <banana></banana>
     <caption align="" data-test="${(x) => true}"></caption>
     <video loop="true"></video>
+
+    <div wololo="test" wolo="also-fail"></div>
   </template>
 `;
 
