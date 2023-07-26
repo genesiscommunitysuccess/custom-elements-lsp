@@ -2,6 +2,12 @@ import parse from 'node-html-parser';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
+import {
+  // eslint-disable-next-line camelcase
+  DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring,
+  // eslint-disable-next-line camelcase
+  DIAGNOSTICS__UNKNOWN_TAGS_on_same_line,
+} from '../../jest/shaped-test-cases';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import {
   DEPRECATED_ATTRIBUTE,
@@ -22,7 +28,7 @@ const getDiagnosticsService = (
     buildServices({ customElements: ce, globalData: gd })
   );
 
-const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
+const getElements = (context: TemplateContext) => parse(context.rawText).querySelectorAll('*');
 
 describe('getDiagnosticsService', () => {
   it('collates diagnostic info from methods in the class', () => {
@@ -145,14 +151,8 @@ describe('diagnosticsUnknownTags', () => {
 
   it('Correct warnings when the same unknown tag is on one line multiple times', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid-ce></invalid-ce>
-          <invalid-ce></invalid-ce>
-        </div>
-      </template>
-    `;
+    // eslint-disable-next-line camelcase
+    const context = DIAGNOSTICS__UNKNOWN_TAGS_on_same_line;
     const elementList = getElements(context);
     const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
@@ -162,7 +162,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 43,
+        start: 24,
       },
       {
         category: 0,
@@ -170,22 +170,15 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 79,
+        start: 49,
       },
     ]);
   });
 
   it('Correct warnings when unknown tag on the same line and substring of another', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid-ce></invalid-ce>
-          <invalid-ce></invalid-ce>
-          <another-invalid-ce></another-invalid-ce>
-        </div>
-      </template>
-    `;
+    // eslint-disable-next-line camelcase
+    const context = DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring;
     const elementList = getElements(context);
     const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
@@ -195,7 +188,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 43,
+        start: 31,
       },
       {
         category: 0,
@@ -203,7 +196,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 79,
+        start: 56,
       },
       {
         category: 0,
@@ -211,7 +204,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
-        start: 115,
+        start: 88,
       },
     ]);
   });
@@ -557,6 +550,63 @@ describe('diagnosticsInvalidElemAttribute', () => {
     const elementList = getElements(context);
     const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
+  });
+
+  it('Diagnostics for invalid attributes which are substrings of others', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template><div wololo="test" wolo="also-fail"></div></template>
+    `;
+    const elementList = getElements(context);
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 6,
+        messageText: 'Unknown attribute "wololo" for element "div"',
+        start: 22,
+      },
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 4,
+        messageText: 'Unknown attribute "wolo" for element "div"',
+        start: 36,
+      },
+    ]);
+  });
+
+  ['@', ':', '?'].forEach((bindingSymbol) => {
+    it(`Diagnostics for invalid attributes containing "${bindingSymbol}", which are substrings of others`, () => {
+      const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+      const context = html`
+        <template><div :wololo="${(_) => ''}" :wolo="${(_) => ''}"></div></template>
+      `;
+      (context.rawText as any) = context.rawText.replaceAll(':', bindingSymbol);
+      const elementList = getElements(context);
+      const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
+      expect(result).toEqual([
+        {
+          category: 1,
+          code: 1001,
+          file: 'test.ts',
+          length: 7,
+          messageText: `Unknown attribute "${bindingSymbol}wololo" for element "div"`,
+          start: 24,
+        },
+        {
+          category: 1,
+          code: 1001,
+          file: 'test.ts',
+          length: 5,
+          messageText: `Unknown attribute "${bindingSymbol}wolo" for element "div"`,
+          start: 47,
+        },
+      ]);
+    });
   });
 });
 

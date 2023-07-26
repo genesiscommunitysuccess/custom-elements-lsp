@@ -2,6 +2,13 @@ import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 
 /**
+ * Escapes all regex special characters in a string.
+ */
+export function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
  * Replace the content of a binding in a template string interpolation region with `y`.
  * Replace the content of a attribute binding in a template string interpolation region with `z`.
  * @privateRemarks
@@ -115,24 +122,54 @@ export function getWholeTextReplacementSpan(
   return replacementSpan;
 }
 
+function regexIndexOf(string: string, matcher: RegExp, stringIndex?: number): number {
+  const indexOf = string.substring(stringIndex || 0).search(matcher);
+  return indexOf < 0 ? indexOf : indexOf + string.substring(indexOf).match(matcher)![0].length;
+}
+
+function wrappedIndexOf(string: string, matcher: string, stringIndex?: number): number {
+  const indexOf = string.substring(stringIndex || 0).indexOf(matcher);
+  return indexOf < 0 ? indexOf : indexOf + matcher.length;
+}
+
 /**
- * Get the index in a string of the end of a substring, at a given occurrence
+ * Get the index in a string of the end of a substring or regex match, at a given occurrence.
  *
  * @example
+ * Simple string matching.
  * ```
- * fn({rawText: `hi hi`, substring: 'hi', occurrence: 1}) -> 2
- * fn({rawText: `hi hi`, substring: 'hi', occurrence: 2}) -> 5
+ * fn({rawText: `hi hi`, matcher: 'hi', occurrence: 1}) -> 2
+ * fn({rawText: `hi hi`, matcher: 'hi', occurrence: 2}) -> 5
+ * ```
+ *
+ * @example
+ * You can use a regex to match instead of a string.
+ * ```
+ * fn({rawText: `hi hi`, matcher: /hi/, occurrence: 2}) -> 5
+ * ```
+ * *NOTE*: this is slower, so only use if necessary.
+ *
+ * @example
+ * A useful example is to match a regex on word boundaries, to avoid matching substrings.
+ * ```
+ * fn({rawText: `catamaran cat`, matcher: /cat/, occurrence: 1}) -> 9
+ * fn({rawText: `catamaran cat`, matcher: /\bcat\b/, occurrence: 1}) -> 13
  * ```
  */
 export function getPositionOfNthOccuranceEnd({
   rawText,
-  substring,
+  matcher,
   occurrence,
 }: {
   rawText: string;
-  substring: string;
+  matcher: string | RegExp;
   occurrence: number;
 }): number {
+  const findIndex = (stringIndex: number) =>
+    typeof matcher !== 'string'
+      ? regexIndexOf(rawText, matcher, stringIndex)
+      : wrappedIndexOf(rawText, matcher, stringIndex);
+
   if (occurrence < 1) {
     const INVALID_OCCURRENCE_CODE = -2;
     return INVALID_OCCURRENCE_CODE;
@@ -141,11 +178,11 @@ export function getPositionOfNthOccuranceEnd({
   let stringIndex = 0;
 
   while (countdown > 0) {
-    const nextOccurrenceIndex = rawText.indexOf(substring, stringIndex);
-    if (nextOccurrenceIndex === -1) {
-      return -1;
+    const indexOf = findIndex(stringIndex);
+    if (indexOf < 0) {
+      return indexOf;
     }
-    stringIndex = nextOccurrenceIndex + substring.length;
+    stringIndex += indexOf;
     countdown -= 1;
   }
 

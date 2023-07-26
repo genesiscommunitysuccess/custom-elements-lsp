@@ -247,7 +247,7 @@ describe('getWholeTextReplcaementSpan', () => {
 });
 
 describe('getPositionOfNthTagEnd', () => {
-  const tests: [string, [TemplateContext, string, number], any][] = [
+  const tests: [string, [TemplateContext, string | RegExp, number], any][] = [
     ['-2 for an invalid occurrence', [html``, 'a', 0], -2],
     ['-1 for empty string', [html``, 'a', 1], -1],
     [
@@ -325,15 +325,48 @@ describe('getPositionOfNthTagEnd', () => {
   ];
 
   for (const [name, [context, tagName, occurrence], expected] of tests) {
-    it(name, () => {
+    it(name + ' using a regex matcher', () => {
+      debugger;
       const result = getPositionOfNthOccuranceEnd({
         rawText: context.rawText,
-        substring: `<${tagName}`,
+        matcher: new RegExp(`<${tagName}`),
+        occurrence,
+      });
+      expect(result).toEqual(expected);
+    });
+    it(name + ' using a string matcher', () => {
+      const result = getPositionOfNthOccuranceEnd({
+        rawText: context.rawText,
+        matcher: `<${tagName}`,
         occurrence,
       });
       expect(result).toEqual(expected);
     });
   }
+
+  it('will match a token which contains the substring using a simple string match', () => {
+    const context = html`
+      wololo wolo
+    `;
+    const result = getPositionOfNthOccuranceEnd({
+      rawText: context.rawText,
+      matcher: 'wolo',
+      occurrence: 1,
+    });
+    expect(result).toEqual(11);
+  });
+
+  it('can use a regex matcher to skip substring matches (for example)', () => {
+    const context = html`
+      wololo wolo
+    `;
+    const result = getPositionOfNthOccuranceEnd({
+      rawText: context.rawText,
+      matcher: /\bwolo\b/,
+      occurrence: 1,
+    });
+    expect(result).toEqual(18);
+  });
 });
 
 describe('parseAttrNamesFromRawString', () => {

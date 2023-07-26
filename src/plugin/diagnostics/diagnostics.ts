@@ -8,7 +8,7 @@ import {
   InvalidAttrDefinition,
   TagsWithAttrs,
 } from './diagnostics.types';
-import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
+import { escapeRegExp, getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import {
   DEPRECATED_ATTRIBUTE,
   DUPLICATE_ATTRIBUTE,
@@ -79,7 +79,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
             column:
               getPositionOfNthOccuranceEnd({
                 rawText: line,
-                substring: `<${tag}`,
+                matcher: `<${tag}`,
                 occurrence: i + 1,
               }) - tag.length,
           }));
@@ -140,20 +140,29 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
       .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
         let searchOffset = getPositionOfNthOccuranceEnd({
-          substring: `<${tagName}`,
+          matcher: `<${tagName}`,
           occurrence: tagNameOccurrence,
           rawText: context.rawText,
         });
 
-        if (attrOccurrence > 1) {
-          searchOffset += getPositionOfNthOccuranceEnd({
-            substring: attr,
-            occurrence: attrOccurrence - 1,
-            rawText: context.rawText.substring(searchOffset),
-          });
-        }
+        /**
+         * If the attribute is a binding type (used in dialects such as FAST) then
+         * we can avoid matching on substrings just by appending `=` to the match.
+         * Else, we can avoid substring matches using the word boundary matcher `\b`.
+         * If we are using a binding type we need to subtract 1 account for the
+         * `=` character.
+         */
+        const [matcher, offset] = /[@:?]/.test(attr)
+          ? [new RegExp(escapeRegExp(attr) + '='), 1]
+          : [new RegExp(`\\b${escapeRegExp(attr)}\\b`), 0];
 
-        const attrStart = context.rawText.indexOf(attr, searchOffset);
+        searchOffset += getPositionOfNthOccuranceEnd({
+          matcher,
+          occurrence: attrOccurrence,
+          rawText: context.rawText.substring(searchOffset),
+        });
+
+        const attrStart = searchOffset - attr.length - offset;
 
         return this.buildAttributeDiagnosticMessage(
           classification,
