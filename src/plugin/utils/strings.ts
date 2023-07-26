@@ -115,6 +115,11 @@ export function getWholeTextReplacementSpan(
   return replacementSpan;
 }
 
+function regexIndexOf(string: string, regex: RegExp, stringIndex?: number): number {
+  const indexOf = string.substring(stringIndex || 0).search(regex);
+  return indexOf >= 0 ? indexOf + (stringIndex || 0) : indexOf;
+}
+
 /**
  * Get the index in a string of the end of a substring, at a given occurrence
  *
@@ -123,16 +128,31 @@ export function getWholeTextReplacementSpan(
  * fn({rawText: `hi hi`, substring: 'hi', occurrence: 1}) -> 2
  * fn({rawText: `hi hi`, substring: 'hi', occurrence: 2}) -> 5
  * ```
+ *
+ * If you are trying to match a token but not as a substring of another token, you can use `enforceWordBoundaries` to ensure that the token is not a substring of another token. This will be slower to execute.
+ * @example
+ * ```
+ * fn({rawText: `catamaran cat`, substring: 'cat', occurrence: 1}) -> 9
+ * fn({rawText: `catamaran cat`, substring: 'cat', occurrence: 1, enforceWordBoundaries: true}) -> 13
+ * ```
  */
 export function getPositionOfNthOccuranceEnd({
   rawText,
   substring,
   occurrence,
+  enforceWordBoundaries = false,
 }: {
   rawText: string;
   substring: string;
   occurrence: number;
+  enforceWordBoundaries?: boolean;
 }): number {
+  const pattern = new RegExp(`\\b${substring}\\b`);
+  const findIndex = (stringIndex: number) =>
+    enforceWordBoundaries
+      ? regexIndexOf(rawText, pattern, stringIndex)
+      : rawText.indexOf(substring, stringIndex);
+
   if (occurrence < 1) {
     const INVALID_OCCURRENCE_CODE = -2;
     return INVALID_OCCURRENCE_CODE;
@@ -141,7 +161,7 @@ export function getPositionOfNthOccuranceEnd({
   let stringIndex = 0;
 
   while (countdown > 0) {
-    const nextOccurrenceIndex = rawText.indexOf(substring, stringIndex);
+    const nextOccurrenceIndex = findIndex(stringIndex);
     if (nextOccurrenceIndex === -1) {
       return -1;
     }

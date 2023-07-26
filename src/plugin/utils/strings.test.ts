@@ -247,7 +247,7 @@ describe('getWholeTextReplcaementSpan', () => {
 });
 
 describe('getPositionOfNthTagEnd', () => {
-  const tests: [string, [TemplateContext, string, number], any][] = [
+  const tests: [string, [TemplateContext, string | RegExp, number], any][] = [
     ['-2 for an invalid occurrence', [html``, 'a', 0], -2],
     ['-1 for empty string', [html``, 'a', 1], -1],
     [
@@ -324,8 +324,23 @@ describe('getPositionOfNthTagEnd', () => {
     ],
   ];
 
+  /**
+   * Run all tests twice, once with enforceWordBoundaries: true and once with enforceWordBoundaries: false
+   *
+   * In practise you wouldn't enforce word boundaries for html tags but it's useful to test the functionality
+   * matches in both cases
+   */
   for (const [name, [context, tagName, occurrence], expected] of tests) {
-    it(name, () => {
+    it(name + ' and enforceWordBoundaries: true', () => {
+      const result = getPositionOfNthOccuranceEnd({
+        rawText: context.rawText,
+        substring: `${tagName}`,
+        occurrence: occurrence * 2 - 1, // This pattern will also match the closing tag so account for that
+        enforceWordBoundaries: true,
+      });
+      expect(result).toEqual(expected);
+    });
+    it(name + ' and enforceWordBoundaries: false', () => {
       const result = getPositionOfNthOccuranceEnd({
         rawText: context.rawText,
         substring: `<${tagName}`,
@@ -334,6 +349,32 @@ describe('getPositionOfNthTagEnd', () => {
       expect(result).toEqual(expected);
     });
   }
+
+  it('will match a token which contains the substring if enforceWordBoundaries is false', () => {
+    const context = html`
+      wololo wolo
+    `;
+    const result = getPositionOfNthOccuranceEnd({
+      rawText: context.rawText,
+      substring: 'wolo',
+      occurrence: 1,
+      enforceWordBoundaries: false,
+    });
+    expect(result).toEqual(11);
+  });
+
+  it('will not match a token which contains the substring if enforceWordBoundaries is true, and will skip to the token', () => {
+    const context = html`
+      wololo wolo
+    `;
+    const result = getPositionOfNthOccuranceEnd({
+      rawText: context.rawText,
+      substring: 'wolo',
+      occurrence: 1,
+      enforceWordBoundaries: true,
+    });
+    expect(result).toEqual(18);
+  });
 });
 
 describe('parseAttrNamesFromRawString', () => {
