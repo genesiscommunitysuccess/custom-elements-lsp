@@ -122,43 +122,14 @@ export function getWholeTextReplacementSpan(
   return replacementSpan;
 }
 
-type IndexOfResponse =
-  | {
-      k: 'err';
-      code: number;
-    }
-  | {
-      k: 'match';
-      index: number;
-      length: number;
-    };
-function regexIndexOf(string: string, matcher: RegExp, stringIndex?: number): IndexOfResponse {
+function regexIndexOf(string: string, matcher: RegExp, stringIndex?: number): number {
   const indexOf = string.substring(stringIndex || 0).search(matcher);
-  if (indexOf < 0) {
-    return {
-      k: 'err',
-      code: indexOf,
-    };
-  }
-  return {
-    k: 'match',
-    index: indexOf,
-    length: string.substring(indexOf).match(matcher)![0].length,
-  };
+  return indexOf < 0 ? indexOf : indexOf + string.substring(indexOf).match(matcher)![0].length;
 }
-function wrappedIndexOf(string: string, matcher: string, stringIndex?: number): IndexOfResponse {
+
+function wrappedIndexOf(string: string, matcher: string, stringIndex?: number): number {
   const indexOf = string.substring(stringIndex || 0).indexOf(matcher);
-  if (indexOf < 0) {
-    return {
-      k: 'err',
-      code: indexOf,
-    };
-  }
-  return {
-    k: 'match',
-    index: indexOf,
-    length: matcher.length,
-  };
+  return indexOf < 0 ? indexOf : indexOf + matcher.length;
 }
 
 /**
@@ -207,11 +178,11 @@ export function getPositionOfNthOccuranceEnd({
   let stringIndex = 0;
 
   while (countdown > 0) {
-    const indexResponse = findIndex(stringIndex);
-    if (indexResponse.k === 'err') {
-      return indexResponse.code;
+    const indexOf = findIndex(stringIndex);
+    if (indexOf < 0) {
+      return indexOf;
     }
-    stringIndex += indexResponse.index + indexResponse.length;
+    stringIndex += indexOf;
     countdown -= 1;
   }
 
