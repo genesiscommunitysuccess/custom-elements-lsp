@@ -145,15 +145,16 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           rawText: context.rawText,
         });
 
-        if (attrOccurrence > 1) {
-          searchOffset += getPositionOfNthOccuranceEnd({
-            substring: attr,
-            occurrence: attrOccurrence - 1,
-            rawText: context.rawText.substring(searchOffset),
-          });
-        }
+        const enforceWordBoundaries = !/[@:?]/.test(attr);
 
-        const attrStart = context.rawText.indexOf(attr, searchOffset);
+        searchOffset += getPositionOfNthOccuranceEnd({
+          substring: attr,
+          occurrence: attrOccurrence,
+          rawText: context.rawText.substring(searchOffset),
+          enforceWordBoundaries,
+        });
+
+        const attrStart = searchOffset - attr.length;
 
         return this.buildAttributeDiagnosticMessage(
           classification,

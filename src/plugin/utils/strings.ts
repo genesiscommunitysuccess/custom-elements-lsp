@@ -147,7 +147,8 @@ export function getPositionOfNthOccuranceEnd({
   occurrence: number;
   enforceWordBoundaries?: boolean;
 }): number {
-  const pattern = new RegExp(`\\b${substring}\\b`);
+  const regexEscapedSubstring = substring.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const pattern = new RegExp(`\\b${regexEscapedSubstring}\\b`);
   const findIndex = (stringIndex: number) =>
     enforceWordBoundaries
       ? regexIndexOf(rawText, pattern, stringIndex)

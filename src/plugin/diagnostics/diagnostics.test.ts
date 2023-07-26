@@ -551,6 +551,34 @@ describe('diagnosticsInvalidElemAttribute', () => {
     const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result.length).toEqual(0);
   });
+
+  it('Diagnostics for invalid attributes which are substrings of others', () => {
+    const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+    const context = html`
+      <template><div wololo="test" wolo="also-fail"></div></template>
+    `;
+    const elementList = getElements(context);
+    debugger;
+    const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
+    expect(result).toEqual([
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 6,
+        messageText: 'Unknown attribute "wololo" for element "div"',
+        start: 22,
+      },
+      {
+        category: 1,
+        code: 1001,
+        file: 'test.ts',
+        length: 4,
+        messageText: 'Unknown attribute "wolo" for element "div"',
+        start: 36,
+      },
+    ]);
+  });
 });
 
 describe('buildAttributeDiagnosticMessage', () => {
