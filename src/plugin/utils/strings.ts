@@ -1,6 +1,9 @@
 import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 
+/**
+ * Escapes all regex special characters in a string.
+ */
 export function escapeRegExp(str: string) {
   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -159,20 +162,27 @@ function wrappedIndexOf(string: string, matcher: string, stringIndex?: number): 
 }
 
 /**
- * Get the index in a string of the end of a substring, at a given occurrence
+ * Get the index in a string of the end of a substring or regex match, at a given occurrence.
  *
  * @example
+ * Simple string matching.
  * ```
- * fn({rawText: `hi hi`, substring: 'hi', occurrence: 1}) -> 2
- * fn({rawText: `hi hi`, substring: 'hi', occurrence: 2}) -> 5
+ * fn({rawText: `hi hi`, matcher: 'hi', occurrence: 1}) -> 2
+ * fn({rawText: `hi hi`, matcher: 'hi', occurrence: 2}) -> 5
  * ```
  *
- * TODO: Change this API
- * If you are trying to match a token but not as a substring of another token, you can use `enforceWordBoundaries` to ensure that the token is not a substring of another token. This will be slower to execute.
  * @example
+ * You can use a regex to match instead of a string.
  * ```
- * fn({rawText: `catamaran cat`, substring: 'cat', occurrence: 1}) -> 9
- * fn({rawText: `catamaran cat`, substring: 'cat', occurrence: 1, enforceWordBoundaries: true}) -> 13
+ * fn({rawText: `hi hi`, matcher: /hi/, occurrence: 2}) -> 5
+ * ```
+ * *NOTE*: this is slower, so only use if necessary.
+ *
+ * @example
+ * A useful example is to match a regex on word boundaries, to avoid matching substrings.
+ * ```
+ * fn({rawText: `catamaran cat`, matcher: /cat/, occurrence: 1}) -> 9
+ * fn({rawText: `catamaran cat`, matcher: /\bcat\b/, occurrence: 1}) -> 13
  * ```
  */
 export function getPositionOfNthOccuranceEnd({
