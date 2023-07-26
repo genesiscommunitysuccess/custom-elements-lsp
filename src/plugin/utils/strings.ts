@@ -1,6 +1,10 @@
 import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 
+export function escapeRegExp(str: string) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 /**
  * Replace the content of a binding in a template string interpolation region with `y`.
  * Replace the content of a attribute binding in a template string interpolation region with `z`.

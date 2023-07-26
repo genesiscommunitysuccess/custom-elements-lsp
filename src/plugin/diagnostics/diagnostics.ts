@@ -8,7 +8,7 @@ import {
   InvalidAttrDefinition,
   TagsWithAttrs,
 } from './diagnostics.types';
-import { getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
+import { escapeRegExp, getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import {
   DEPRECATED_ATTRIBUTE,
   DUPLICATE_ATTRIBUTE,
@@ -145,15 +145,24 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           rawText: context.rawText,
         });
 
-        const enforceWordBoundaries = !/[@:?]/.test(attr);
+        /**
+         * If the attribute is a binding type (used in dialects such as FAST) then
+         * we can avoid matching on substrings just by appending `=` to the match.
+         * Else, we can avoid substring matches using the word boundary matcher `\b`.
+         * If we are using a binding type we need to subtract 1 account for the
+         * `=` character.
+         */
+        const [matcher, offset] = /[@:?]/.test(attr)
+          ? [new RegExp(escapeRegExp(attr) + '='), 1]
+          : [new RegExp(`\\b${escapeRegExp(attr)}\\b`), 0];
 
         searchOffset += getPositionOfNthOccuranceEnd({
-          matcher: attr,
+          matcher,
           occurrence: attrOccurrence,
           rawText: context.rawText.substring(searchOffset),
         });
 
-        const attrStart = searchOffset - attr.length;
+        const attrStart = searchOffset - attr.length - offset;
 
         return this.buildAttributeDiagnosticMessage(
           classification,

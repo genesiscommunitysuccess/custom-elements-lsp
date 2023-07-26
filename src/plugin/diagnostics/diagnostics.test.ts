@@ -28,7 +28,7 @@ const getDiagnosticsService = (
     buildServices({ customElements: ce, globalData: gd })
   );
 
-const getElements = (context: TemplateContext) => parse(context.text).querySelectorAll('*');
+const getElements = (context: TemplateContext) => parse(context.rawText).querySelectorAll('*');
 
 describe('getDiagnosticsService', () => {
   it('collates diagnostic info from methods in the class', () => {
@@ -558,7 +558,6 @@ describe('diagnosticsInvalidElemAttribute', () => {
       <template><div wololo="test" wolo="also-fail"></div></template>
     `;
     const elementList = getElements(context);
-    debugger;
     const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
     expect(result).toEqual([
       {
@@ -578,6 +577,36 @@ describe('diagnosticsInvalidElemAttribute', () => {
         start: 36,
       },
     ]);
+  });
+
+  ['@', ':', '?'].forEach((bindingSymbol) => {
+    it(`Diagnostics for invalid attributes containing "${bindingSymbol}", which are substrings of others`, () => {
+      const service = getDiagnosticsService(getCEServiceFromStubbedResource());
+      const context = html`
+        <template><div :wololo="${(_) => ''}" :wolo="${(_) => ''}"></div></template>
+      `;
+      (context.rawText as any) = context.rawText.replaceAll(':', bindingSymbol);
+      const elementList = getElements(context);
+      const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);
+      expect(result).toEqual([
+        {
+          category: 1,
+          code: 1001,
+          file: 'test.ts',
+          length: 7,
+          messageText: `Unknown attribute "${bindingSymbol}wololo" for element "div"`,
+          start: 24,
+        },
+        {
+          category: 1,
+          code: 1001,
+          file: 'test.ts',
+          length: 5,
+          messageText: `Unknown attribute "${bindingSymbol}wolo" for element "div"`,
+          start: 47,
+        },
+      ]);
+    });
   });
 });
 
