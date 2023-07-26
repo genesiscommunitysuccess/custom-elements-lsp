@@ -2,6 +2,12 @@ import parse from 'node-html-parser';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
+import {
+  // eslint-disable-next-line camelcase
+  DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring,
+  // eslint-disable-next-line camelcase
+  DIAGNOSTICS__UNKNOWN_TAGS_on_same_line,
+} from '../../jest/shaped-test-cases';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import {
   DEPRECATED_ATTRIBUTE,
@@ -145,14 +151,8 @@ describe('diagnosticsUnknownTags', () => {
 
   it('Correct warnings when the same unknown tag is on one line multiple times', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid-ce></invalid-ce>
-          <invalid-ce></invalid-ce>
-        </div>
-      </template>
-    `;
+    // eslint-disable-next-line camelcase
+    const context = DIAGNOSTICS__UNKNOWN_TAGS_on_same_line;
     const elementList = getElements(context);
     const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
@@ -162,7 +162,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 43,
+        start: 24,
       },
       {
         category: 0,
@@ -170,22 +170,15 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 79,
+        start: 49,
       },
     ]);
   });
 
   it('Correct warnings when unknown tag on the same line and substring of another', () => {
     const service = getDiagnosticsService(getCEServiceFromStubbedResource());
-    const context = html`
-      <template>
-        <div>
-          <invalid-ce></invalid-ce>
-          <invalid-ce></invalid-ce>
-          <another-invalid-ce></another-invalid-ce>
-        </div>
-      </template>
-    `;
+    // eslint-disable-next-line camelcase
+    const context = DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring;
     const elementList = getElements(context);
     const result = (service as any).diagnosticsUnknownTags(context, elementList);
     expect(result).toEqual([
@@ -195,7 +188,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 43,
+        start: 31,
       },
       {
         category: 0,
@@ -203,7 +196,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 10,
         messageText: 'Unknown custom element: invalid-ce',
-        start: 79,
+        start: 56,
       },
       {
         category: 0,
@@ -211,7 +204,7 @@ describe('diagnosticsUnknownTags', () => {
         file: 'test.ts',
         length: 18,
         messageText: 'Unknown custom element: another-invalid-ce',
-        start: 115,
+        start: 88,
       },
     ]);
   });

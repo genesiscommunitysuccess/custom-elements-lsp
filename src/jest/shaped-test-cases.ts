@@ -15,3 +15,18 @@ export const STRINGS__TOKEN_TYPE_empty_attr = html`
 `;
 
 export const STRINGS__TEXT_REPLACEMENT_SPAN_no_preceding_whitespace = html`testagain`;
+
+export const DIAGNOSTICS__UNKNOWN_TAGS_on_same_line = html`
+  <template>
+    <div><invalid-ce></invalid-ce><invalid-ce></invalid-ce></div>
+  </template>
+`;
+
+export const DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring = html`
+  <template>
+    <div>
+      <invalid-ce></invalid-ce><invalid-ce></invalid-ce>
+      <another-invalid-ce></another-invalid-ce>
+    </div>
+  </template>
+`;
