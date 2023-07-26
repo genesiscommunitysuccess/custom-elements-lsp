@@ -324,54 +324,46 @@ describe('getPositionOfNthTagEnd', () => {
     ],
   ];
 
-  /**
-   * Run all tests twice, once with enforceWordBoundaries: true and once with enforceWordBoundaries: false
-   *
-   * In practise you wouldn't enforce word boundaries for html tags but it's useful to test the functionality
-   * matches in both cases
-   */
   for (const [name, [context, tagName, occurrence], expected] of tests) {
-    it(name + ' and enforceWordBoundaries: true', () => {
+    it(name + ' using a regex matcher', () => {
+      debugger;
       const result = getPositionOfNthOccuranceEnd({
         rawText: context.rawText,
-        substring: `${tagName}`,
-        occurrence: occurrence * 2 - 1, // This pattern will also match the closing tag so account for that
-        enforceWordBoundaries: true,
+        matcher: new RegExp(`<${tagName}`),
+        occurrence,
       });
       expect(result).toEqual(expected);
     });
-    it(name + ' and enforceWordBoundaries: false', () => {
+    it(name + ' using a string matcher', () => {
       const result = getPositionOfNthOccuranceEnd({
         rawText: context.rawText,
-        substring: `<${tagName}`,
+        matcher: `<${tagName}`,
         occurrence,
       });
       expect(result).toEqual(expected);
     });
   }
 
-  it('will match a token which contains the substring if enforceWordBoundaries is false', () => {
+  it('will match a token which contains the substring using a simple string match', () => {
     const context = html`
       wololo wolo
     `;
     const result = getPositionOfNthOccuranceEnd({
       rawText: context.rawText,
-      substring: 'wolo',
+      matcher: 'wolo',
       occurrence: 1,
-      enforceWordBoundaries: false,
     });
     expect(result).toEqual(11);
   });
 
-  it('will not match a token which contains the substring if enforceWordBoundaries is true, and will skip to the token', () => {
+  it('can use a regex matcher to skip substring matches (for example)', () => {
     const context = html`
       wololo wolo
     `;
     const result = getPositionOfNthOccuranceEnd({
       rawText: context.rawText,
-      substring: 'wolo',
+      matcher: /\bwolo\b/,
       occurrence: 1,
-      enforceWordBoundaries: true,
     });
     expect(result).toEqual(18);
   });

@@ -79,7 +79,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
             column:
               getPositionOfNthOccuranceEnd({
                 rawText: line,
-                substring: `<${tag}`,
+                matcher: `<${tag}`,
                 occurrence: i + 1,
               }) - tag.length,
           }));
@@ -140,7 +140,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
       .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
       .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
         let searchOffset = getPositionOfNthOccuranceEnd({
-          substring: `<${tagName}`,
+          matcher: `<${tagName}`,
           occurrence: tagNameOccurrence,
           rawText: context.rawText,
         });
@@ -148,10 +148,9 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         const enforceWordBoundaries = !/[@:?]/.test(attr);
 
         searchOffset += getPositionOfNthOccuranceEnd({
-          substring: attr,
+          matcher: attr,
           occurrence: attrOccurrence,
           rawText: context.rawText.substring(searchOffset),
-          enforceWordBoundaries,
         });
 
         const attrStart = searchOffset - attr.length;

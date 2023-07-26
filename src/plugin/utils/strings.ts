@@ -115,9 +115,43 @@ export function getWholeTextReplacementSpan(
   return replacementSpan;
 }
 
-function regexIndexOf(string: string, regex: RegExp, stringIndex?: number): number {
-  const indexOf = string.substring(stringIndex || 0).search(regex);
-  return indexOf >= 0 ? indexOf + (stringIndex || 0) : indexOf;
+type IndexOfResponse =
+  | {
+      k: 'err';
+      code: number;
+    }
+  | {
+      k: 'match';
+      index: number;
+      length: number;
+    };
+function regexIndexOf(string: string, matcher: RegExp, stringIndex?: number): IndexOfResponse {
+  const indexOf = string.substring(stringIndex || 0).search(matcher);
+  if (indexOf < 0) {
+    return {
+      k: 'err',
+      code: indexOf,
+    };
+  }
+  return {
+    k: 'match',
+    index: indexOf,
+    length: string.substring(indexOf).match(matcher)![0].length,
+  };
+}
+function wrappedIndexOf(string: string, matcher: string, stringIndex?: number): IndexOfResponse {
+  const indexOf = string.substring(stringIndex || 0).indexOf(matcher);
+  if (indexOf < 0) {
+    return {
+      k: 'err',
+      code: indexOf,
+    };
+  }
+  return {
+    k: 'match',
+    index: indexOf,
+    length: matcher.length,
+  };
 }
 
 /**
@@ -129,6 +163,7 @@ function regexIndexOf(string: string, regex: RegExp, stringIndex?: number): numb
  * fn({rawText: `hi hi`, substring: 'hi', occurrence: 2}) -> 5
  * ```
  *
+ * TODO: Change this API
  * If you are trying to match a token but not as a substring of another token, you can use `enforceWordBoundaries` to ensure that the token is not a substring of another token. This will be slower to execute.
  * @example
  * ```
@@ -138,21 +173,17 @@ function regexIndexOf(string: string, regex: RegExp, stringIndex?: number): numb
  */
 export function getPositionOfNthOccuranceEnd({
   rawText,
-  substring,
+  matcher,
   occurrence,
-  enforceWordBoundaries = false,
 }: {
   rawText: string;
-  substring: string;
+  matcher: string | RegExp;
   occurrence: number;
-  enforceWordBoundaries?: boolean;
 }): number {
-  const regexEscapedSubstring = substring.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const pattern = new RegExp(`\\b${regexEscapedSubstring}\\b`);
   const findIndex = (stringIndex: number) =>
-    enforceWordBoundaries
-      ? regexIndexOf(rawText, pattern, stringIndex)
-      : rawText.indexOf(substring, stringIndex);
+    typeof matcher !== 'string'
+      ? regexIndexOf(rawText, matcher, stringIndex)
+      : wrappedIndexOf(rawText, matcher, stringIndex);
 
   if (occurrence < 1) {
     const INVALID_OCCURRENCE_CODE = -2;
@@ -162,11 +193,11 @@ export function getPositionOfNthOccuranceEnd({
   let stringIndex = 0;
 
   while (countdown > 0) {
-    const nextOccurrenceIndex = findIndex(stringIndex);
-    if (nextOccurrenceIndex === -1) {
-      return -1;
+    const indexResponse = findIndex(stringIndex);
+    if (indexResponse.k === 'err') {
+      return indexResponse.code;
     }
-    stringIndex = nextOccurrenceIndex + substring.length;
+    stringIndex += indexResponse.index + indexResponse.length;
     countdown -= 1;
   }
 
