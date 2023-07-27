@@ -2,6 +2,8 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 # Custom Elements LSP Plugin
 
+>> This is a pre-release version of the plugin, not ready for full use.
+
 <!-- Add an intro to the LSP stuff in FUI-1186 -->
 
 ## Plugin Setup and Usage
@@ -145,3 +147,7 @@ While working on the LSP plugin you can test it out in any Typescript applicatio
 1. You need to install the plugin as a dev dependency to your application. You can do this either in a similar way to the [NPM link](#npm-link) section, or use the `file:` syntax for a local installation. For an example of the latter method look at the `example/package.json` file.
 2. You need to set up your application as explained in [this section](#plugin-setup-and-usage). Again, you'll need to do any IDE specific setup such as configuring the `settings.json` of VSCode as explained previously.
 3. Run the `npm run bootstrap` and `npm run build:watch` commands in the LSP directory as explained previously.
+
+## Licence
+
+See [here](./licence.md).
