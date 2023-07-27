@@ -8,11 +8,12 @@
 	},
 	"scripts": {
 		"bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
-		"bootstrap:module": "npm i && npm run bootstrap:husky",
 		"bootstrap:husky": "npx husky install",
+		"bootstrap:module": "npm i && npm run bootstrap:husky",
 		"build": "npx tsc",
 		"build:watch": "npx tsc --watch",
 		"clean": "rm -rf example-lib/node_modules/ && rm -rf example/node_modules/ && rm -rf node_modules/",
+		"commitlint": "node ./src/scripts/commitlint.js",
 		"copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
 		"lint:eslint": "eslint",
 		"lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
@@ -25,6 +26,7 @@
 	},
 	"husky": {
 		"hooks": {
+			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
 			"pre-commit": "lint-staged"
 		}
 	},
@@ -44,6 +46,9 @@
 		"typescript-template-language-service-decorator": "^2.3.2"
 	},
 	"devDependencies": {
+		"@commitlint/cli": "^17.6.7",
+		"@commitlint/config-conventional": "^17.6.7",
+		"@commitlint/format": "^17.4.4",
 		"@types/debounce": "^1.2.1",
 		"@types/jest": "^29.5.1",
 		"@typescript-eslint/eslint-plugin": "^5.2.0",
