@@ -188,6 +188,8 @@ We follow [conventional commits](https://www.conventionalcommits.org) in CEP, an
 You can validate any commit message using `commitlint` task (including multiline messages):
 
 ```
+> npm run commitlint fix: Desc
+
 ⧗   input: fix: Desc
 ✖   subject must not be sentence-case, start-case, pascal-case, upper-case [subject-case]
 ✖   references may not be empty [references-empty]
@@ -197,7 +199,7 @@ You can validate any commit message using `commitlint` task (including multiline
 
 Fix issues and re-run:
 ```
-> node ./src/scripts/commitlint.js fix: desc ISSUE-1
+> npm run commitlint fix: desc ISSUE-1
 
 ⧗   input: fix: desc ISSUE-1
 ✔   Commitlint check successful``
