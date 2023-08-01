@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Test:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: [ubuntu-latest, x64]
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure Node 18
+        uses: actions/setup-node@v3
+        with:
+            node-version: 18
+            architecture: x64
+            registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+        # Fails the build if the working tree is dirty
+        # which happens when you don't update the API docs in line
+        # with the tsdoc comments
+      - name: Check working tree
+        run: test -z "$(git status --porcelain)"
+
+      - name: Lint
+        run: npm run lint:ts
+
+      - name: Tests
+        run: npm test
+
+  Publish:
+    # only publishes to registry if on master & package versions have changed
+    if: ${{ github.ref == 'refs/heads/master' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+            node-version: ${{ matrix.node-version }}
+            architecture: ${{ matrix.architecture }}
+            registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{secrets.NPM_TOKEN}}
