@@ -1,3 +1,4 @@
+import { allComponents, fastCombobox } from '@microsoft/fast-components';
 import { DesignSystem } from '@microsoft/fast-foundation';
 import { PrioritySelector } from 'example-lib';
 import { Avatar } from './components/avatar/avatar';
@@ -11,7 +12,9 @@ function provideExampleDesignSystem(element?: HTMLElement): DesignSystem {
 }
 
 export const registerComponents = () => {
-  provideExampleDesignSystem().register(button());
+  provideExampleDesignSystem().register(button(), allComponents);
+
+
 
   RootComponent;
   Avatar;
