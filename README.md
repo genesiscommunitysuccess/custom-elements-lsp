@@ -2,9 +2,13 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 # Custom Elements LSP Plugin
 
+>> This is a pre-release version of the plugin, not ready for full use.
+
 <!-- Add an intro to the LSP stuff in FUI-1186 -->
 
 ## Plugin Setup and Usage
+
+>> This is written as if the plugin is published to `npm`, but that isn't the case just yet.
 
 These instructions are for setting up the LSP in your application. If you are wanting to set up the LSP test it or contribute to it then go to [this section](#plugin-development).
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
@@ -106,42 +110,10 @@ This example has the `--src` and `--dependencies` parameters matching the config
 4. If there are any issues then you can change the glob patterns and repeat from step 1 until you're happy.
 5. Once you are receiving the correct output from the script you can update your `tsconfig.json` to fix the issue in the LSP plugin.
 
-## Plugin Development
+## Contributing
 
-This section helps you to set up the LSP plugin locally so you can contribute to it. Playground based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin
+Thanks for taking interest in contributing to the Custom Elements Plugin. See [the contributing guidelines](./CONTRIBUTING.md).
 
-When working on the LSP codebase itself, it is useful to be running an application in order to see what functionality is and is not working. The app in `/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
+## Licence
 
-While developing:
-
-1. `npm run bootstrap` will do all required setup for installing and building packages for working on the LSP and using the test example apps.
-2. `npm run build:watch` from the root directory to incrementally transpile the plugin.
-
-To view logs
-
-1. Set env var `TSS_LOG="-logToFile true -file /path/to/lsp.log -level verbose"`
-2. View logs at specified location
-
-> If you're using VSCode you can view the logs using `TypeScript: Open TS Server log` from the command palette.
-
-### Troubleshooting
-
-#### NPM Link
-
-The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
-
-1. `npm link` in the project root
-2. `cd example`
-3. `npm link @genesiscommunitysuccess/custom-elements-lsp`
-
-### Example Library
-
-The directory `/example-lib` contains a small example library which publishes a FAST web component and associated custom elements manifest. It is added as a dependency of the example app already, and then you need to build the output using `npm run build` for use in the example app.
-
-### Local Testing in Other Projects
-
-While working on the LSP plugin you can test it out in any Typescript application you'd like, in addition to testing via the included `/example` application.
-
-1. You need to install the plugin as a dev dependency to your application. You can do this either in a similar way to the [NPM link](#npm-link) section, or use the `file:` syntax for a local installation. For an example of the latter method look at the `example/package.json` file.
-2. You need to set up your application as explained in [this section](#plugin-setup-and-usage). Again, you'll need to do any IDE specific setup such as configuring the `settings.json` of VSCode as explained previously.
-3. Run the `npm run bootstrap` and `npm run build:watch` commands in the LSP directory as explained previously.
+See [here](./licence).
