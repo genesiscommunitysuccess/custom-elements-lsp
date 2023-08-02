@@ -116,4 +116,4 @@ Thanks for taking interest in contributing to the Custom Elements Plugin. See [t
 
 ## Licence
 
-See [here](./licence.md).
+See [here](./licence).
