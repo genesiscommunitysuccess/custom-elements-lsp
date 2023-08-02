@@ -8,8 +8,10 @@
 	},
 	"scripts": {
 		"bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
-		"bootstrap:husky": "npx husky install",
+		"bootstrap:ci": "npm run bootstrap:module:ci && cd example-lib && npm run bootstrap:module:ci && cd ../example && npm run bootstrap:module:ci && cd .. ",
+		"bootstrap:husky": "npx --yes husky install",
 		"bootstrap:module": "npm i && npm run bootstrap:husky",
+		"bootstrap:module:ci": "npm ci && npm run bootstrap:husky",
 		"build": "npx tsc",
 		"build:watch": "npx tsc --watch",
 		"clean": "rm -rf example-lib/node_modules/ && rm -rf example/node_modules/ && rm -rf node_modules/",
