@@ -1,1 +1,4 @@
-example
+*
+
+!tsconfig.json
+!out/**

@@ -38,16 +38,16 @@ jobs:
   Publish:
     # only publishes to registry if on master & package versions have changed
     if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: ubuntu-latest
+    runs-on: [ubuntu-latest, x64]
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure Node ${{ matrix.node-version }}
+      - name: Configure Node 18
         uses: actions/setup-node@v3
         with:
-            node-version: ${{ matrix.node-version }}
-            architecture: ${{ matrix.architecture }}
+            node-version: 18
+            architecture: x64
             registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
