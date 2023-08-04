@@ -2,13 +2,11 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 # Custom Elements LSP Plugin
 
->> This is a pre-release version of the plugin, not ready for full use.
+>> This is a pre-release version of the plugin; therefore, it will be missing features and likely contain bugs.
 
 <!-- Add an intro to the LSP stuff in FUI-1186 -->
 
 ## Plugin Setup and Usage
-
->> This is written as if the plugin is published to `npm`, but that isn't the case just yet.
 
 These instructions are for setting up the LSP in your application. If you are wanting to set up the LSP test it or contribute to it then go to [this section](#plugin-development).
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
