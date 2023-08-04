@@ -1,12 +1,12 @@
 {
-	"name": "@genesiscommunitysuccess/custom-elements-lsp",
-	"version": "0.0.1",
-	"license": "MIT",
-	"main": "./out",
-	"bin": {
-		"custom-elements-analyze": "./src/parser/analyze.js"
-	},
-	  "description": "A @genesis-community TypeScript plugin to enable Intellisense in custom element tagged templates",
+  "name": "@genesiscommunitysuccess/custom-elements-lsp",
+  "version": "0.0.1",
+  "license": "MIT",
+  "main": "./out",
+  "bin": {
+    "custom-elements-analyze": "./src/parser/analyze.js"
+  },
+  "description": "A @genesis-community TypeScript plugin to enable Intellisense in custom element tagged templates",
   "keywords": [
     "analyzer",
     "autocompletion",
@@ -34,69 +34,69 @@
   "bugs": {
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
-	"scripts": {
-		"bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
-		"bootstrap:ci": "npm run bootstrap:module:ci && cd example-lib && npm run bootstrap:module:ci && cd ../example && npm run bootstrap:module:ci && cd .. ",
-		"bootstrap:husky": "npx --yes husky install",
-		"bootstrap:module": "npm i && npm run bootstrap:husky",
-		"bootstrap:module:ci": "npm ci && npm run bootstrap:husky",
-		"build": "npx tsc",
-		"build:watch": "npx tsc --watch",
-		"clean": "rm -rf example-lib/node_modules/ && rm -rf example/node_modules/ && rm -rf node_modules/",
-		"commitlint": "node ./src/scripts/commitlint.js",
-		"copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
-		"lint:eslint": "eslint",
-		"lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
-		"lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
-		"test:unit": "jest",
-		"test:unit:coverage": "jest --coverage",
-		"test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
-		"test:unit:verbose": "cross-env TEST_LOG=1 jest",
-		"test:unit:watch": "jest --watchAll"
-	},
-	"husky": {
-		"hooks": {
-			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-			"pre-commit": "lint-staged"
-		}
-	},
-	"lint-staged": {
-		"*.{ts,js}": [
-			"node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js"
-		]
-	},
-	"dependencies": {
-		"@custom-elements-manifest/analyzer": "^0.8.0",
-		"chokidar": "^3.5.3",
-		"debounce": "^1.2.1",
-		"globby": "^13.1.4",
-		"minimist-lite": "^2.2.1",
-		"node-html-parser": "^6.1.5",
-		"resolve-pkg": "^2.0.0",
-		"typescript-template-language-service-decorator": "^2.3.2"
-	},
-	"devDependencies": {
-		"@commitlint/cli": "^17.6.7",
-		"@commitlint/config-conventional": "^17.6.7",
-		"@commitlint/format": "^17.4.4",
-		"@types/debounce": "^1.2.1",
-		"@types/jest": "^29.5.1",
-		"@typescript-eslint/eslint-plugin": "^5.2.0",
-		"@typescript-eslint/parser": "^5.2.0",
-		"cross-env": "^7.0.3",
-		"custom-elements-manifest": "^2.0.0",
-		"eslint": "8.22.0",
-		"eslint-config-google": "^0.14.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-config-ts-important-stuff": "^1.1.0",
-		"eslint-import-resolver-typescript": "^3.5.3",
-		"eslint-plugin-import": "^2.27.5",
-		"eslint-plugin-prettier": "^4.2.1",
-		"eslint-plugin-unused-imports": "^2.0.0",
-		"husky": "^8.0.3",
-		"jest": "^29.5.0",
-		"lint-staged": "^13.2.2",
-		"ts-jest": "^29.1.0",
-		"typescript": "^4.4.3"
-	}
+  "scripts": {
+    "bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
+    "bootstrap:ci": "npm run bootstrap:module:ci && cd example-lib && npm run bootstrap:module:ci && cd ../example && npm run bootstrap:module:ci && cd .. ",
+    "bootstrap:husky": "npx --yes husky install",
+    "bootstrap:module": "npm i && npm run bootstrap:husky",
+    "bootstrap:module:ci": "npm ci && npm run bootstrap:husky",
+    "build": "npx tsc",
+    "build:watch": "npx tsc --watch",
+    "clean": "rm -rf example-lib/node_modules/ && rm -rf example/node_modules/ && rm -rf node_modules/",
+    "commitlint": "node ./src/scripts/commitlint.js",
+    "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
+    "lint:eslint": "eslint",
+    "lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
+    "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
+    "test:unit": "jest",
+    "test:unit:coverage": "jest --coverage",
+    "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
+    "test:unit:verbose": "cross-env TEST_LOG=1 jest",
+    "test:unit:watch": "jest --watchAll"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js"
+    ]
+  },
+  "dependencies": {
+    "@custom-elements-manifest/analyzer": "^0.8.0",
+    "chokidar": "^3.5.3",
+    "debounce": "^1.2.1",
+    "globby": "^13.1.4",
+    "minimist-lite": "^2.2.1",
+    "node-html-parser": "^6.1.5",
+    "resolve-pkg": "^2.0.0",
+    "typescript-template-language-service-decorator": "^2.3.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^17.6.7",
+    "@commitlint/config-conventional": "^17.6.7",
+    "@commitlint/format": "^17.4.4",
+    "@types/debounce": "^1.2.1",
+    "@types/jest": "^29.5.1",
+    "@typescript-eslint/eslint-plugin": "^5.2.0",
+    "@typescript-eslint/parser": "^5.2.0",
+    "cross-env": "^7.0.3",
+    "custom-elements-manifest": "^2.0.0",
+    "eslint": "8.22.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-ts-important-stuff": "^1.1.0",
+    "eslint-import-resolver-typescript": "^3.5.3",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "husky": "^8.0.3",
+    "jest": "^29.5.0",
+    "lint-staged": "^13.2.2",
+    "ts-jest": "^29.1.0",
+    "typescript": "^4.4.3"
+  }
 }
