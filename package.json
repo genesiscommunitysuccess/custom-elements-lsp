@@ -6,6 +6,34 @@
 	"bin": {
 		"custom-elements-analyze": "./src/parser/analyze.js"
 	},
+	  "description": "A @genesis-community TypeScript plugin to enable Intellisense in custom element tagged templates",
+  "keywords": [
+    "analyzer",
+    "autocompletion",
+    "definition",
+    "diagnostics",
+    "fast",
+    "intellisense",
+    "javascript",
+    "jump",
+    "lsp",
+    "nvim",
+    "quickinfo",
+    "typescript",
+    "vscode",
+    "warnings"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/genesiscommunitysuccess/custom-elements-lsp",
+  "bugs": {
+    "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
+  },
 	"scripts": {
 		"bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
 		"bootstrap:ci": "npm run bootstrap:module:ci && cd example-lib && npm run bootstrap:module:ci && cd ../example && npm run bootstrap:module:ci && cd .. ",
