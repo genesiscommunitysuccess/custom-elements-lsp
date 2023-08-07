@@ -13,8 +13,8 @@ import {
 } from 'typescript-template-language-service-decorator';
 import { PartialCompletionsService } from './completions';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { getTokenTypeWithInfo, getTokenSpanMatchingPattern } from './utils';
 import { PartialMetadataService } from './metadata';
+import { getTokenTypeWithInfo, getTokenSpanMatchingPattern } from './utils';
 
 /**
  * Handles calls from the TypeScript language server and delegates them to

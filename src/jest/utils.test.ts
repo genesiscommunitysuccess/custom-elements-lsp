@@ -1,5 +1,5 @@
-import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
+import { TemplateContext } from 'typescript-template-language-service-decorator';
 // eslint-disable-next-line camelcase
 import { STRINGS__TOKEN_TYPE_empty_attr } from './shaped-test-cases';
 import { html } from './utils';

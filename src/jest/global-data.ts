@@ -1,4 +1,4 @@
-import { CompletionEntry, CompletionInfo, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
+import { CompletionEntry, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
 import { GlobalDataRepository } from '../plugin/global-data/global-data.types';
 import { GlobalDataServiceImpl } from '../plugin/global-data/service';
 import { getLogger } from './utils';

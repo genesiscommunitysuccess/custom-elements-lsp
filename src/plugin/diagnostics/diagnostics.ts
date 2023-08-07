@@ -1,6 +1,7 @@
 import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
+import { getStore } from '../utils/kvstore';
 import {
   ATTIBUTE_CLASSIFICATION,
   DiagnosticCtx,
@@ -18,7 +19,6 @@ import {
 } from '../constants/diagnostic-codes';
 import { Services } from '../utils/services.types';
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
-import { getStore } from '../utils/kvstore';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {
