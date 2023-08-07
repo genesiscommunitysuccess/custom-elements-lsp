@@ -1,5 +1,5 @@
-import { Logger } from 'typescript-template-language-service-decorator';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
+import { Logger } from 'typescript-template-language-service-decorator';
 import { UNKNOWN_ATTRIBUTE, UNKNOWN_EVENT } from '../constants/diagnostic-codes';
 import { stringHeadTail } from '../utils';
 import { getStore } from '../utils/kvstore';

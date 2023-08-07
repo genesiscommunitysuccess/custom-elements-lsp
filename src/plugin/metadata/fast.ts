@@ -1,5 +1,5 @@
-import { Logger } from 'typescript-template-language-service-decorator';
 import { QuickInfo, ScriptElementKind, TextSpan } from 'typescript/lib/tsserverlibrary';
+import { Logger } from 'typescript-template-language-service-decorator';
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
 import { stringHeadTail } from '../utils';
 import { Services } from '../utils/services.types';

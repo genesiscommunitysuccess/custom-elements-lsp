@@ -1,5 +1,11 @@
 import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
+import {
+  // eslint-disable-next-line camelcase
+  STRINGS__TEXT_REPLACEMENT_SPAN_no_preceding_whitespace,
+  // eslint-disable-next-line camelcase
+  STRINGS__TOKEN_TYPE_empty_attr,
+} from '../../jest/shaped-test-cases';
 import { html } from '../../jest/utils';
 import {
   getWholeTextReplacementSpan,
@@ -11,12 +17,6 @@ import {
   stringHasUnfinishedQuotedValue,
   TokenType,
 } from './strings';
-import {
-  // eslint-disable-next-line camelcase
-  STRINGS__TEXT_REPLACEMENT_SPAN_no_preceding_whitespace,
-  // eslint-disable-next-line camelcase
-  STRINGS__TOKEN_TYPE_empty_attr,
-} from '../../jest/shaped-test-cases';
 
 describe('replaceQuotesAndInterpolationContents', () => {
   const testCases: [string, [string], string][] = [

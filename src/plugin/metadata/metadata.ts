@@ -1,5 +1,4 @@
 import resolvePkg from 'resolve-pkg';
-import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import {
   DefinitionInfoAndBoundSpan,
   JSDocTagInfo,
@@ -8,6 +7,7 @@ import {
   ScriptElementKind,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
+import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import { getTokenSpanMatchingPattern } from '../utils';
 import { Services } from '../utils/services.types';
 import { buildAndAddJSDocTag } from './helpers';

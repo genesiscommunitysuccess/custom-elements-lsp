@@ -1,7 +1,7 @@
-import * as nodepath from 'path';
 import * as nodefs from 'fs';
-import { Logger } from 'typescript-template-language-service-decorator';
+import * as nodepath from 'path';
 import { CompilerHost } from 'typescript/lib/tsserverlibrary';
+import { Logger } from 'typescript-template-language-service-decorator';
 import { IORepository } from './io.types';
 
 /**

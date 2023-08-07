@@ -7,8 +7,8 @@
  * in the LSP that you expect.
  */
 
-import minimist from 'minimist-lite';
 import { readFileSync, writeFileSync } from 'fs';
+import minimist from 'minimist-lite';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,

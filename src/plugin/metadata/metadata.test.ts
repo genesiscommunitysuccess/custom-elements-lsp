@@ -2,17 +2,17 @@ import resolvePkg from 'resolve-pkg';
 import { LineAndCharacter, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
 import { getGDServiceFromStubbedResource } from '../../jest/global-data';
+import { getIOServiceFromStubResource } from '../../jest/io';
 import { buildServices, getLogger, html } from '../../jest/utils';
 import {
   CustomElementDef,
   CustomElementsResource,
   CustomElementsService,
 } from '../custom-elements/custom-elements.types';
-import { GlobalDataRepository } from '../global-data/global-data.types';
-import { CoreMetadataServiceImpl } from './metadata';
-import { IOService } from '../utils';
-import { getIOServiceFromStubResource } from '../../jest/io';
 import { CustomElementsServiceImpl } from '../custom-elements/service';
+import { GlobalDataRepository } from '../global-data/global-data.types';
+import { IOService } from '../utils';
+import { CoreMetadataServiceImpl } from './metadata';
 
 jest.mock('resolve-pkg', () => jest.fn());
 
