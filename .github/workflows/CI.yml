@@ -38,7 +38,7 @@ jobs:
   Publish:
     # only publishes to registry if on master & package versions have changed
     if: ${{ github.ref == 'refs/heads/master' }}
-    runs-on: [ubuntu-latest, x64]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
