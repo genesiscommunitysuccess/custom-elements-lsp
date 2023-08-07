@@ -15,10 +15,6 @@ jobs:
 
       - name: Configure Node 18
         uses: actions/setup-node@v3
-        with:
-            node-version: 18
-            architecture: x64
-            registry-url: 'https://registry.npmjs.org'
 
       - name: Bootstrap
         run: npm run bootstrap:ci

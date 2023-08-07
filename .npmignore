@@ -1,5 +1,4 @@
 *
 
-!tsconfig.json
 !out/**
 !scripts/parser/**

@@ -122,7 +122,7 @@ You'll need a front end to use too; This only works with Chromium based browsers
 
 ### CI
 
-You an test CI workflows [using act](https://github.com/nektos/act). 
+You can test CI workflows [using act](https://github.com/nektos/act).
 
 ## Submitting a pull request
 
