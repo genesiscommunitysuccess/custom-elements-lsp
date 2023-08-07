@@ -4,23 +4,23 @@ import {
 } from 'typescript-template-language-service-decorator';
 import { CoreCompletionsServiceImpl, PartialCompletionsService } from './completions';
 import { FASTCompletionsService } from './completions/fast';
-import { CustomElementsAnalyzerManifestParser } from './custom-elements/repository';
-import { CustomElementsServiceImpl } from './custom-elements/service';
-import { CustomElementsLanguageService } from './customelements';
-import { CoreDiagnosticsServiceImpl } from './diagnostics';
-import { GlobalDataRepositoryImpl } from './global-data/repository';
-import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { GlobalDataServiceImpl } from './global-data/service';
-import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
-import { Services } from './utils/services.types';
-import { FASTDiagnosticsService } from './diagnostics/fast';
-import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
-import { FASTMetadataService } from './metadata/fast';
+import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
 } from './custom-elements/manifest/repository';
-import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
+import { CustomElementsAnalyzerManifestParser } from './custom-elements/repository';
+import { CustomElementsServiceImpl } from './custom-elements/service';
+import { CustomElementsLanguageService } from './customelements';
+import { CoreDiagnosticsServiceImpl } from './diagnostics';
+import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
+import { FASTDiagnosticsService } from './diagnostics/fast';
+import { GlobalDataRepositoryImpl } from './global-data/repository';
+import { GlobalDataServiceImpl } from './global-data/service';
+import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
+import { FASTMetadataService } from './metadata/fast';
+import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
+import { Services } from './utils/services.types';
 
 const USE_BYPASS = false;
 

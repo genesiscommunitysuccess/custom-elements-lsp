@@ -120,6 +120,10 @@ You'll need a front end to use too; This only works with Chromium based browsers
 
 > Note: you still filter the logging and debugging unit tests by filename too.
 
+### CI
+
+You can test CI workflows [using act](https://github.com/nektos/act).
+
 ## Submitting a pull request
 
 If you'd like to contribute by fixing a bug, implementing a feature, or even correcting typos in our documentation,

@@ -1,14 +1,14 @@
 The [Genesis Global](https://genesis.global) Community Success initiative is committed to open-sourcing select technologies that we believe the open-source community would benefit from.
 
+[![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
+
 # Custom Elements LSP Plugin
 
->> This is a pre-release version of the plugin, not ready for full use.
+>> This is a pre-release version of the plugin; therefore, it will be missing features and likely contain bugs.
 
 <!-- Add an intro to the LSP stuff in FUI-1186 -->
 
 ## Plugin Setup and Usage
-
->> This is written as if the plugin is published to `npm`, but that isn't the case just yet.
 
 These instructions are for setting up the LSP in your application. If you are wanting to set up the LSP test it or contribute to it then go to [this section](#plugin-development).
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
@@ -114,6 +114,6 @@ This example has the `--src` and `--dependencies` parameters matching the config
 
 Thanks for taking interest in contributing to the Custom Elements Plugin. See [the contributing guidelines](./CONTRIBUTING.md).
 
-## Licence
+## License
 
-See [here](./licence).
+See [here](./LICENSE).

@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  Run:
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Configure Node 18
+        uses: actions/setup-node@v3
+
+      - name: Bootstrap
+        run: npm run bootstrap:ci
+
+        # Fails the build if the working tree is dirty
+        # which happens when you don't update the API docs in line
+        # with the tsdoc comments
+      - name: Check working tree
+        run: test -z "$(git status --porcelain)"
+
+      - name: Lint
+        run: npm run lint:eslint:all
+
+      - name: Unit Test
+        run: npm run test:unit
+
+      - name: Publish
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{secrets.NPM_TOKEN}}

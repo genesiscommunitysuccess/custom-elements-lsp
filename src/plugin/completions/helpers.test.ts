@@ -1,11 +1,11 @@
+import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
+import { PlainElementAttribute } from '../global-data/global-data.types';
 import {
   constructElementAttrCompletion,
   constructGlobalAriaCompletion,
   constructGlobalAttrCompletion,
   constructGlobalEventCompletion,
 } from './helpers';
-import { PlainElementAttribute } from '../global-data/global-data.types';
-import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
 
 describe('constructGlobalAriaCompletion', () => {
   it('returns CompletionEntry', () => {

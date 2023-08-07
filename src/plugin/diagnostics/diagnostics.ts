@@ -2,23 +2,23 @@ import { HTMLElement } from 'node-html-parser';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
 import {
-  ATTIBUTE_CLASSIFICATION,
-  DiagnosticCtx,
-  DiagnosticsService,
-  InvalidAttrDefinition,
-  TagsWithAttrs,
-} from './diagnostics.types';
-import { escapeRegExp, getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
-import {
   DEPRECATED_ATTRIBUTE,
   DUPLICATE_ATTRIBUTE,
   UNKNOWN_ATTRIBUTE,
   UNKNOWN_CUSTOM_ELEMENT,
   UNKNOWN_HTML_ELEMENT,
 } from '../constants/diagnostic-codes';
-import { Services } from '../utils/services.types';
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
+import { escapeRegExp, getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import { getStore } from '../utils/kvstore';
+import { Services } from '../utils/services.types';
+import {
+  ATTIBUTE_CLASSIFICATION,
+  DiagnosticCtx,
+  DiagnosticsService,
+  InvalidAttrDefinition,
+  TagsWithAttrs,
+} from './diagnostics.types';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(private logger: Logger, private services: Services) {

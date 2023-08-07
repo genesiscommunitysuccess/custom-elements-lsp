@@ -1,8 +1,8 @@
-import { Package } from 'custom-elements-manifest';
 import path from 'path';
-import { Logger } from 'typescript-template-language-service-decorator';
 import chokidar from 'chokidar';
+import { Package } from 'custom-elements-manifest';
 import debounce from 'debounce';
+import { Logger } from 'typescript-template-language-service-decorator';
 import { IOService } from '../../utils';
 import { ManifestRepository, SourceAnalyzerConfig } from '../custom-elements.types';
 import { AnalyzerCLI, getAnalyzerCLI, getGlobby } from './analyzer';

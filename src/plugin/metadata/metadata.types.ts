@@ -1,10 +1,10 @@
-import { TemplateContext } from 'typescript-template-language-service-decorator';
 import {
   DefinitionInfoAndBoundSpan,
   LineAndCharacter,
   QuickInfo,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
+import { TemplateContext } from 'typescript-template-language-service-decorator';
 import { TokenType } from '../utils';
 
 export interface MetadataService {
