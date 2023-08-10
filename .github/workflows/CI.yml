@@ -57,7 +57,8 @@ jobs:
         run: npm run test:unit
 
       - name: Test secret
-        run: [[ -z "${GH_USER_TOKEN}" ]] && echo "Exists" || echo "Does not exist"
+        run: |
+          [[ -z "${GH_USER_TOKEN}" ]] && echo "Exists" || echo "Does not exist"
 
       - name: Publish
         uses: JS-DevTools/npm-publish@v1
