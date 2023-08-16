@@ -1,0 +1,77 @@
+{
+  "branches": ["master"],
+  "repositoryUrl": "https://github.com/genesiscommunitysuccess/custom-elements-lsp",
+  "plugins": [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "preset": "conventionalcommits",
+        "releaseRules": [
+          {
+            "type": "*!",
+            "release": "major"
+          }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "preset": "conventionalcommits",
+        "presetConfig": {
+					"issuePrefixes": ["FUI-", "ISSUE-"],
+					"issueUrlFormat": "",
+					"linkReferences": false,
+        },
+        "releaseRules": [
+          {
+            "type": "*!",
+            "release": "major"
+          }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md",
+        "changelogTitle": "# Changelog"
+      }
+    ],
+    [
+      "@google/semantic-release-replace-plugin",
+      {
+        "replacements": [
+          {
+            "files": ["package.json"],
+            "from": "\"version\": \".*\"",
+            "to": "\"version\": \"${nextRelease.version}\""
+          }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "npx --no lerna version \"${nextRelease.version}\" --yes --no-push --ignore-scripts --no-git-tag-version --exact && npm run bump-package-lock-version",
+        "publishCmd": "echo \"${nextRelease.channel}\" > /tmp/dist-tag && npm run publish:from-package -- --dist-tag \"${nextRelease.channel}\""
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["CHANGELOG.md", "package.json", "package-lock.json", ["packages/**/package.json", "!**/node_modules/**/package.json"]],
+        "message": "chore: release ${nextRelease.version} [skip ci] PTC-0"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "successComment": false,
+        "failComment": false,
+        "releasedLabels": false,
+        "labels": false
+      }
+    ],
+  ]
+}
