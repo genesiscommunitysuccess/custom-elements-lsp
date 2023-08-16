@@ -30,11 +30,8 @@ jobs:
       - name: Unit Test
         run: npm run test:unit
 
-      - name: Test secret
-        run: |
-          [[ -z "${GH_USER_TOKEN}" ]] && echo "Exists" || echo "Does not exist"
-
-      - name: Publish
-        uses: JS-DevTools/npm-publish@v1
-        with:
-          token: ${{secrets.NPM_TOKEN}}
+      - name: Release
+        env:
+          GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
+          DEBUG: semantic-release:git
+        run: npm run release

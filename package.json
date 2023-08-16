@@ -48,6 +48,7 @@
     "lint:eslint": "eslint",
     "lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
+    "release": "semantic-release",
     "test:unit": "jest",
     "test:unit:coverage": "jest --coverage",
     "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
