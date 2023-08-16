@@ -53,8 +53,8 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "npx --no lerna version \"${nextRelease.version}\" --yes --no-push --ignore-scripts --no-git-tag-version --exact && npm run bump-package-lock-version",
-        "publishCmd": "echo \"${nextRelease.channel}\" > /tmp/dist-tag && npm run publish:from-package -- --dist-tag \"${nextRelease.channel}\""
+        "prepareCmd": "npm version ${nextRelease.version} --no-git-tag-version",
+        "publishCmd": "npm publish"
       }
     ],
     [
