@@ -1,5 +1,5 @@
 {
-  "branches": ["master"],
+	"branches": ["master", "pre-release"],
   "repositoryUrl": "https://github.com/genesiscommunitysuccess/custom-elements-lsp",
   "plugins": [
     [
@@ -38,25 +38,7 @@
         "changelogTitle": "# Changelog"
       }
     ],
-    [
-      "@google/semantic-release-replace-plugin",
-      {
-        "replacements": [
-          {
-            "files": ["package.json"],
-            "from": "\"version\": \".*\"",
-            "to": "\"version\": \"${nextRelease.version}\""
-          }
-        ]
-      }
-    ],
-    [
-      "@semantic-release/exec",
-      {
-        "prepareCmd": "npm version ${nextRelease.version} --no-git-tag-version",
-        "publishCmd": "npm publish"
-      }
-    ],
+    ["@semantic-release/npm"],
     [
       "@semantic-release/git",
       {
