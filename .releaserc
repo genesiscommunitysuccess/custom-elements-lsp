@@ -1,5 +1,5 @@
 {
-	"branches": ["master", "pre-release"],
+	"branches": ["master", {name: "prerelease", "prerelease": true}],
   "repositoryUrl": "https://github.com/genesiscommunitysuccess/custom-elements-lsp",
   "plugins": [
     [
