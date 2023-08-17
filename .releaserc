@@ -18,10 +18,10 @@
       "@semantic-release/release-notes-generator",
       {
         "preset": "conventionalcommits",
+				"linkReferences": false,
         "presetConfig": {
 					"issuePrefixes": ["FUI-", "ISSUE-"],
-					"issueUrlFormat": "",
-					"linkReferences": false,
+					"issueUrlFormat": ""
         },
         "releaseRules": [
           {
