@@ -7,12 +7,13 @@ body:
   attributes:
     value: |
       Thanks for taking the time to fill out this bug report! This issue type is to raise an issue with the way the Custom Elements Plugin (CEP) is working.
+
 - type: textarea
   id: what-happened
   attributes:
     label: What happened?
     description: Also tell us, what did you expect to happen?
-    placeholder: Tell us what you see!
+    placeholder: Also tell us, what did you expect to happen?
     value: "A bug happened!"
   validations:
     required: true

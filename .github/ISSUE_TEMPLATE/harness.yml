@@ -32,7 +32,7 @@ body:
 - type: textarea
   id: benefit
   attributes:
-    label: What benefit would this feature bring?
+    label: What benefit would this test harness change bring?
     description: Explain the benefit of adding this feature.
     placeholder: Tell us about your feature request.
   validations:

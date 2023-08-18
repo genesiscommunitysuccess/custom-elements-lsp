@@ -1,5 +1,5 @@
 name: Feature Request
-description: Request any enhancement, or a change to the way Custom Element Plugin CEP works.
+description: Request any enhancement or a change to the way Custom Element Plugin CEP works.
 title: "[Feature]: "
 labels: ["enhancement"]
 body:
@@ -34,7 +34,6 @@ body:
     placeholder: Why shouldn't this be created via the plugin API?
   validations:
     required: true
-
 
 - type: textarea
   id: other-info
