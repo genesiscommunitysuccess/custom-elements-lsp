@@ -49,7 +49,7 @@ body:
 - type: textarea
   id: other-info
   attributes:
-    label: Any of info
+    label: Any other info
     description: If you have any other relevant info then please write it in this box. This could include any progress you've made with the investigation yourself, or log output.
     placeholder: If you have any other relevant info then please write it in this box.
   validations:
