@@ -1,0 +1,57 @@
+name: Test Harness
+description: A change is required to the test harness `example` application or `example-lib` library which are used during development of the plugin. This is unlikely the correct issue type unless you're contributing to the repository in some way.
+title: "[Harness]: "
+labels: ["harness"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this issue template. This form is for changes that affect the test harness `example` application and `example-lib` library which are used during development of the plugin. If you are an end-user of the Custom Elements Plugin (CEP), you should use the relevant bug or feature request template.
+
+- type: dropdown
+  id: issue-type
+  attributes:
+    label: Type
+    description: What is the type of issue with the test harness?
+    options:
+      - Feature Request (e.g. test another use case)
+      - Bug (e.g. a bug in the test harness is obscuring an issue in the CEP).
+      - Other (please explain)
+  validations:
+    required: true
+
+- type: textarea
+  id: info
+  attributes:
+    label: Info
+    description: Tell us about your issue.
+    placeholder: Tell us about your issue.
+  validations:
+    required: true
+
+- type: textarea
+  id: benefit
+  attributes:
+    label: What benefit would this feature bring?
+    description: Explain the benefit of adding this feature.
+    placeholder: Tell us about your feature request.
+  validations:
+    required: true
+
+- type: textarea
+  id: other-info
+  attributes:
+    label: Any of info
+    description: If you have any other relevant info then please write it in this box. This could include any progress you've made with implementing the issue yourself.
+    placeholder: If you have any other relevant info then please write it in this box.
+  validations:
+    required: false
+
+- type: checkboxes
+  id: terms
+  attributes:
+    label: Submission Guidelines
+    description: By submitting this issue, you agree to follow our [Contributing Guidlines](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/CONTRIBUTING.md) and have checked that this issue has not already been raised [on the issue tracker](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues).
+    options:
+      - label: I agree to the guidelines stated.
+        required: true
