@@ -1,0 +1,66 @@
+name: Bug Report
+description: Something is not working
+title: "[Bug]: "
+labels: ["bug"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug report! This issue type is to raise an issue with the way the Custom Elements Plugin (CEP) is working.
+
+- type: textarea
+  id: what-happened
+  attributes:
+    label: What happened?
+    description: Also tell us, what did you expect to happen?
+    placeholder: Also tell us, what did you expect to happen?
+    value: "A bug happened!"
+  validations:
+    required: true
+
+- type: textarea
+  id: setup
+  attributes:
+    label: Your setup
+    description: Give as much info from your setup as you can. LSP version, TypeScript version, what editor and the version you're using.
+    placeholder: Give as much info from your setup as you can.
+    value: LSP Version 1.0.0. Using TypeScript version 5.0, and VSCode 1.81.1.
+  validations:
+    required: true
+
+- type: textarea
+  id: config
+  attributes:
+    label: Your `tsconfig.json` setup
+    description: Paste the relevant section where you configure the plugin in your `tsconfig.json`.
+    placeholder: "{} // plugin config"
+    value: '{ "name": "@genesiscommunitysuccess/custom-elements-lsp", "srcRouteFromTSServer": "../../..", ... }'
+  validations:
+    required: true
+
+- type: textarea
+  id: test-harness
+  attributes:
+    label: Test harness recreation
+    description: Explain if you've been able to recreate the issue using the included test harness `example` and `example-lib` apps. Recreating the issue using this helps eliminate a setup error on your end, and will likely increase the speed in which we can work on a fix.
+    placeholder: Give any relevant explanations and links to branches or forks showing the issue in the included test harness.
+  validations:
+    required: false
+
+- type: textarea
+  id: other-info
+  attributes:
+    label: Any other info
+    description: If you have any other relevant info then please write it in this box. This could include any progress you've made with the investigation yourself, or log output.
+    placeholder: If you have any other relevant info then please write it in this box.
+  validations:
+    required: false
+
+- type: checkboxes
+  id: terms
+  attributes:
+    label: Submission Guidelines
+    description: By submitting this issue, you agree to follow our [Contributing Guidlines](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/CONTRIBUTING.md) and have checked that this issue has not already been raised [on the issue tracker](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues).
+    options:
+      - label: I agree to the guidelines stated.
+        required: true
