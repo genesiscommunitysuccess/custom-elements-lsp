@@ -38,7 +38,6 @@ if (tsConfig === null) {
   console.error(`Could not find tsconfig at: "${tsconfigPath}"`);
   process.exit(1);
 }
-console.log(`tsConfig: ${JSON.stringify(tsConfig)}`);
 
 const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
   (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp'
