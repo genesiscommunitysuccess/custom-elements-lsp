@@ -1,6 +1,7 @@
 <!--
-Delete this section if not a breaking change. Any breaking changes should have been discussed with a maintainer.
-Copy the line between the ⚠️  symbols into the footer of the PR commit to trigger the breaking change release.
+Delete this section if not a breaking change.
+Any breaking changes should have been discussed with a maintainer.
+Copy the line between the ⚠️ symbols into the footer of the PR commit to trigger the breaking change release.
 See https://www.conventionalcommits.org/en/v1.0.0/#commit-message-with-description-and-breaking-change-footer
 -->
 ⚠️ BREAKING CHANGE: (How and why this is a breaking change.) ⚠️
