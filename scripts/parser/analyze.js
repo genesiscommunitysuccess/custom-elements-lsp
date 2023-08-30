@@ -5,9 +5,14 @@
  * out the glob paths and check the output that the LSP would be
  * seeing, which is useful if you're not receiving the results
  * in the LSP that you expect.
+ *
+ * The script currently takes an optional argument:
+ * - `--tsconfig` - the path to the tsconfig.json file to use. Defaults to `process.cwd()`.
+ * - `--fastEnable` is set from the plugin config.
  */
 
 import { readFileSync, writeFileSync } from 'fs';
+import { getTsconfig } from 'get-tsconfig';
 import minimist from 'minimist-lite';
 import {
   LiveUpdatingCEManifestRepository,
@@ -19,15 +24,37 @@ const OUT_FILE = 'ce.json';
 const args = minimist(process.argv.slice(2));
 console.log(`args: ${JSON.stringify(args)}`);
 
+const tsconfigPath =
+  args.tsconfig ??
+  (() => {
+    console.log(
+      `Unable to get \`tsconfig\` path from args, falling back to \`process.cwd() = \`${process.cwd()}`
+    );
+    return process.cwd();
+  })();
+
+const tsConfig = getTsconfig(tsconfigPath);
+if (tsConfig === null) {
+  console.error(`Could not find tsconfig at: "${tsconfigPath}"`);
+  process.exit(1);
+}
+
+const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
+  (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp'
+);
+
+if (!lspPluginConfigOptions?.parser) {
+  console.error(`Cannot get parser config from tsconfig found at: "${tsconfigPath}"`);
+  process.exit(2);
+}
+
+const config = mixinParserConfigDefaults({
+  ...lspPluginConfigOptions.parser,
+});
+
 const logger = {
   log: (msg) => console.log(`[log] ${msg}`),
 };
-
-const config = mixinParserConfigDefaults({
-  timeout: 1000,
-  src: args.src ?? 'src/**/*.{js,ts}',
-  dependencies: JSON.parse(args.dependencies ?? '[]'),
-});
 
 const io = {
   readFile: (path) => {
@@ -36,7 +63,12 @@ const io = {
   getNormalisedRootPath: () => process.cwd() + '/',
 };
 
-const manifestRepo = new LiveUpdatingCEManifestRepository(logger, io, config, !!args.fastEnabled);
+const manifestRepo = new LiveUpdatingCEManifestRepository(
+  logger,
+  io,
+  config,
+  !!lspPluginConfigOptions?.fastEnable
+);
 await manifestRepo.analyzeAndUpdate();
 
 writeFileSync(OUT_FILE, JSON.stringify(manifestRepo.manifest, null, 2));

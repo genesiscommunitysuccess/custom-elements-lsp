@@ -96,16 +96,18 @@ You can generate a copy of the manifest file that the plugin is using by running
 ```json
 {
   "scripts": {
-    "lsp:analyze": "custom-elements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
+    "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
   },
 }
 ```
 
-This example has the `--src` and `--dependencies` parameters matching the configuration in `./example/src/tsconfig.json`. This `package.json` needs to be the same location on the filesystem that the `srcRouteFromTSServer` relative path gets you to, as explained in [the setup section](#plugin-setup-and-usage).
+The script currently takes an optional argument:
+- `--tsconfig` - the path to the tsconfig.json file to use. Defaults to `process.cwd()`.
+- `--fastEnable` is set from the plugin config.
 
-> Take care with the syntax for specifying an array of globs for the dependencies. You are required to quote the array and also quote the individual items as strings. Refer back to the example given to double check.
+This `package.json` needs to be the same location on the file system that the `srcRouteFromTSServer` relative path gets you to, as explained in [the setup section](#plugin-setup-and-usage).
 
-2. Run the npm script `npm run lsp:analyze`.
+2. Run the npm script you just created with `npm run lsp:analyze`.
 3. Check `ce.json` to see what components have issues, or are missing from the manifest.
 4. If there are any issues then you can change the glob patterns and repeat from step 1 until you're happy.
 5. Once you are receiving the correct output from the script you can update your `tsconfig.json` to fix the issue in the LSP plugin.
