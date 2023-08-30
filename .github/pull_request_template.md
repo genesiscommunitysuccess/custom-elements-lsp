@@ -1,3 +1,6 @@
+<!-- Delete this section if not a breaking change. Any breaking changes should have been discussed with a maintainer -->
+⚠️ BREAKING CHANGE: (How and why this is a breaking change.) ⚠️
+
 📷  &nbsp; **Samples**
 
 Add any sample images or videos.
@@ -27,6 +30,4 @@ Update test steps to match your PR:
 
 - [ ] I have added tests for my changes.
 - [ ] I have updated the project documentation.
-
-<!-- TODO: Add links to contributing guidelines when completed -->
-
+- [ ] I have followed the [contribution guidelines](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/CONTRIBUTING.md).
