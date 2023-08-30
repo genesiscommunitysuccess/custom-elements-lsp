@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v1.0.0...v2.0.0) (2023-08-30)
+
+
+### ⚠ BREAKING CHANGES
+
+* This alters the API that you call the analyzer binary which is bundled with the LSP
+
+### Features
+
+* use the parser config from tsconfig when running analyzer script [FUI-1444](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1444) (#48) e4d257f
+
 ## 1.0.0 (2023-08-17)
 
 
