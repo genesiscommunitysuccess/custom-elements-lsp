@@ -8,6 +8,7 @@
  */
 
 import { readFileSync, writeFileSync } from 'fs';
+import { getTsconfig } from 'get-tsconfig';
 import minimist from 'minimist-lite';
 import {
   LiveUpdatingCEManifestRepository,
@@ -19,15 +20,38 @@ const OUT_FILE = 'ce.json';
 const args = minimist(process.argv.slice(2));
 console.log(`args: ${JSON.stringify(args)}`);
 
+const tsconfigPath =
+  args.tsconfig ??
+  (() => {
+    console.log(
+      `Unable to get \`tsconfig\` path from args, falling back to \`process.cwd() = \`${process.cwd()}`
+    );
+    return process.cwd();
+  })();
+
+const tsConfig = getTsconfig(tsconfigPath);
+if (tsConfig === null) {
+  console.error(`Could not find tsconfig at: "${tsconfigPath}"`);
+  process.exit(1);
+}
+console.log(`tsConfig: ${JSON.stringify(tsConfig)}`);
+
+const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
+  (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp'
+)?.parser;
+
+if (!lspPluginConfigOptions) {
+  console.error(`Cannot get parser config from tsconfig found at: "${tsconfigPath}"`);
+  process.exit(2);
+}
+
+const config = mixinParserConfigDefaults({
+  ...lspPluginConfigOptions,
+});
+
 const logger = {
   log: (msg) => console.log(`[log] ${msg}`),
 };
-
-const config = mixinParserConfigDefaults({
-  timeout: 1000,
-  src: args.src ?? 'src/**/*.{js,ts}',
-  dependencies: JSON.parse(args.dependencies ?? '[]'),
-});
 
 const io = {
   readFile: (path) => {

@@ -5,7 +5,7 @@
     "bootstrap:module:ci": "npm ci && npm run build && npm run lsp:analyze",
     "build": "tsc && vite build",
     "dev": "npm run build && npm run start",
-    "lsp:analyze": "custom-elements-analyze --src='src/**/*.{js,ts}' --dependencies='[\"node_modules/example-lib/**/custom-elements.json\",\"!**/@custom-elements-manifest/**/*\"]'",
+    "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
     "preview": "vite preview",
     "start": "vite"
   },
