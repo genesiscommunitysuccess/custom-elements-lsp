@@ -101,9 +101,9 @@ You can generate a copy of the manifest file that the plugin is using by running
 }
 ```
 
-The script currently takes two optional arguments:
+The script currently takes an optional argument:
 - `--tsconfig` - the path to the tsconfig.json file to use. Defaults to `process.cwd()`.
-- `--fastEnabled` - whether to use the ms fast parsing mode of the manifest repository. Defaults to `false`.
+- `--fastEnable` is set from the plugin config.
 
 This `package.json` needs to be the same location on the file system that the `srcRouteFromTSServer` relative path gets you to, as explained in [the setup section](#plugin-setup-and-usage).
 

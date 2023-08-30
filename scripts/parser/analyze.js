@@ -6,9 +6,9 @@
  * seeing, which is useful if you're not receiving the results
  * in the LSP that you expect.
  *
- * The script currently takes two optional arguments:
+ * The script currently takes an optional argument:
  * - `--tsconfig` - the path to the tsconfig.json file to use. Defaults to `process.cwd()`.
- * - `--fastEnabled` - whether to use the ms fast parsing mode of the manifest repository. Defaults to `false`.
+ * - `--fastEnable` is set from the plugin config.
  */
 
 import { readFileSync, writeFileSync } from 'fs';
@@ -41,15 +41,15 @@ if (tsConfig === null) {
 
 const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
   (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp'
-)?.parser;
+);
 
-if (!lspPluginConfigOptions) {
+if (!lspPluginConfigOptions?.parser) {
   console.error(`Cannot get parser config from tsconfig found at: "${tsconfigPath}"`);
   process.exit(2);
 }
 
 const config = mixinParserConfigDefaults({
-  ...lspPluginConfigOptions,
+  ...lspPluginConfigOptions.parser,
 });
 
 const logger = {
@@ -63,7 +63,12 @@ const io = {
   getNormalisedRootPath: () => process.cwd() + '/',
 };
 
-const manifestRepo = new LiveUpdatingCEManifestRepository(logger, io, config, !!args.fastEnabled);
+const manifestRepo = new LiveUpdatingCEManifestRepository(
+  logger,
+  io,
+  config,
+  !!lspPluginConfigOptions?.fastEnable
+);
 await manifestRepo.analyzeAndUpdate();
 
 writeFileSync(OUT_FILE, JSON.stringify(manifestRepo.manifest, null, 2));
