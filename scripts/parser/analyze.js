@@ -5,6 +5,10 @@
  * out the glob paths and check the output that the LSP would be
  * seeing, which is useful if you're not receiving the results
  * in the LSP that you expect.
+ *
+ * The script currently takes two optional arguments:
+ * - `--tsconfig` - the path to the tsconfig.json file to use. Defaults to `process.cwd()`.
+ * - `--fastEnabled` - whether to use the ms fast parsing mode of the manifest repository. Defaults to `false`.
  */
 
 import { readFileSync, writeFileSync } from 'fs';
