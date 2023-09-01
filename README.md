@@ -44,7 +44,7 @@ Base options.
 | Option                | Optional and Default | Explanation                                                                                                                                                                                                                                                                  |
 |---|---|--|
 | `name`                | False                | Need to set as `@genesiscommunitysuccess/custom-elements-lsp` to enable this plugin.                                                                                                                                                                                         |
-| `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. |
+| `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. *WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory.|
 | `designSystemPrefix`  | True (N/A)           | Used to work with `%%prefix%%` to handle components registered as part of a design system. See [here](#advanced-usage).                                                                                                                                                      |
 | `fastEnable`          | True (disabled)      | Enables Microsoft FAST parsing and completion (e.g. `:prop` property binding syntax).                                                                                                                                                                                        |
 
@@ -69,7 +69,7 @@ Enable enhanced completions and diagnostics by setting the `"fastEnable": true` 
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
 
-1. You need to create a `settings.json` file inside of a `.vscode` directory. We need to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`.
+1. You need to create a `settings.json` file inside of a `.vscode` directory. We need to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`. If npm has hoisted your typescript install, ensure the path you configure accounts for that.
 2. Launch VSCode on the project directory that contains the `.vscode` directory.
 3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
 
