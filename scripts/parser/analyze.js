@@ -14,12 +14,22 @@
 import { readFileSync, writeFileSync } from 'fs';
 import { getTsconfig } from 'get-tsconfig';
 import minimist from 'minimist-lite';
+import resolve from 'resolve/sync.js';
+import nodepath from 'path';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
 } from '../../out/plugin/custom-elements/manifest/repository.js';
 
 const OUT_FILE = 'ce.json';
+
+let typescriptResolution;
+try {
+  typescriptResolution = resolve('typescript');
+} catch (e) {
+  console.error(`Could not resolve typescript: ${e.message}`);
+  process.exit(1);
+}
 
 const args = minimist(process.argv.slice(2));
 console.log(`args: ${JSON.stringify(args)}`);
@@ -36,7 +46,7 @@ const tsconfigPath =
 const tsConfig = getTsconfig(tsconfigPath);
 if (tsConfig === null) {
   console.error(`Could not find tsconfig at: "${tsconfigPath}"`);
-  process.exit(1);
+  process.exit(2);
 }
 
 const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
@@ -45,7 +55,7 @@ const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
 
 if (!lspPluginConfigOptions?.parser) {
   console.error(`Cannot get parser config from tsconfig found at: "${tsconfigPath}"`);
-  process.exit(2);
+  process.exit(3);
 }
 
 const config = mixinParserConfigDefaults({
@@ -60,7 +70,13 @@ const io = {
   readFile: (path) => {
     return readFileSync(path, 'utf8');
   },
-  getNormalisedRootPath: () => process.cwd() + '/',
+  getNormalisedRootPath: () =>
+    nodepath.normalize(
+      nodepath.dirname(typescriptResolution) +
+        '/' +
+        lspPluginConfigOptions.srcRouteFromTSServer +
+        '/'
+    ),
 };
 
 const manifestRepo = new LiveUpdatingCEManifestRepository(
