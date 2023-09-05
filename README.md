@@ -59,6 +59,8 @@ Parser options. These control the analysis of the source code to understand sema
 
 Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
 
+*WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory. The path of `src` and `dependencies` will be relative to the path created from the typescript install location and the `srcRouteFromTSServer` config option.
+
 ### FAST Syntax
 
 Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
@@ -111,6 +113,14 @@ This `package.json` needs to be the same location on the file system that the `s
 3. Check `ce.json` to see what components have issues, or are missing from the manifest.
 4. If there are any issues then you can change the glob patterns and repeat from step 1 until you're happy.
 5. Once you are receiving the correct output from the script you can update your `tsconfig.json` to fix the issue in the LSP plugin.
+
+##### Analyzer Script Extra
+
+If you are still running into issues then you can spend time verifying that the debugging analyzer script is getting the same view as the CEP itself.
+1. Complete the `Setup Logging` section from the [contributing](./CONTRIBUTING.md) document.
+2. Run the CEP in your IDE and check the logs for a line that looks roughly like `Info 32   [14:43:25.686] [CE] Analyzing and updating manifest. Config: ...`
+3. Run the analyzer script and see the same line like `[log] Analyzing and updating manifest. Config: ...`
+4. Verify they're the same. If not then there is potentially something wrong with your plugin setup.
 
 ## Contributing
 
