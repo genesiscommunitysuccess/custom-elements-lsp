@@ -21,6 +21,12 @@ import {
   mixinParserConfigDefaults,
 } from '../../out/plugin/custom-elements/manifest/repository.js';
 
+const EXIT_CODES = {
+  cant_resolve_typescript: 1,
+  cant_find_tsconfig: 2,
+  cant_get_parser_config: 3,
+};
+
 const OUT_FILE = 'ce.json';
 
 let typescriptResolution;
@@ -28,7 +34,7 @@ try {
   typescriptResolution = resolve('typescript');
 } catch (e) {
   console.error(`Could not resolve typescript: ${e.message}`);
-  process.exit(1);
+  process.exit(EXIT_CODES.cant_resolve_typescript);
 }
 
 const args = minimist(process.argv.slice(2));
@@ -46,7 +52,7 @@ const tsconfigPath =
 const tsConfig = getTsconfig(tsconfigPath);
 if (tsConfig === null) {
   console.error(`Could not find tsconfig at: "${tsconfigPath}"`);
-  process.exit(2);
+  process.exit(EXIT_CODES.cant_find_tsconfig);
 }
 
 const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
@@ -55,7 +61,7 @@ const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
 
 if (!lspPluginConfigOptions?.parser) {
   console.error(`Cannot get parser config from tsconfig found at: "${tsconfigPath}"`);
-  process.exit(3);
+  process.exit(EXIT_CODES.cant_get_parser_config);
 }
 
 const config = mixinParserConfigDefaults({
