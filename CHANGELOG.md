@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.0.0...v2.0.1) (2023-09-05)
+
+
+### Bug Fixes
+
+* account for hoisted typescript binary when running analyzer script [FUI-1411](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1411) (#52) a46fa9f
+
 ## [2.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v1.0.0...v2.0.0) (2023-08-30)
 
 
