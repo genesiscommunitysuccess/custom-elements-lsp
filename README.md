@@ -71,7 +71,7 @@ Enable enhanced completions and diagnostics by setting the `"fastEnable": true` 
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
 
-1. You need to create a `settings.json` file inside of a `.vscode` directory. We need to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`. If npm has hoisted your typescript install, ensure the path you configure accounts for that.
+1. You need to create a `settings.json` file inside of a `.vscode` directory, this is to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`. If npm has hoisted your typescript install, ensure the path you configure accounts for that.
 2. Launch VSCode on the project directory that contains the `.vscode` directory.
 3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
 
