@@ -44,7 +44,7 @@ Base options.
 | Option                | Optional and Default | Explanation                                                                                                                                                                                                                                                                  |
 |---|---|--|
 | `name`                | False                | Need to set as `@genesiscommunitysuccess/custom-elements-lsp` to enable this plugin.                                                                                                                                                                                         |
-| `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. |
+| `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. *WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory.|
 | `designSystemPrefix`  | True (N/A)           | Used to work with `%%prefix%%` to handle components registered as part of a design system. See [here](#advanced-usage).                                                                                                                                                      |
 | `fastEnable`          | True (disabled)      | Enables Microsoft FAST parsing and completion (e.g. `:prop` property binding syntax).                                                                                                                                                                                        |
 
@@ -59,6 +59,8 @@ Parser options. These control the analysis of the source code to understand sema
 
 Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
 
+*WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory. The path of `src` and `dependencies` will be relative to the path created from the typescript install location and the `srcRouteFromTSServer` config option.
+
 ### FAST Syntax
 
 Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
@@ -69,7 +71,7 @@ Enable enhanced completions and diagnostics by setting the `"fastEnable": true` 
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
 
-1. You need to create a `settings.json` file inside of a `.vscode` directory. We need to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`.
+1. You need to create a `settings.json` file inside of a `.vscode` directory, this is to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`. If npm has hoisted your typescript install, ensure the path you configure accounts for that.
 2. Launch VSCode on the project directory that contains the `.vscode` directory.
 3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
 
@@ -111,6 +113,14 @@ This `package.json` needs to be the same location on the file system that the `s
 3. Check `ce.json` to see what components have issues, or are missing from the manifest.
 4. If there are any issues then you can change the glob patterns and repeat from step 1 until you're happy.
 5. Once you are receiving the correct output from the script you can update your `tsconfig.json` to fix the issue in the LSP plugin.
+
+##### Analyzer Script Extra
+
+If you are still running into issues then you can spend time verifying that the debugging analyzer script is getting the same view as the CEP itself.
+1. Complete the `Setup Logging` section from the [contributing](./CONTRIBUTING.md) document.
+2. Run the CEP in your IDE and check the logs for a line that looks roughly like `Info 32   [14:43:25.686] [CE] Analyzing and updating manifest. Config: ...`
+3. Run the analyzer script and see the same line like `[log] Analyzing and updating manifest. Config: ...`
+4. Verify they're the same. If not then there is potentially something wrong with your plugin setup.
 
 ## Contributing
 
