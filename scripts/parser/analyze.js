@@ -12,10 +12,10 @@
  */
 
 import { readFileSync, writeFileSync } from 'fs';
+import nodepath from 'path';
 import { getTsconfig } from 'get-tsconfig';
 import minimist from 'minimist-lite';
 import resolve from 'resolve/sync.js';
-import nodepath from 'path';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
