@@ -19,7 +19,7 @@ import resolve from 'resolve/sync.js';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
-} from '../../out/plugin/custom-elements/manifest/repository.js';
+} from '../../out/custom-elements-plugin/custom-elements/manifest/repository.js';
 
 const EXIT_CODES = {
   cant_resolve_typescript: 1,

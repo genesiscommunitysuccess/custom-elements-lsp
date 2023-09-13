@@ -1,4 +1,4 @@
-import { IORepository, IOService, IOServiceImpl } from '../plugin/utils';
+import { IORepository, IOService, IOServiceImpl } from '../custom-elements-plugin/utils';
 
 export function getIOServiceFromStubResource(overrides: Partial<IORepository>): IOService {
   const repo: IORepository = {
