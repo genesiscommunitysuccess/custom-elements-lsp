@@ -8,7 +8,7 @@ const code = fs.readFileSync('fixtures/default/sourcecode/default.js').toString(
 const modules = [ts.createSourceFile(
   'my-element.js',
   code,
-  ts.ScriptTarget.ES2015,
+  ts.ScriptTarget.ES2021,
   true,
 )];
 

@@ -2,7 +2,12 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'eslint-plugin-import', 'unused-imports'],
   parserOptions: {
-    project: ['./tsconfig.json', './example/src/tsconfig.json', './example-lib/tsconfig.json'],
+    project: [
+      './tsconfig.json',
+      './example/src/tsconfig.json',
+      './example-lib/tsconfig.json',
+      './src/analyzer-import-alias-plugin/tsconfig.json',
+    ],
     ecmaVersion: 2020,
     sourceType: 'module',
   },
