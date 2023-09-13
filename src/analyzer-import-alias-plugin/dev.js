@@ -5,11 +5,6 @@ import myPlugin from './index.js';
 
 const code = fs.readFileSync('fixtures/default/sourcecode/default.js').toString();
 
-const modules = [ts.createSourceFile(
-  'my-element.js',
-  code,
-  ts.ScriptTarget.ES2021,
-  true,
-)];
+const modules = [ts.createSourceFile('my-element.js', code, ts.ScriptTarget.ES2021, true)];
 
-console.log(JSON.stringify(create({modules, plugins: [myPlugin()]}), null, 2));
+console.log(JSON.stringify(create({ modules, plugins: [myPlugin()] }), null, 2));
