@@ -50,7 +50,7 @@ export default function myPlugin() {
             dec.superclass.name = maybeBaseName;
           }
         });
-      debugger;
+      // debugger;
     },
     // Runs after modules have been parsed and after post-processing
     packageLinkPhase({ customElementsManifest, context }) {
