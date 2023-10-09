@@ -13,7 +13,8 @@ export default function myPlugin() {
             jsDoc.tags?.forEach((tag) => {
               if (tag.tagName.getText() === 'inheritance') {
                 const maybeMatches = [...tag.comment.match(/(\w+)\s+->\s+(\w+)/)];
-                if (maybeMatches.length === 3) {
+                const matchLen = 3;
+                if (maybeMatches.length === matchLen) {
                   const [_, superclassName, subclassName] = maybeMatches;
                   const classDeclaration = moduleDoc.declarations.find(
                     (declaration) => declaration.name === className

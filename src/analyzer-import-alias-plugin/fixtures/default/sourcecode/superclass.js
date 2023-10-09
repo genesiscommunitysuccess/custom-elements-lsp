@@ -1,3 +1,3 @@
 export class MyElement {
-	foo = 'bar';
+  foo = 'bar';
 }

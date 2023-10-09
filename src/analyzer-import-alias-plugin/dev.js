@@ -1,6 +1,6 @@
 import fs from 'fs';
-import ts from 'typescript';
 import { create } from '@custom-elements-manifest/analyzer/src/create.js';
+import ts from 'typescript';
 import myPlugin from './index.js';
 
 const defaultCode = fs.readFileSync('fixtures/default/sourcecode/default.js').toString();
