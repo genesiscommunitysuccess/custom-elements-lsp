@@ -1,8 +1,8 @@
 import { LineAndCharacter } from 'typescript';
 import { Logger, TemplateContext } from 'typescript-template-language-service-decorator';
-import { GlobalDataRepositoryImpl } from '../plugin/global-data/repository';
-import { GlobalDataServiceImpl } from '../plugin/global-data/service';
-import { Services } from '../plugin/utils/services.types';
+import { GlobalDataRepositoryImpl } from '../custom-elements-plugin/global-data/repository';
+import { GlobalDataServiceImpl } from '../custom-elements-plugin/global-data/service';
+import { Services } from '../custom-elements-plugin/utils/services.types';
 import { getCEServiceFromStubbedResource } from './custom-elements';
 import { getIOServiceFromStubResource } from './io';
 

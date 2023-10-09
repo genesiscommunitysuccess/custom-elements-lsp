@@ -1,8 +1,11 @@
 import { readFileSync, existsSync } from 'fs';
 import { Package } from 'custom-elements-manifest';
-import { CEMTConfig, CustomElementDef } from '../plugin/custom-elements/custom-elements.types';
-import { CustomElementsAnalyzerManifestParser } from '../plugin/custom-elements/repository';
-import { CustomElementsServiceImpl } from '../plugin/custom-elements/service';
+import {
+  CEMTConfig,
+  CustomElementDef,
+} from '../custom-elements-plugin/custom-elements/custom-elements.types';
+import { CustomElementsAnalyzerManifestParser } from '../custom-elements-plugin/custom-elements/repository';
+import { CustomElementsServiceImpl } from '../custom-elements-plugin/custom-elements/service';
 import { getLogger } from './utils';
 
 const MANIFSST_PATH = './src/jest/ce-test.json';

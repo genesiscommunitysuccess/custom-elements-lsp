@@ -1,3 +1,3 @@
-import { init } from './plugin';
+import { init } from './custom-elements-plugin';
 
 export = init;
