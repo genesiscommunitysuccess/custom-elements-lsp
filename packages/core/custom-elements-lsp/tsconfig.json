@@ -1,6 +1,5 @@
 {
   "paths": ["src/**"],
-  "exclude": ["example", "example-lib", "src/analyzer-import-alias-plugin"],
   "compilerOptions": {
     "target": "es2021",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
     "module": "commonjs",                                /* Specify what module code is generated. */
