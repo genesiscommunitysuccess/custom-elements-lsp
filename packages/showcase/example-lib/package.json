@@ -1,7 +1,7 @@
 {
   "name": "example-lib",
-	"private": true,
-  "version": "1.0.0",
+  "private": true,
+  "version": "2.0.1",
   "description": "Example library to demonstrate custom elements linking",
   "main": "dist/esm/index.js",
   "types": "dist/dts/index.d.ts",
@@ -10,7 +10,8 @@
     "bootstrap:module:ci": "npm ci && npm run build && npm run cem:analyze",
     "build": "npm run build:tsc",
     "build:tsc": "tsc -b tsconfig.json",
-    "cem:analyze": "cem analyze --config custom-elements-manifest.config.js"
+    "cem:analyze": "cem analyze --config custom-elements-manifest.config.js",
+    "lsp:analyze": "custom-elements-analyze --tsconfig='./tsconfig.json'"
   },
   "dependencies": {
     "@microsoft/fast-components": "2.21.3",
@@ -20,6 +21,7 @@
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.8.0",
+    "@genesiscommunitysuccess/custom-elements-lsp": "2.0.1",
     "typescript": "^4.4.3"
   },
   "customElements": "dist/custom-elements.json"

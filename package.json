@@ -111,8 +111,7 @@
   },
   "workspaces": [
     "packages/core/*",
-    "packages/showcase/*",
-    "packages/tools/*"
+    "packages/showcase/*"
   ],
   "directories": {
     "doc": "docs"

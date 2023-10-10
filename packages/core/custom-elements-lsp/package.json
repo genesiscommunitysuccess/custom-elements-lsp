@@ -2,8 +2,7 @@
   "name": "@genesiscommunitysuccess/custom-elements-lsp",
   "version": "2.0.1",
   "license": "MIT",
-  "main": "./out",
-  "bin": {
+  "main": "./out", "bin": {
     "custom-elements-analyze": "./parser/analyze.js"
   },
   "description": "TypeScript plugin to enable Intellisense in custom element tagged templates",
