@@ -1,5 +1,6 @@
 {
   "name": "example-tsc-codebase",
+	"private": true,
   "scripts": {
     "bootstrap:module": "npm i && npm run build && npm run lsp:analyze",
     "bootstrap:module:ci": "npm ci && npm run build && npm run lsp:analyze",

@@ -1,6 +1,6 @@
 import { CompletionEntry, ScriptElementKind } from 'typescript/lib/tsserverlibrary';
-import { GlobalDataRepository } from '../custom-elements-plugin/global-data/global-data.types';
-import { GlobalDataServiceImpl } from '../custom-elements-plugin/global-data/service';
+import { GlobalDataRepository } from '../src/global-data/global-data.types';
+import { GlobalDataServiceImpl } from '../src/global-data/service';
 import { getLogger } from './utils';
 
 /**

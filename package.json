@@ -3,6 +3,7 @@
   "version": "2.0.1",
   "license": "MIT",
   "main": "./out",
+	"private": true,
   "bin": {
     "custom-elements-analyze": "parser/analyze.js"
   },
@@ -111,8 +112,7 @@
   "workspaces": [
     "packages/core/*",
     "packages/showcase/*",
-    "packages/tools/*",
-    ""
+    "packages/tools/*"
   ],
   "directories": {
     "doc": "docs"

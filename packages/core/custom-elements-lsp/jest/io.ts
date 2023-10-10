@@ -1,4 +1,4 @@
-import { IORepository, IOService, IOServiceImpl } from '../custom-elements-plugin/utils';
+import { IORepository, IOService, IOServiceImpl } from "../src/utils";
 
 export function getIOServiceFromStubResource(overrides: Partial<IORepository>): IOService {
   const repo: IORepository = {
@@ -8,7 +8,7 @@ export function getIOServiceFromStubResource(overrides: Partial<IORepository>): 
     fileExists(path) {
       return path.includes('exists');
     },
-    readFile(path) {
+    readFile(_) {
       return `
 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 
