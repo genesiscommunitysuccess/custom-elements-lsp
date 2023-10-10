@@ -5,7 +5,7 @@ import { CEMTConfig, CustomElementDef } from '../src/custom-elements/custom-elem
 import { CustomElementsServiceImpl } from '../src/custom-elements/service';
 import { CustomElementsAnalyzerManifestParser } from '../src/custom-elements/repository';
 
-const MANIFSST_PATH = './src/jest/ce-test.json';
+const MANIFSST_PATH = './jest/ce-test.json';
 
 let manifest: string;
 
