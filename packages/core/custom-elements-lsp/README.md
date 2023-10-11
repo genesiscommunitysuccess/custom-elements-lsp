@@ -124,7 +124,7 @@ If you are still running into issues then you can spend time verifying that the 
 
 ## Contributing
 
-Thanks for taking interest in contributing to the Custom Elements Plugin. See [the contributing guidelines](./CONTRIBUTING.md).
+Thanks for taking interest in contributing to the Custom Elements Plugin. See the contributing guidelines (`CONTRIBUTING.md`) at the root of the monorepo.
 
 ## License
 
