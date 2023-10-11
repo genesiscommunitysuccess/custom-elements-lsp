@@ -36,8 +36,8 @@
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
   "scripts": {
-    "bootstrap": "npm run bootstrap:husky && npm i",
-    "bootstrap:ci": "npm run bootstrap:husky && npm ci",
+    "bootstrap": "npm run bootstrap:husky && npm i && npm run bootstrap:module --workspaces",
+    "bootstrap:ci": "npm run bootstrap:husky && npm ci && npm run bootstrap:module --workspaces",
     "bootstrap:husky": "npx --yes husky install",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",

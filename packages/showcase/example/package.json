@@ -3,9 +3,8 @@
 	"version": "2.0.1",
 	"private": true,
   "scripts": {
-    "bootstrap:module": "npm i && npm run build && npm run lsp:analyze",
-    "bootstrap:module:ci": "npm ci && npm run build && npm run lsp:analyze",
-    "build": "tsc && vite build",
+    "bootstrap:module": "npm run build && npm run lsp:analyze",
+    "build": "tsc -p ./src/tsconfig.json && vite build",
     "dev": "npm run build && npm run start",
     "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
     "preview": "vite preview",
