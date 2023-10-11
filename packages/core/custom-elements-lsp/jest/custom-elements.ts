@@ -1,9 +1,9 @@
 import { readFileSync, existsSync } from 'fs';
 import { Package } from 'custom-elements-manifest';
-import { getLogger } from './utils';
 import { CEMTConfig, CustomElementDef } from '../src/custom-elements/custom-elements.types';
-import { CustomElementsServiceImpl } from '../src/custom-elements/service';
 import { CustomElementsAnalyzerManifestParser } from '../src/custom-elements/repository';
+import { CustomElementsServiceImpl } from '../src/custom-elements/service';
+import { getLogger } from './utils';
 
 const MANIFSST_PATH = './jest/ce-test.json';
 

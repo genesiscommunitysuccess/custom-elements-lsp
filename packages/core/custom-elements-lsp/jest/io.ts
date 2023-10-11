@@ -1,4 +1,4 @@
-import { IORepository, IOService, IOServiceImpl } from "../src/utils";
+import { IORepository, IOService, IOServiceImpl } from '../src/utils';
 
 export function getIOServiceFromStubResource(overrides: Partial<IORepository>): IOService {
   const repo: IORepository = {

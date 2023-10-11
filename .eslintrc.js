@@ -3,10 +3,10 @@ module.exports = {
   plugins: ['@typescript-eslint', 'eslint-plugin-import', 'unused-imports'],
   parserOptions: {
     project: [
-      './tsconfig.json',
-      './example/src/tsconfig.json',
-      './example-lib/tsconfig.json',
-      './src/analyzer-import-alias-plugin/tsconfig.json',
+			'./packages/core/custom-elements-lsp/tsconfig.json',
+			'./packages/core/analyzer-import-alias-plugin/tsconfig.json',
+			'./packages/showcase/example/src/tsconfig.json',
+			'./packages/showcase/example-lib/tsconfig.json'
     ],
     ecmaVersion: 2020,
     sourceType: 'module',
@@ -14,10 +14,12 @@ module.exports = {
   extends: ['google', 'plugin:prettier/recommended', 'plugin:import/typescript'],
   ignorePatterns: [
     'custom-elements-manifest.config.js',
+    'commitlint.config.js',
     '.eslintrc.js',
     '**/dist/**/*',
     '**/public/**/*',
     '**/out/**/*',
+		'scripts/**/*'
   ],
   settings: {
     'import/resolver': {
