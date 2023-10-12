@@ -31,7 +31,7 @@ To test the LSP is working correctly in VSCode
 2. `code .` (or manually open VSCode via the UI to the `example` directory on your filesystem).
 3. Open a typescript file such as `root.ts`
 4. In the Command Palette choose `TypeScript: select typescript version...` and then choose the workspace version
-5. The LSP should be enabled.
+5. The LSP should be enabled. You will need to make a code change after the LSP is enabled before you see any Intellisense.
 ```
 
 ✅  &nbsp; **Checklist**
