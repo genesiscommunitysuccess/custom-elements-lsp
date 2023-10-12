@@ -35,7 +35,7 @@
   },
   "scripts": {
     "bootstrap:module": "npm run build",
-    "build": "npx tsc",
+    "build": "npx tsc -b ./src/tsconfig.json",
     "build:watch": "npx tsc --watch",
     "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
