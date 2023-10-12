@@ -1,5 +1,5 @@
 {
-  "name": "example-lib",
+  "name": "@genesiscommunitysuccess/example-lib",
   "private": true,
   "version": "2.0.2",
   "description": "Example library to demonstrate custom elements linking",

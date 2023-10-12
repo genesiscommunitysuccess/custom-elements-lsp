@@ -11,7 +11,7 @@
           "timeout": 1000,
           "src": "./packages/showcase/example/src/**/*.{js,ts}",
           "dependencies": [
-            "node_modules/example-lib/**/custom-elements.json",
+            "node_modules/@genesiscommunitysuccess/example-lib/**/custom-elements.json",
             "!**/@custom-elements-manifest/**/*"
           ]
         }
