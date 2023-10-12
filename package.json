@@ -22,6 +22,7 @@
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
     "clean": "rimraf node_modules",
+    "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "commitlint": "node ./scripts/commitlint.js",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "lint:eslint": "eslint",
