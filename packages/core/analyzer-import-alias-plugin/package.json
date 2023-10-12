@@ -5,6 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
+    "bootstrap:module": "echo 'not implemented yet'",
     "start": "nodemon dev.js",
     "start:debug": "node --inspect-brk dev.js",
     "test": "uvu test"
