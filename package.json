@@ -2,28 +2,8 @@
   "name": "@genesiscommunitysuccess/custom-elements",
   "version": "2.0.1",
   "license": "MIT",
-  "main": "./out",
-	"private": true,
-  "bin": {
-    "custom-elements-analyze": "parser/analyze.js"
-  },
+  "private": true,
   "description": "TypeScript plugin to enable Intellisense in custom element tagged templates",
-  "keywords": [
-    "analyzer",
-    "autocompletion",
-    "definition",
-    "diagnostics",
-    "fast",
-    "intellisense",
-    "javascript",
-    "jump",
-    "lsp",
-    "nvim",
-    "quickinfo",
-    "typescript",
-    "vscode",
-    "warnings"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"
@@ -79,14 +59,15 @@
     "eslint": "8.22.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
-    "rimraf": "5.0.5",
     "eslint-config-ts-important-stuff": "^1.1.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.3",
+    "lerna": "^4.0.0",
     "lint-staged": "^13.2.2",
+    "rimraf": "5.0.5",
     "semantic-release": "21.0.7"
   },
   "workspaces": [
@@ -96,5 +77,9 @@
   "directories": {
     "doc": "docs"
   },
-  "author": ""
+  "author": "",
+  "dependencies": {
+    "@semantic-release/exec": "^6.0.3",
+    "semantic-release-replace-plugin": "^1.2.7"
+  }
 }

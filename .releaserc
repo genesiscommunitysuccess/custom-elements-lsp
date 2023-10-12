@@ -38,7 +38,9 @@
         "changelogTitle": "# Changelog"
       }
     ],
-    ["@semantic-release/npm"],
+    [
+			"@semantic-release/exec", { }
+		],
     [
       "@semantic-release/git",
       {
