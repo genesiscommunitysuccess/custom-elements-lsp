@@ -25,9 +25,14 @@ Update test steps to match your PR:
 1. Checkout branch
 2. `npm run bootstrap`
 3. `npm run test:unit`
-```
 
-> These testing instructions assume that you've already setup the LSP in your IDE with the `example` app. If you haven't then follow the instructions in the `README.md`.
+To test the LSP is working correctly in VSCode
+1. `cd packages/showcase/example`
+2. `code .` (or manually open VSCode via the UI to the `example` directory on your filesystem).
+3. Open a typescript file such as `root.ts`
+4. In the Command Palette choose `TypeScript: select typescript version...` and then choose the workspace version
+5. The LSP should be enabled.
+```
 
 ✅  &nbsp; **Checklist**
 
