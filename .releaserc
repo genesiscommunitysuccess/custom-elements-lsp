@@ -39,7 +39,9 @@
       }
     ],
     [
-			"@semantic-release/exec", { }
+			"@semantic-release/exec", {
+				"prepareCmd": "npx --no lerna version \"${nextRelease.version}\" --yes --no-push --ignore-scripts --no-git-tag-version --exact && npm i --package-lock-only"}
+				}
 		],
     [
       "@semantic-release/git",
