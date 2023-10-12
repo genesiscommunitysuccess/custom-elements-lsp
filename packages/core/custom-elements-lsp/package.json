@@ -37,6 +37,7 @@
     "bootstrap:module": "npm run build",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
+    "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "release": "semantic-release",
     "test:unit": "jest",
