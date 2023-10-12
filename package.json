@@ -22,18 +22,14 @@
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
     "clean": "rimraf node_modules",
-    "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "commitlint": "node ./scripts/commitlint.js",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "lint:eslint": "eslint",
     "lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
+    "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "release": "semantic-release",
-    "test:unit": "jest",
-    "test:unit:coverage": "jest --coverage",
-    "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
-    "test:unit:verbose": "cross-env TEST_LOG=1 jest",
-    "test:unit:watch": "jest --watchAll"
+    "test:unit": "npm run test:unit --workspace=@genesiscommunitysuccess/custom-elements-lsp"
   },
   "husky": {
     "hooks": {
