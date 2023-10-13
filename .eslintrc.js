@@ -5,7 +5,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-	root: true,
+  root: true,
   extends: ['google', 'plugin:prettier/recommended', 'plugin:import/typescript'],
   ignorePatterns: [
     'custom-elements-manifest.config.js',
@@ -15,7 +15,7 @@ module.exports = {
     '**/public/**/*',
     '**/out/**/*',
     '**/node_modules/**/*',
-		'scripts/**/*'
+    'scripts/**/*',
   ],
   settings: {
     'import/resolver': {

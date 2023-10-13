@@ -1,5 +1,5 @@
-import { attr, customElement } from '@microsoft/fast-element';
 import { Counter, counterTemplate } from '@genesiscommunitysuccess/example-lib';
+import { attr, customElement } from '@microsoft/fast-element';
 
 Counter;
 
