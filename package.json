@@ -16,12 +16,12 @@
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
   "scripts": {
-    "bootstrap": "npm run bootstrap:husky && npm i && npm run bootstrap:module --workspaces",
-    "bootstrap:ci": "npm run bootstrap:husky && npm ci && npm run bootstrap:module --workspaces",
+    "bootstrap": "npm run bootstrap:husky && npm i && npx lerna run bootstrap:module",
+    "bootstrap:ci": "npm run bootstrap:husky && npm ci && npx lerna run bootstrap:module",
     "bootstrap:husky": "npx --yes husky install",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
-    "clean": "npm run clean:dist --workspaces && npm run clean:module",
+    "clean": "npx lerna run clean:dist && npm run clean:module",
     "clean:dist": "exit 0 # Not required",
     "clean:module": "rimraf node_modules",
     "commitlint": "node ./scripts/commitlint.js",
@@ -31,7 +31,7 @@
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
     "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "release": "semantic-release",
-    "test:unit": "npm run test:unit --workspace=@genesiscommunitysuccess/custom-elements-lsp"
+    "test:unit": "lerna run test:unit --scope=@genesiscommunitysuccess/custom-elements-lsp"
   },
   "husky": {
     "hooks": {
