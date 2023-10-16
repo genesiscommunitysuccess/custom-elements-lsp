@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.0.1...v2.1.0) (2023-10-16)
+
+
+### Features
+
+* refactor into packages and publish skeleton analyzer plugin [FUI-1512](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1512) (#54) 11461ee, closes FUi-1512
+
 ## [2.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.0.0...v2.0.1) (2023-09-05)
 
 
