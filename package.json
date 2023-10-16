@@ -1,31 +1,12 @@
 {
-  "name": "@genesiscommunitysuccess/custom-elements-lsp",
+  "name": "@genesiscommunitysuccess/custom-elements",
   "version": "2.0.1",
   "license": "MIT",
-  "main": "./out",
-  "bin": {
-    "custom-elements-analyze": "./scripts/parser/analyze.js"
-  },
+  "private": true,
   "description": "TypeScript plugin to enable Intellisense in custom element tagged templates",
-  "keywords": [
-    "analyzer",
-    "autocompletion",
-    "definition",
-    "diagnostics",
-    "fast",
-    "intellisense",
-    "javascript",
-    "jump",
-    "lsp",
-    "nvim",
-    "quickinfo",
-    "typescript",
-    "vscode",
-    "warnings"
-  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp"
+    "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"
   },
   "publishConfig": {
     "access": "public"
@@ -35,25 +16,22 @@
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
   "scripts": {
-    "bootstrap": "npm run bootstrap:module && cd example-lib && npm run bootstrap:module && cd ../example && npm run bootstrap:module && cd .. ",
-    "bootstrap:ci": "npm run bootstrap:module:ci && cd example-lib && npm run bootstrap:module:ci && cd ../example && npm run bootstrap:module:ci && cd .. ",
+    "bootstrap": "npm run bootstrap:husky && npm i && npx lerna run bootstrap:module",
+    "bootstrap:ci": "npm run bootstrap:husky && npm ci && npx lerna run bootstrap:module",
     "bootstrap:husky": "npx --yes husky install",
-    "bootstrap:module": "npm i && npm run bootstrap:husky",
-    "bootstrap:module:ci": "npm ci && npm run bootstrap:husky",
     "build": "npx tsc",
     "build:watch": "npx tsc --watch",
-    "clean": "rm -rf example-lib/node_modules/ && rm -rf example/node_modules/ && rm -rf node_modules/",
+    "clean": "lerna run clean:dist && npm run clean:module",
+    "clean:dist": "exit 0 # Not required",
+    "clean:module": "rimraf node_modules",
     "commitlint": "node ./scripts/commitlint.js",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "lint:eslint": "eslint",
     "lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
+    "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "release": "semantic-release",
-    "test:unit": "jest",
-    "test:unit:coverage": "jest --coverage",
-    "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
-    "test:unit:verbose": "cross-env TEST_LOG=1 jest",
-    "test:unit:watch": "jest --watchAll"
+    "test:unit": "lerna run test:unit --scope=@genesiscommunitysuccess/custom-elements-lsp"
   },
   "husky": {
     "hooks": {
@@ -66,18 +44,6 @@
       "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js"
     ]
   },
-  "dependencies": {
-    "@custom-elements-manifest/analyzer": "^0.8.0",
-    "chokidar": "^3.5.3",
-    "debounce": "^1.2.1",
-    "get-tsconfig": "^4.7.0",
-    "globby": "^13.1.4",
-    "minimist-lite": "^2.2.1",
-    "node-html-parser": "^6.1.5",
-    "resolve": "^1.22.4",
-    "resolve-pkg": "^2.0.0",
-    "typescript-template-language-service-decorator": "^2.3.2"
-  },
   "devDependencies": {
     "@commitlint/cli": "^17.6.7",
     "@commitlint/config-conventional": "^17.6.7",
@@ -85,14 +51,10 @@
     "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^11.0.4",
-    "@types/debounce": "^1.2.1",
-    "@types/jest": "^29.5.1",
-    "@types/resolve": "^1.20.2",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
     "@typescript-eslint/parser": "^5.2.0",
     "conventional-changelog-conventionalcommits": "^5.0.0",
     "cross-env": "^7.0.3",
-    "custom-elements-manifest": "^2.0.0",
     "eslint": "8.22.0",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.5.0",
@@ -102,10 +64,21 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.3",
-    "jest": "^29.5.0",
+    "lerna": "7.2.0",
     "lint-staged": "^13.2.2",
-    "semantic-release": "21.0.7",
-    "ts-jest": "^29.1.0",
-    "typescript": "^4.4.3"
+    "rimraf": "5.0.5",
+    "semantic-release": "21.0.7"
+  },
+  "workspaces": [
+    "packages/core/*",
+    "packages/showcase/*"
+  ],
+  "directories": {
+    "doc": "docs"
+  },
+  "author": "",
+  "dependencies": {
+    "@semantic-release/exec": "^6.0.3",
+    "semantic-release-replace-plugin": "^1.2.7"
   }
 }

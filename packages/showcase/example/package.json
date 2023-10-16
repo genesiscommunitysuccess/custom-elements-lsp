@@ -1,0 +1,26 @@
+{
+  "name": "@genesiscommunitysuccess/example-fast-codebase",
+  "version": "2.0.1",
+  "private": true,
+	"scripts": {
+    "clean:dist": "rimraf ./dist",
+    "bootstrap:module": "npm run build && npm run lsp:analyze",
+    "build": "tsc -p ./src/tsconfig.json && vite build",
+    "dev": "npm run build && npm run start",
+    "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "dependencies": {
+    "@microsoft/fast-components": "2.21.3",
+    "@microsoft/fast-element": "1.11.0",
+    "@microsoft/fast-foundation": "2.47.0",
+    "tslib": "^2.4.1"
+  },
+  "devDependencies": {
+    "@genesiscommunitysuccess/custom-elements-lsp": "2.0.1",
+    "@genesiscommunitysuccess/example-lib": "2.0.1",
+    "typescript": "^4.4.3",
+    "vite": "^4.3.9"
+  }
+}

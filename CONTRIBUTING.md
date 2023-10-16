@@ -32,13 +32,13 @@ git clone https://github.com/genesiscommunitysuccess/custom-elements-lsp.git
 
 ### Installing and building
 
-When working on the LSP codebase itself, it is useful to be running an application in order to see what functionality is and is not working. The app in `/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
+When working on the LSP codebase itself, it is useful to be running an application in order to see what functionality is and is not working. The app in `packages/showcase/example` is setup to use the LSP plugin out of the box for NVIM and VSCode currently, other LSP IDEs may need some other configuration.
 
 While developing:
 
 1. `npm run bootstrap` will do all required setup for installing and building packages for working on the LSP and using the test example apps. You should rerun this every time you change a dependency.
 2. `npm run clean` can be used to clean up all of the nodes modules if you are running into issues. You'd need to then run `npm run bootstrap` again.
-3. `npm run build:watch` from the root directory to incrementally transpile the plugin. You probably want this to be continually running while you're working in CEP. This is only rebuilding the CEP itself - if you are changing the code of the `example` app or `example-lib` lib then you'll either need to manually run their build commands, or run them via `npm run bootstrap`.
+3. `npm run build:watch` from the `custom-elements-lsp` project root to incrementally transpile the plugin. You probably want this to be continually running while you're working in CEP. This is only rebuilding the CEP itself - if you are changing the code of the `example` app or `example-lib` lib then you'll either need to manually run their build commands, or run them via `npm run bootstrap`.
 
 #### Setup Logging
 
@@ -58,11 +58,11 @@ You can therefore search the file for `[CE]` to filter for CEP output.
 
 #### Developing with the Example Application
 
-As mentioned previously, CEP contains an example application in the `/example` directory which can be used as a test project which is setup with the LSP plugin. The approach is based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin.
+As mentioned previously, CEP contains an example application in the `/packages/showcase/example` directory which can be used as a test project which is setup with the LSP plugin. The approach is based on https://github.com/orta/TypeScript-TSServer-Plugin-Template and https://github.com/microsoft/TypeScript/wiki/Writing-a-Language-Service-Plugin#overview-writing-a-simple-plugin.
 
-`/example` application already contains all of the configuration required for use, as you can see in places like `./example/src/tsconfig.json` which contains configuration for the LSP as described in the [readme](./README.md).
+`example` application already contains all of the configuration required for use, as you can see in places like `example/src/tsconfig.json` which contains configuration for the LSP as described in the [readme](./README.md).
 
-The LSP plugin should be symlinked locally via the `package.json` but if you're having issues you can manually link the plugin:
+The LSP plugin should be symlinked locally via npm workspaces, but if you're having issues you can manually link the plugin:
 
 1. `npm link` in the project root
 2. `cd example`
@@ -70,20 +70,22 @@ The LSP plugin should be symlinked locally via the `package.json` but if you're 
 
 ##### Example Library
 
-The directory `/example-lib` contains a small example library which publishes a FAST web component and associated custom elements manifest. It is added as a dependency of the example app already, and then you need to build the output using `npm run build` for use in the example app. If you have run `npm run bootstrap` from the project root then it will have build
+The directory `packages/showcase/example-lib` contains a small example library which publishes a FAST web component and associated custom elements manifest. It is added as a dependency of the example app already, and then you need to build the output using `npm run build` for use in the example app. If you have run `npm run bootstrap` from the project root then it will have build
 
 #### Developing with another External Project
 
 While working on the LSP plugin you can test it out in any Typescript application you'd like, in addition to testing via the included `/example` application.
 
-1. You need to install the plugin as a dev dependency to your application. You can do this either in a similar way to the `npm link` instructions in the previous section, or use the `file:` syntax for a local installation. For an example of the latter method look at the `example/package.json` file.
-2. You need to set up your application as explained in [this section](./README.md#plugin-setup-and-usage). Again, you'll need to do any IDE specific setup such as configuring the `settings.json` of VSCode as explained there.
+1. You need to install the plugin as a dev dependency to your application. You can do this either in a similar way to the `npm link` instructions in the previous section, or use the `file:` syntax for a local installation.
+2. You need to set up your application as explained in [this section](./packages/core/custom-elements-lsp/README.md#plugin-setup-and-usage). Again, you'll need to do any IDE specific setup such as configuring the `settings.json` of VSCode as explained there.
 3. Run the `npm run bootstrap` and `npm run build:watch` commands in the LSP directory as explained previously.
 
 
 ### Testing
 
 Testing is currently only setup for unit tests, but we plan to add some e2e tests in the future too.
+
+> Testing for packages such as `@genesiscommunitysuccess/analyzer-import-alias-plugin` have their own contained tests.
 
 ```json
 {

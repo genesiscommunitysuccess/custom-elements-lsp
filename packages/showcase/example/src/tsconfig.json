@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    // This matches the package name given in this package.json
+    "plugins": [
+      {
+        "name": "@genesiscommunitysuccess/custom-elements-lsp",
+        "srcRouteFromTSServer": "../../..",
+        "designSystemPrefix": "example",
+        "fastEnable": true,
+        "parser": {
+          "timeout": 1000,
+          "src": "./packages/showcase/example/src/**/*.{js,ts}",
+          "dependencies": [
+            "node_modules/@genesiscommunitysuccess/example-lib/**/custom-elements.json",
+            "!**/@custom-elements-manifest/**/*"
+          ]
+        }
+      }
+    ],
+    "pretty": true,
+    "target": "ES2020",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true,
+    "noEmitOnError": true,
+    "skipLibCheck": true,
+    "preserveConstEnums": true,
+    "stripInternal": true,
+    "outDir": "../out",
+    "strict": true,
+    "lib": ["dom", "esnext"]
+  },
+  "esModuleInterop": true,
+  "strict": true,
+  "skipLibCheck": true
+}
