@@ -1,0 +1,41 @@
+name: Publish master
+
+# This job ensures that all packages from master have been published to the dist tag 'latest'
+# This is needed when a registry is temporarily down during a release
+# Only unpublished packages will be published, so it's safe to re-run
+
+# Manually triggered
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    # Only run in master
+    if: ${{github.ref == 'refs/heads/master'}}
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Configure Node
+      uses: actions/setup-node@v3
+
+    - name: Bootstrap
+      run: npm run bootstrap:ci
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.GPR_READ_TOKEN}}
+
+    - name: ESLint/StyleLint
+      run: npm run lint
+
+    - name: Test
+      run: npm test
+
+    - name: Publish (NPM registry)
+      run: npm run publish:from-package
+      env:
+        GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        NODE_AUTH_TOKEN: ${{secrets.NPM_PUBLISH_TOKEN}}
+
