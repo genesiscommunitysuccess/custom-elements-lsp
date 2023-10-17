@@ -4,6 +4,17 @@
   "description": "",
   "type": "module",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/genesiscommunitysuccess/custom-elements-lsp",
+  "bugs": {
+    "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
+  },
   "scripts": {
     "bootstrap:module": "echo 'not implemented yet'",
     "clean:dist": "exit 0 # not implemented yet",
