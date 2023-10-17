@@ -29,7 +29,7 @@
     "lint:eslint": "eslint",
     "lint:eslint:all": "cross-env TIMING=1 node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\"",
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
-    "publish:from-package": "lerna publish from-package --yes --ignore-scripts --loglevel verbose --registry https://npm.pkg.github.com/",
+    "publish:from-package": "npm config set loglevel silly && lerna publish from-package --yes --ignore-scripts --loglevel verbose",
     "release": "semantic-release",
     "test:unit": "lerna run test:unit --scope=@genesiscommunitysuccess/custom-elements-lsp"
   },
