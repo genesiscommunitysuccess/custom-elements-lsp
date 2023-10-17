@@ -31,6 +31,12 @@ jobs:
     - name: Test
       run: npm run test:unit
 
+    - name: "NPM Identity"
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: |
+        echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+
     - name: Publish (NPM registry)
       run: npm config set loglevel silly && npm run publish:from-package && cat lerna-debug.log
       env:
