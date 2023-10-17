@@ -34,5 +34,5 @@ jobs:
     - name: Publish (NPM registry)
       run: npm config set loglevel silly && npm run publish:from-package
       env:
-        GH_TOKEN: "hello"
-        NPM_TOKEN: "hello"
+        GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
