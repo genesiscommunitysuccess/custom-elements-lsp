@@ -32,7 +32,7 @@ jobs:
       run: npm run test:unit
 
     - name: Publish (NPM registry)
-      run: npm config set loglevel silly && npm run publish:from-package
+      run: npm run publish:from-package
       env:
-        GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
-        NPM_TOKEN: ${{secrets.NPM_TOKEN}}
+        GH_TOKEN: "hello"
+        NPM_TOKEN: "hello"
