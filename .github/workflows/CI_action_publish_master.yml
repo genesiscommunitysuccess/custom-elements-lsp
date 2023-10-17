@@ -36,4 +36,3 @@ jobs:
       env:
         GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
         NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-        DEBUG: semantic-release:git
