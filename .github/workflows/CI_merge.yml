@@ -32,9 +32,14 @@ jobs:
       - name: Unit Test
         run: npm run test:unit
 
+      - name: "NPM Identity"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
+
       - name: Release
         env:
           GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
-          NPM_TOKEN: ${{secrets.NPM_TOKEN}}
-          DEBUG: semantic-release:git
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: npm run release
