@@ -28,10 +28,10 @@ jobs:
         NODE_AUTH_TOKEN: ${{secrets.GPR_READ_TOKEN}}
 
     - name: ESLint/StyleLint
-      run: npm run lint
+      run: npm run lint:eslint:all
 
     - name: Test
-      run: npm test
+      run: npm test:unit
 
     - name: Publish (NPM registry)
       run: npm run publish:from-package
