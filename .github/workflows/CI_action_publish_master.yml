@@ -24,10 +24,8 @@ jobs:
 
     - name: Bootstrap
       run: npm run bootstrap:ci
-      env:
-        NODE_AUTH_TOKEN: ${{secrets.GPR_READ_TOKEN}}
 
-    - name: ESLint/StyleLint
+    - name: ESLint
       run: npm run lint:eslint:all
 
     - name: Test
