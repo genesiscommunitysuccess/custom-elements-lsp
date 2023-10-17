@@ -39,6 +39,3 @@ jobs:
 
     - name: Publish (NPM registry)
       run: npm run publish:from-package
-      env:
-        GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
-        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
