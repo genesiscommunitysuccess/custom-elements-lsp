@@ -39,4 +39,6 @@ jobs:
           echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
       - name: Release
+        env:
+          GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
         run: npm run release

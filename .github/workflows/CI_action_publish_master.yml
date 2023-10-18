@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Only run in master
-    if: ${{github.ref == 'refs/heads/master'}}
+    if: ${{github.ref == 'refs/heads/master' || github.ref == 'refs/heads/prerelease'}}
 
     steps:
     - uses: actions/checkout@v3
@@ -38,4 +38,6 @@ jobs:
         echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
     - name: Publish (NPM registry)
+      env:
+        GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
       run: npm run publish:from-package
