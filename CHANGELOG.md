@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1-prerelease.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.0...v2.1.1-prerelease.1) (2023-10-18)
+
+
+### Bug Fixes
+
+* set npm config for publish pipeline [FUI-1512](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1512) 27efa1a
+
 ## [2.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.0.1...v2.1.0) (2023-10-16)
 
 
