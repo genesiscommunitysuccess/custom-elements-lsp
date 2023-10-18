@@ -16,10 +16,10 @@
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
   "scripts": {
-    "bootstrap:module": "echo 'not implemented yet'",
+    "bootstrap:module": "npm run build",
     "build": "tsc -p ./src/tsconfig.json",
     "build:watch": "tsc -p ./src/tsconfig.json --watch",
-    "clean:dist": "exit 0 # not implemented yet",
+    "clean:dist": "rimraf ./dist",
     "dev": "tsc-watch --project ./src --outDir ./dist --onSuccess \"nodemon ./dist/dev.js\"",
     "start:debug": "node --inspect-brk dev.js",
     "test:unit": "jest",
