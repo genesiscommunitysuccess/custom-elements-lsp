@@ -41,5 +41,4 @@ jobs:
       - name: Release
         env:
           GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
-          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
         run: npm run release
