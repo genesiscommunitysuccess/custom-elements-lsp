@@ -18,6 +18,7 @@
   "scripts": {
     "bootstrap:module": "echo 'not implemented yet'",
     "clean:dist": "exit 0 # not implemented yet",
+		"build": "tsc -p ./src/tsconfig.json",
     "start": "nodemon dev.js",
     "start:debug": "node --inspect-brk dev.js",
     "test": "uvu test"
@@ -32,7 +33,7 @@
     "customelementsmanifest"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.1.14",
     "globby": "^11.0.3",
