@@ -2,7 +2,16 @@ import { Plugin } from '@custom-elements-manifest/analyzer';
 
 const name = 'analyzer-import-alias-plugin';
 
-export default function myPlugin(): Plugin {
+export type ImportAliasPluginOptions = {
+  [moduleName: string]: {
+    '*'?: (importName: string) => string;
+    override?: {
+      [importName: string]: string;
+    };
+  };
+};
+
+export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
   return {
     name,
     collectPhase({ ts, node, context }) {},
