@@ -1,17 +1,18 @@
-import fs from 'fs';
-import path from 'path';
-import { create } from '@custom-elements-manifest/analyzer/src/create.js';
-import globby from 'globby';
-import ts from 'typescript';
 import { test } from 'uvu';
 import * as assert from 'uvu/assert';
+import path from 'path';
+import fs from 'fs';
+import globby from 'globby';
+import ts from 'typescript';
+import { create } from '@custom-elements-manifest/analyzer/src/create.js';
 import myPlugin from '../index.js';
 
 const fixturesDir = path.join(process.cwd(), 'fixtures');
-const testCases = fs.readdirSync(fixturesDir);
+let testCases = fs.readdirSync(fixturesDir);
 
-testCases.forEach((testCase) => {
+testCases.forEach(testCase => {
   test(`Testcase ${testCase}`, async () => {
+
     const fixturePath = path.join(fixturesDir, `${testCase}/expected.json`);
     const fixture = JSON.parse(fs.readFileSync(fixturePath, 'utf-8'));
 
@@ -20,14 +21,19 @@ testCases.forEach((testCase) => {
     const outputPath = path.join(fixturesDir, `${testCase}/actual.json`);
 
     const globs = await globby(packagePathPosix);
-    const modules = globs.map((glob) => {
-      const relativeModulePath = `.${path.sep}${path.relative(process.cwd(), glob)}`;
-      const source = fs.readFileSync(relativeModulePath).toString();
+    const modules = globs.map(glob => {
+        const relativeModulePath = `.${path.sep}${path.relative(process.cwd(), glob)}`;
+        const source = fs.readFileSync(relativeModulePath).toString();
+    
+        return ts.createSourceFile(
+          'my-element.js',
+          source,
+          ts.ScriptTarget.ES2015,
+          true,
+        );
+      });
 
-      return ts.createSourceFile('my-element.js', source, ts.ScriptTarget.ES2015, true);
-    });
-
-    const result = create({ modules, plugins: [myPlugin()] });
+    const result = create({modules, plugins: [myPlugin()]});
 
     fs.writeFileSync(outputPath, JSON.stringify(result, null, 2));
 
