@@ -10,18 +10,9 @@
           "kind": "class",
           "description": "",
           "name": "MyElement",
-          "members": [
-            {
-              "kind": "field",
-              "name": "someField",
-              "default": "",
-              "foo": "Some custom information!"
-            }
-          ],
           "superclass": {
-            "name": "HTMLElement"
-          },
-          "customElement": true
+            "name": "ParentElement"
+          }
         }
       ],
       "exports": [
