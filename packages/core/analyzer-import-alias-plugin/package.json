@@ -21,7 +21,7 @@
     "build:watch": "tsc -p ./src/tsconfig.json --watch",
     "clean:dist": "rimraf ./dist",
     "dev": "tsc-watch --project ./src --outDir ./dist --onSuccess \"nodemon ./dist/dev.js\"",
-    "start:debug": "node --inspect-brk dev.js",
+    "start:debug": "node --inspect-brk ./dist/dev.js",
     "test:unit": "jest",
     "test:unit:coverage": "jest --coverage",
     "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
@@ -40,7 +40,7 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.1.14",
+    "@custom-elements-manifest/analyzer": "0.9.0",
     "@types/jest": "^29.5.1",
     "globby": "^11.0.3",
     "jest": "^29.5.0",

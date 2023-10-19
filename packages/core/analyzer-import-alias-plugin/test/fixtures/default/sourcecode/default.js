@@ -1,5 +1,7 @@
 import { MyElement as ParentElement } from './superclass';
 
 export class MyElement extends ParentElement {
-	hello = 'curry'
+	hello = 'curry';
 }
+
+export const test = 'bunny';
