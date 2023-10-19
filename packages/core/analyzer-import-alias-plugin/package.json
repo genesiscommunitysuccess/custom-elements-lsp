@@ -3,7 +3,7 @@
   "version": "2.1.0",
   "description": "",
   "type": "module",
-  "main": "./out",
+  "main": "./dist",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"

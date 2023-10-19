@@ -3,12 +3,17 @@ import { create } from '@custom-elements-manifest/analyzer/src/create.js';
 import ts from 'typescript';
 import importAliasPlugin from './index.js';
 
-const defaultCode = fs.readFileSync('fixtures/default/sourcecode/default.js').toString();
-const superclassCode = fs.readFileSync('fixtures/default/sourcecode/superclass.js').toString();
+const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
+const parentFilePath = '/test/fixtures/default/sourcecode/superclass.js';
+
+const defaultCode = fs.readFileSync(process.cwd() + baseFilePath).toString();
+const superclassCode = fs.readFileSync(process.cwd() + parentFilePath).toString();
 
 const modules = [
-  ts.createSourceFile('my-element.js', defaultCode, ts.ScriptTarget.ES2021, true),
-  ts.createSourceFile('super-class.js', superclassCode, ts.ScriptTarget.ES2021, true),
+  ts.createSourceFile(baseFilePath, defaultCode, ts.ScriptTarget.ES2021, true),
+  ts.createSourceFile(parentFilePath, superclassCode, ts.ScriptTarget.ES2021, true),
 ];
+
+console.log(modules);
 
 console.log(JSON.stringify(create({ modules, plugins: [importAliasPlugin({})] }), null, 2));
