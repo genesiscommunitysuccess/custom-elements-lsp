@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.1...v2.1.2) (2023-10-20)
+
+
+### Bug Fixes
+
+* bump audit package versions [FUI-1529](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1529) (#61) 2c8344e
+
 ## [2.1.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.0...v2.1.1) (2023-10-20)
 
 
