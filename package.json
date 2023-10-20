@@ -49,6 +49,7 @@
     "@commitlint/config-conventional": "^17.6.7",
     "@commitlint/format": "^17.4.4",
     "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -67,7 +68,8 @@
     "lerna": "7.2.0",
     "lint-staged": "^13.2.2",
     "rimraf": "5.0.5",
-    "semantic-release": "21.0.7"
+    "semantic-release": "21.0.7",
+    "semantic-release-replace-plugin": "^1.2.7"
   },
   "workspaces": [
     "packages/core/*",
@@ -76,9 +78,5 @@
   "directories": {
     "doc": "docs"
   },
-  "author": "",
-  "dependencies": {
-    "@semantic-release/exec": "^6.0.3",
-    "semantic-release-replace-plugin": "^1.2.7"
-  }
+  "author": ""
 }
