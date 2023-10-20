@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.0...v2.1.1) (2023-10-20)
+
+
+### Bug Fixes
+
+* remove source files from dist bundle [FUI-1516](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1516) (#60) 3213d74
+
 ## [2.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.0.1...v2.1.0) (2023-10-16)
 
 
