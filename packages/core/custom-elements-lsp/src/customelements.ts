@@ -34,12 +34,12 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     private diagnostics: PartialDiagnosticsService[],
     private completions: PartialCompletionsService[],
     private metadata: PartialMetadataService[],
-    private servicesReady: () => boolean
+    private servicesReady: () => boolean,
   ) {
     logger.log('Setting up customelements class');
   }
 
-  getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
+  getServiceDiagnostics(context: TemplateContext): Diagnostic[] {
     if (!this.servicesReady()) {
       return [];
     }
@@ -54,7 +54,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
         service.getSemanticDiagnostics
           ? service.getSemanticDiagnostics({ context, diagnostics: acum, root })
           : acum,
-      diagnostics
+      diagnostics,
     );
   }
 
@@ -72,7 +72,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     this.logger.log(`getCompletionsAtPosition: ${JSON.stringify(position)}`);
     const typeAndParam = getTokenTypeWithInfo(context, position);
     this.logger.log(
-      `getCompletionsAtPosition: ${typeAndParam.key}, ${JSON.stringify(typeAndParam.params)}`
+      `getCompletionsAtPosition: ${typeAndParam.key}, ${JSON.stringify(typeAndParam.params)}`,
     );
 
     return this.completions.reduce(
@@ -84,13 +84,13 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
               typeAndParam,
             })
           : acum,
-      baseCompletionInfo
+      baseCompletionInfo,
     );
   }
 
   getDefinitionAndBoundSpan(
     context: TemplateContext,
-    position: LineAndCharacter
+    position: LineAndCharacter,
   ): DefinitionInfoAndBoundSpan {
     if (!this.servicesReady()) {
       return {
@@ -105,7 +105,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
 
   getQuickInfoAtPosition(
     context: TemplateContext,
-    position: LineAndCharacter
+    position: LineAndCharacter,
   ): QuickInfo | undefined {
     if (!this.servicesReady()) {
       return undefined;
@@ -117,7 +117,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     }
 
     const tokenEndPosition: LineAndCharacter = context.toPosition(
-      maybeTokenSpan.start + maybeTokenSpan.length
+      maybeTokenSpan.start + maybeTokenSpan.length,
     );
 
     const tokenTypeWithInfo = getTokenTypeWithInfo(context, tokenEndPosition);
@@ -142,7 +142,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
               typeAndParam: tokenTypeWithInfo,
             })
           : acum,
-      undefined
+      undefined,
     );
   }
 }
