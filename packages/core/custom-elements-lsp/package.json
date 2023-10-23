@@ -37,7 +37,7 @@
   "scripts": {
     "bootstrap:module": "npm run build",
     "build": "tsc -b ./src/tsconfig.json",
-    "build:watch": "tsc --watch",
+    "build:watch": "tsc -b ./src/tsconfig.json --watch",
     "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "test:unit": "jest",
@@ -86,6 +86,6 @@
     "lint-staged": "^13.2.2",
     "semantic-release": "21.0.7",
     "ts-jest": "^29.1.0",
-    "typescript": "^4.4.3"
+    "typescript": "4.9.5"
   }
 }
