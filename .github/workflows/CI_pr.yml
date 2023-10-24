@@ -26,5 +26,5 @@ jobs:
       - name: Lint
         run: npm run lint:eslint:all
 
-      - name: Unit Test
-        run: npm run test:unit
+      - name: Tests
+        run: npm run test

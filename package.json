@@ -31,6 +31,7 @@
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
     "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "release": "semantic-release",
+    "test": "npm run test:unit",
     "test:unit": "lerna run test:unit"
   },
   "husky": {
