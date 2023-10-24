@@ -18,9 +18,7 @@ type Create = (args: {
   modules: ts.SourceFile[];
   plugins?: any[];
   context?: { dev: boolean };
-}) => Package & {
-  readme: string;
-};
+}) => Package;
 
 export type CreateAPI = ReturnType<typeof getAnalyzerCreateHarness>;
 export const getAnalyzerCreateHarness = async () =>

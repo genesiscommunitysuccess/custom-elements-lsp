@@ -12,11 +12,39 @@ export const baseCase: Package = {
           kind: 'class',
           description: '',
           name: 'MyElement',
-          members: [{ kind: 'field', name: 'baz', type: { text: 'string' }, default: "'qix'" }],
+          members: [
+            {
+              kind: 'field',
+              name: 'baz',
+              type: {
+                text: 'string',
+              },
+              default: "'qix'",
+            },
+          ],
           superclass: {
             name: 'ParentElement',
             module: '//test/fixtures/default/sourcecode/superclass',
           },
+        },
+        {
+          kind: 'class',
+          description: '',
+          name: 'AnotherElement',
+          members: [
+            {
+              kind: 'field',
+              name: 'a',
+              type: {
+                text: 'string',
+              },
+              default: "'b'",
+            },
+          ],
+          superclass: {
+            name: 'HTMLElement',
+          },
+          customElement: true,
         },
       ],
       exports: [
@@ -25,6 +53,14 @@ export const baseCase: Package = {
           name: 'MyElement',
           declaration: {
             name: 'MyElement',
+            module: '/test/fixtures/default/sourcecode/default.js',
+          },
+        },
+        {
+          kind: 'js',
+          name: 'AnotherElement',
+          declaration: {
+            name: 'AnotherElement',
             module: '/test/fixtures/default/sourcecode/default.js',
           },
         },
@@ -38,7 +74,16 @@ export const baseCase: Package = {
           kind: 'class',
           description: '',
           name: 'MyElement',
-          members: [{ kind: 'field', name: 'foo', type: { text: 'string' }, default: "'bar'" }],
+          members: [
+            {
+              kind: 'field',
+              name: 'foo',
+              type: {
+                text: 'string',
+              },
+              default: "'bar'",
+            },
+          ],
         },
       ],
       exports: [

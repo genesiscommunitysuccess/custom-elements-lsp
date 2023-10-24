@@ -25,3 +25,26 @@ describe('when using no parameters', () => {
     expect(res).toEqual(baseCase);
   });
 });
+
+describe('when transforming an import not matching any import', () => {
+  it('produces the base-case manifest where the superclass is ignored', async () => {
+    const res = await buildTestCase({ noMatch: {} });
+    expect(res).toEqual(baseCase);
+  });
+});
+
+describe('when transforming an import not matching any override setting', () => {
+  it('produces the base-case manifest where the superclass is ignored', async () => {
+    const res = await buildTestCase({ ['my-library']: { override: { noMatch: 'null' } } });
+    expect(res).toEqual(baseCase);
+  });
+});
+
+describe('when transforming an import using a specific override', () => {
+  it('the matched override is changed and any child class is prepended with s_', async () => {
+    const res = await buildTestCase({
+      ['my-library']: { override: { ParentElement: 'MyElement' } },
+    });
+    expect(res).toEqual(baseCase);
+  });
+});

@@ -1,4 +1,5 @@
 import { Plugin } from '@custom-elements-manifest/analyzer';
+import * as ts from 'typescript';
 
 const name = 'analyzer-import-alias-plugin';
 
@@ -15,38 +16,30 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
   return {
     name,
     // Runs for all modules in a project, before continuing to the `analyzePhase`
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     collectPhase({ ts, node, context }) {},
     // Runs for each module
+    // eslint-disable-next-line @typescript-eslint/no-shadow
     analyzePhase({ ts, node, moduleDoc, context }) {
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
         case ts.SyntaxKind.ClassDeclaration:
-          const className = (node as any).name.getText();
-          (node as any)?.jsDoc?.forEach((jsDoc: any) => {
-            jsDoc.tags?.forEach((tag: any) => {
-              if (tag.tagName.getText() === 'inheritance') {
-                const maybeMatches = [...tag.comment.match(/(\w+)\s+->\s+(\w+)/)];
-                const matchLen = 3;
-                if (maybeMatches.length === matchLen) {
-                  const [_, superclassName, subclassName] = maybeMatches;
-                  const classDeclaration = (moduleDoc as any)?.declarations.find(
-                    (declaration: any) => declaration.name === className,
-                  );
-                  const exportDeclaration = (moduleDoc as any)?.exports.find(
-                    (exp: any) => exp.name === className,
-                  );
-                  debugger;
-                  if (classDeclaration?.superclass?.name && exportDeclaration.declaration?.name) {
-                    classDeclaration.superclass.name = superclassName;
-                    classDeclaration.name = subclassName;
-                    exportDeclaration.name = subclassName;
-                    exportDeclaration.declaration.name = subclassName;
-                  }
-                  debugger;
-                }
-              }
-            });
-          });
+          debugger;
+          const classDeclerationNode = node as ts.ClassDeclaration;
+          const className = classDeclerationNode.name?.getText();
+          const maybeParentName = (
+            classDeclerationNode.heritageClauses
+              ?.find(
+                ({ token, parent }) =>
+                  token === ts.SyntaxKind.ExtendsKeyword &&
+                  parent.kind === ts.SyntaxKind.ClassDeclaration,
+              )
+              ?.types.find(
+                ({ parent, expression }) =>
+                  parent.kind === ts.SyntaxKind.HeritageClause &&
+                  expression.kind === ts.SyntaxKind.Identifier,
+              )?.expression as ts.Identifier | undefined
+          )?.escapedText;
       }
     },
     moduleLinkPhase({ moduleDoc, context }) {},
