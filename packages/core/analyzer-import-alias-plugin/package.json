@@ -4,6 +4,7 @@
   "description": "",
   "type": "module",
   "main": "./dist",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"

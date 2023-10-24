@@ -4,6 +4,7 @@
     "target": "es2021",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
 		"moduleResolution": "Node",
     "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
+    "declaration": true, /* Emit .d.ts files */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */
     "forceConsistentCasingInFileNames": true,            /* Ensure that casing is correct in imports. */
     "strict": true,                                      /* Enable all strict type-checking options. */
