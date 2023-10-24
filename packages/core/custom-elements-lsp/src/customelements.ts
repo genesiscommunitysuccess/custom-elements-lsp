@@ -39,7 +39,7 @@ export class CustomElementsLanguageService implements TemplateLanguageService {
     logger.log('Setting up customelements class');
   }
 
-  getServiceDiagnostics(context: TemplateContext): Diagnostic[] {
+  getSemanticDiagnostics(context: TemplateContext): Diagnostic[] {
     if (!this.servicesReady()) {
       return [];
     }
