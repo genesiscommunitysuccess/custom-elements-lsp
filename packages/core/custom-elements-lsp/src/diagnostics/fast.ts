@@ -18,7 +18,10 @@ import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
  * for FAST.
  */
 export class FASTDiagnosticsService implements PartialDiagnosticsService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     this.logger.log('Setting up FAST Enhancement Diagnostics Service');
   }
 
@@ -49,8 +52,8 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     if (!res) {
       this.logger.log(
         `filterValidAttributes: Failed to parse diagnostic message: ${JSON.stringify(
-          diag.messageText
-        )}`
+          diag.messageText,
+        )}`,
       );
       return diag;
     }
@@ -76,7 +79,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
   private checkOrTransformEventAttribute(
     diag: Diagnostic,
     attr: string,
-    tagName: string
+    tagName: string,
   ): Diagnostic | null {
     const totalEventsNameMap = getStore(this.logger).TSUnsafeGetOrAdd('total-events-names', () => {
       const totalEventsNames = this.services.customElements

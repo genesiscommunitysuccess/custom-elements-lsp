@@ -9,7 +9,7 @@ import { FASTDiagnosticsService } from './fast';
 
 const getFASTDiagnosticsService = (
   ce: CustomElementsService,
-  gd: GlobalDataRepository = getGDServiceFromStubbedResource()
+  gd: GlobalDataRepository = getGDServiceFromStubbedResource(),
 ) => new FASTDiagnosticsService(getLogger(), buildServices({ customElements: ce, globalData: gd }));
 
 const file = 'test-file' as unknown as SourceFile;
@@ -121,7 +121,7 @@ describe('checkOrTransformEventAttribute', () => {
     const res = (service as any).checkOrTransformEventAttribute(
       validEventDiagnostic,
       'event',
-      'custom-element'
+      'custom-element',
     );
     expect(res).toBe(null);
   });
@@ -139,7 +139,7 @@ describe('checkOrTransformEventAttribute', () => {
     const res = (service as any).checkOrTransformEventAttribute(
       validEventDiagnostic,
       'event',
-      'custom-element'
+      'custom-element',
     );
     expect(res).toBe(null);
   });
@@ -157,7 +157,7 @@ describe('checkOrTransformEventAttribute', () => {
     const res = (service as any).checkOrTransformEventAttribute(
       invalidEventDiagnostic,
       'unknown',
-      'custom-element'
+      'custom-element',
     );
     expect(res).toEqual({
       category: 0,

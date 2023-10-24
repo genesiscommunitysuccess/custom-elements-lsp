@@ -86,12 +86,12 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
         diagnostics,
         completions,
         metadata,
-        services.servicesReady
+        services.servicesReady,
       ),
       {
         tags: ['html'], // Could add for css too
         enableForStringWithSubstitutions: true,
-      }
+      },
     );
   }
 
@@ -117,7 +117,7 @@ function initServices({
     logger,
     io,
     mixinParserConfigDefaults(config.parser),
-    config.fastEnable
+    config.fastEnable,
   );
   const cemRepository = new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
     designSystemPrefix: config.designSystemPrefix,

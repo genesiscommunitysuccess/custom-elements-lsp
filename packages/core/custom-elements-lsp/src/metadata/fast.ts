@@ -8,7 +8,10 @@ import { PartialMetadataService, QuickInfoCtx } from './metadata.types';
 /**
  */
 export class FASTMetadataService implements PartialMetadataService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     this.logger.log(`Setting up FAST enhanced FASTMetadataService`);
   }
 
@@ -31,7 +34,7 @@ export class FASTMetadataService implements PartialMetadataService {
   private quickInfoFASTAttribute(
     tokenSpan: TextSpan,
     attrName: string,
-    tagName: string
+    tagName: string,
   ): QuickInfo | undefined {
     let maybeRes: Partial<CustomElementAttribute> | undefined = undefined;
     let type: 'attribute' | 'event' | 'property' = 'attribute';

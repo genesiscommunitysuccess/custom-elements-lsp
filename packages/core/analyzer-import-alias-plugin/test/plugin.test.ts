@@ -1,6 +1,6 @@
-import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import fs from 'fs';
 import ts from 'typescript';
+import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 
 const buildTestCase = async (config: ImportAliasPluginOptions) => {

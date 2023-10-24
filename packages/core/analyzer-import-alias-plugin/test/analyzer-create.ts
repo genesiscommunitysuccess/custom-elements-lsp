@@ -14,7 +14,11 @@ import * as ts from 'typescript';
  */
 const dynamicImport = new Function('specifier', 'return import(specifier)');
 
-type Create = (args: { modules: ts.SourceFile[]; plugins?: any[]; context?: { dev: boolean } }) => Package & {
+type Create = (args: {
+  modules: ts.SourceFile[];
+  plugins?: any[];
+  context?: { dev: boolean };
+}) => Package & {
   readme: string;
 };
 

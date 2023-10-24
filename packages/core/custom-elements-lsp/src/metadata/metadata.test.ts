@@ -27,7 +27,7 @@ const getMetadataService = ({
 }) =>
   new CoreMetadataServiceImpl(
     getLogger(),
-    buildServices({ customElements: ce, globalData: gd, io })
+    buildServices({ customElements: ce, globalData: gd, io }),
   );
 
 const baseFakeIOService: IOService = {
@@ -66,7 +66,7 @@ describe('tryFindPathOfDependencyFile', () => {
     (resolvePkg as jest.Mock).mockImplementationOnce(() => '/path/to/pkg');
     const res = (service as any).tryFindPathOfDependencyFile(
       'no-attr',
-      'node_modules/pkg/dist/src/components/misc/no-attr.ts'
+      'node_modules/pkg/dist/src/components/misc/no-attr.ts',
     );
     expect(res).toBe('/path/to/pkg/dist/src/components/misc/no-attr.ts');
   });
@@ -83,7 +83,7 @@ describe('tryFindPathOfDependencyFile', () => {
     (resolvePkg as jest.Mock).mockImplementationOnce(() => '/path/to/pkg');
     const res = (service as any).tryFindPathOfDependencyFile(
       'no-attr',
-      'node_modules/pkg/dist/src/components/misc/no-attr.ts'
+      'node_modules/pkg/dist/src/components/misc/no-attr.ts',
     );
     expect(res).toBe('/path/to/pkg/dist/esm/components/misc/no-attr.js');
     expect(fakeIOService.fileExists).toHaveBeenCalledTimes(2);
@@ -101,7 +101,7 @@ describe('tryFindPathOfDependencyFile', () => {
     (resolvePkg as jest.Mock).mockImplementationOnce(() => '/path/to/pkg');
     const res = (service as any).tryFindPathOfDependencyFile(
       'no-attr',
-      'node_modules/pkg/dist/src/components/misc/no-attr.ts'
+      'node_modules/pkg/dist/src/components/misc/no-attr.ts',
     );
     expect(res).toBeNull();
     expect(fakeIOService.fileExists).toHaveBeenCalledTimes(2);
@@ -124,7 +124,7 @@ describe('getCustomElementDefinitionInfo', () => {
       err = error;
     }
     expect((err as Error).message).toBe(
-      "Couldn't find path for custom element with tagName: unknown-elem"
+      "Couldn't find path for custom element with tagName: unknown-elem",
     );
   });
 
@@ -158,13 +158,13 @@ describe('getCustomElementDefinitionInfo', () => {
       err = error;
     }
     expect((err as Error).message).toBe(
-      "Couldn't find definition for custom element with tagName: custom-element defined in file /path/to/current/project/src/components/avatar/avatar.ts"
+      "Couldn't find definition for custom element with tagName: custom-element defined in file /path/to/current/project/src/components/avatar/avatar.ts",
     );
     expect(fakeIOService.getNormalisedRootPath).toHaveBeenCalledTimes(1);
     expect(fakeIOService.getLocationOfStringInFile).toHaveBeenCalledTimes(1);
     expect(fakeIOService.getLocationOfStringInFile).toHaveBeenCalledWith(
       '/path/to/current/project/src/components/avatar/avatar.ts',
-      'custom-element'
+      'custom-element',
     );
   });
 
@@ -178,7 +178,7 @@ describe('getCustomElementDefinitionInfo', () => {
     const res = (service as any).getCustomElementDefinitionInfo(
       tokenSpan,
       'custom-element',
-      context
+      context,
     );
     expect(res).toEqual({
       textSpan: tokenSpan,
@@ -209,7 +209,7 @@ describe('getCustomElementDefinitionInfo', () => {
     const service = getMetadataService({ io: fakeIOService });
     const depFnSpy = jest.spyOn(service as any, 'tryFindPathOfDependencyFile');
     depFnSpy.mockImplementationOnce(
-      () => '/path/to/current/project/node_modules/pkg/dist/esm/components/misc/no-attr.js'
+      () => '/path/to/current/project/node_modules/pkg/dist/esm/components/misc/no-attr.js',
     );
 
     const res = (service as any).getCustomElementDefinitionInfo(tokenSpan, 'no-attr', context);
@@ -328,7 +328,7 @@ describe('quickInfoForPlainHTMLElement', () => {
       err = error;
     }
     expect((err as Error).message).toBe(
-      'Unable to get quickinfo for unknown element: "unknownelement"'
+      'Unable to get quickinfo for unknown element: "unknownelement"',
     );
   });
 
@@ -407,7 +407,7 @@ describe('quickInfoForCustomElement', () => {
       err = error;
     }
     expect((err as Error).message).toBe(
-      'Unable to get quickinfo for unknown custom element: "unknown-element"'
+      'Unable to get quickinfo for unknown custom element: "unknown-element"',
     );
   });
 
@@ -597,7 +597,7 @@ describe('quickInfoForPlainHTMLAttribute', () => {
     const res = (service as any).quickInfoForPlainHTMLAttribute(
       tokenSpan,
       'href',
-      'unknownelement'
+      'unknownelement',
     );
     expect(res).toBeUndefined();
   });
@@ -613,7 +613,7 @@ describe('quickInfoForPlainHTMLAttribute', () => {
     const res = (service as any).quickInfoForPlainHTMLAttribute(
       tokenSpan,
       ':member',
-      'custom-element'
+      'custom-element',
     );
     expect(res).toBeUndefined();
   });

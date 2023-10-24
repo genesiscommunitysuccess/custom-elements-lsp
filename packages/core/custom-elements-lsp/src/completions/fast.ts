@@ -22,13 +22,16 @@ import { CompletionCtx, PartialCompletionsService } from './completions.types';
  * for FAST.
  */
 export class FASTCompletionsService implements PartialCompletionsService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     this.logger.log('Setting up FAST Enhancement Completions Service');
   }
 
   getCompletionsAtPosition(
     completions: CompletionInfo,
-    { typeAndParam, position, context }: CompletionCtx
+    { typeAndParam, position, context }: CompletionCtx,
   ): CompletionInfo {
     const { key, params } = typeAndParam;
 
@@ -51,17 +54,17 @@ export class FASTCompletionsService implements PartialCompletionsService {
     completions: CompletionEntry[],
     position: LineAndCharacter,
     context: TemplateContext,
-    tagName: string
+    tagName: string,
   ): CompletionEntry[] {
     const replacementSpan = getWholeTextReplacementSpan(position, context);
     const withConvertedEvents = this.convertFastEventAttributes(completions, replacementSpan);
     const withBooleanBindings = this.addDynamicBooleanBindings(
       withConvertedEvents,
-      replacementSpan
+      replacementSpan,
     );
     const withElementsEvents = this.addAllElementsEventCompletions(
       withBooleanBindings,
-      replacementSpan
+      replacementSpan,
     );
     const withElementMembers = this.addElementMembers(withElementsEvents, replacementSpan, tagName);
     return withElementMembers;
@@ -70,7 +73,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
   private addElementMembers(
     completions: CompletionEntry[],
     replacementSpan: TextSpan,
-    tagName: string
+    tagName: string,
   ): CompletionEntry[] {
     return completions.concat(
       this.services.customElements
@@ -87,13 +90,13 @@ export class FASTCompletionsService implements PartialCompletionsService {
           isSnippet: true,
           replacementSpan,
           kindModifiers: privacy + (isStatic ? ',static' : '') + (deprecated ? ',deprecated' : ''),
-        }))
+        })),
     );
   }
 
   private addAllElementsEventCompletions(
     completions: CompletionEntry[],
-    replacementSpan: TextSpan
+    replacementSpan: TextSpan,
   ): CompletionEntry[] {
     return completions.concat(
       this.services.customElements.getAllEvents().map(({ name, referenceClass }) => ({
@@ -106,13 +109,13 @@ export class FASTCompletionsService implements PartialCompletionsService {
         },
         isSnippet: true,
         replacementSpan,
-      }))
+      })),
     );
   }
 
   private addDynamicBooleanBindings(
     completions: CompletionEntry[],
-    replacementSpan: TextSpan
+    replacementSpan: TextSpan,
   ): CompletionEntry[] {
     return completions
       .map((completion) => {
@@ -137,7 +140,7 @@ export class FASTCompletionsService implements PartialCompletionsService {
 
   private convertFastEventAttributes(
     completions: CompletionEntry[],
-    replacementSpan: TextSpan
+    replacementSpan: TextSpan,
   ): CompletionEntry[] {
     return completions.map((completion) => {
       if (completion?.labelDetails?.detail?.includes('event')) {

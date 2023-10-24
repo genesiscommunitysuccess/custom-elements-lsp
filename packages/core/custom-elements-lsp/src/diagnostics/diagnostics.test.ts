@@ -21,11 +21,11 @@ import { TagsWithAttrs } from './diagnostics.types';
 
 const getDiagnosticsService = (
   ce: CustomElementsService,
-  gd: GlobalDataRepository = getGDServiceFromStubbedResource()
+  gd: GlobalDataRepository = getGDServiceFromStubbedResource(),
 ) =>
   new CoreDiagnosticsServiceImpl(
     getLogger(),
-    buildServices({ customElements: ce, globalData: gd })
+    buildServices({ customElements: ce, globalData: gd }),
   );
 
 const getElements = (context: TemplateContext) => parse(context.rawText).querySelectorAll('*');
@@ -620,7 +620,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       e = error;
     }
     expect((e as any).message).toEqual(
-      'buildAttributeDiagnosticMessage: cannot build message for valid attribute'
+      'buildAttributeDiagnosticMessage: cannot build message for valid attribute',
     );
   });
 
@@ -632,7 +632,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       'custom-element',
       'test-file',
       5,
-      10
+      10,
     );
 
     expect(res).toEqual({
@@ -653,7 +653,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       'p',
       'test-file',
       5,
-      10
+      10,
     );
 
     expect(res).toEqual({
@@ -674,7 +674,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       'custom-element',
       'test-file',
       5,
-      10
+      10,
     );
 
     expect(res).toEqual({
@@ -697,7 +697,7 @@ describe('buildAttributeDiagnosticMessage', () => {
       'custom-element',
       'test-file',
       5,
-      10
+      10,
     );
 
     expect(res).toEqual({

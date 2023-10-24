@@ -35,15 +35,14 @@ const testCaseFour = html`
 
 // This looks strange because it is testing a template string that is defined on the second indentation level
 function getTestCaseFive() {
-  return (() =>
-    html`
-      <template>
-        <div>
-          <test-ce></test-ce>
-          <invalid-ce></invalid-ce>
-        </div>
-      </template>
-    `)();
+  return (() => html`
+    <template>
+      <div>
+        <test-ce></test-ce>
+        <invalid-ce></invalid-ce>
+      </div>
+    </template>
+  `)();
 }
 
 describe('toOffset', () => {

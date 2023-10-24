@@ -13,7 +13,7 @@ let manifest: string;
  * Builds a stubbed `CustomElementsResource` and constructs a `CustomElementsServiceImpl`.
  */
 export const getCEServiceFromStubbedResource = (
-  override: Map<string, CustomElementDef> = new Map()
+  override: Map<string, CustomElementDef> = new Map(),
 ) => {
   const resource = {
     data: new Map<string, CustomElementDef>(),
@@ -81,7 +81,7 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
     if (!existsSync(MANIFSST_PATH)) {
       console.error(`ERROR: tests require manifest from /example application to exists.`);
       console.error(
-        `ERROR: to generate manifest go into the 'example' directory and run 'npm run lsp:analyze'`
+        `ERROR: to generate manifest go into the 'example' directory and run 'npm run lsp:analyze'`,
       );
       process.exit(1);
     }
@@ -101,7 +101,7 @@ export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTCon
     {
       designSystemPrefix: 'example',
       ...configOverride,
-    }
+    },
   );
 
   // Bypass requirements for async events by manually calling the transformation function

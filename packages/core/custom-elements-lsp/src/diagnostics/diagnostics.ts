@@ -21,7 +21,10 @@ import {
 } from './diagnostics.types';
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     this.logger.log('Setting up Diagnostics');
   }
 
@@ -45,7 +48,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
    */
   private diagnosticsUnknownTags(
     context: TemplateContext,
-    elementList: HTMLElement[]
+    elementList: HTMLElement[],
   ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
 
@@ -110,7 +113,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
    */
   private diagnosticsInvalidElemAttribute(
     context: TemplateContext,
-    elementList: HTMLElement[]
+    elementList: HTMLElement[],
   ): Diagnostic[] {
     const sourceFile = context.node.getSourceFile();
     const validTagNames = this.services.customElements
@@ -170,7 +173,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           tagName,
           sourceFile,
           attrStart,
-          attr.length
+          attr.length,
         );
       });
   }
@@ -186,7 +189,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
           .getAriaAttributes()
           .map((attr) => [attr, { name: attr, type: 'string', deprecated: false }]);
         return globalAttrTuples.concat(globalAttrAriaTuples);
-      }
+      },
     );
     return globalAttrWithAriaTuples;
   }
@@ -204,7 +207,7 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
         const attrMap = new Map(
           elemsAttrs
             .map((elemAttr) => [elemAttr.name, elemAttr] as const)
-            .concat(this.buildGlobalAttributeArray())
+            .concat(this.buildGlobalAttributeArray()),
         );
 
         return attrs
@@ -240,13 +243,13 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
     tagName: string,
     file: ts.SourceFile,
     start: number,
-    length: number
+    length: number,
   ): Diagnostic {
     const isCE = tagName.includes('-');
     switch (classification) {
       case 'valid':
         throw new Error(
-          'buildAttributeDiagnosticMessage: cannot build message for valid attribute'
+          'buildAttributeDiagnosticMessage: cannot build message for valid attribute',
         );
       case 'unknown':
         return {

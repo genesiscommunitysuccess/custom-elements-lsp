@@ -13,7 +13,7 @@ export class TypescriptCompilerIORepository implements IORepository {
   constructor(
     private logger: Logger,
     private compilerHost: CompilerHost,
-    private projectRootOffset: string
+    private projectRootOffset: string,
   ) {
     this.logger.log('setting up TypescriptCompilerIORepository');
   }
@@ -24,7 +24,7 @@ export class TypescriptCompilerIORepository implements IORepository {
 
   getNormalisedRootPath(): string {
     return nodepath.normalize(
-      this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/'
+      this.compilerHost.getDefaultLibLocation?.() + '/' + this.projectRootOffset + '/',
     );
   }
 
