@@ -19,7 +19,7 @@ const buildTestCase = async (config: ImportAliasPluginOptions) => {
 };
 
 describe('when using no parameters', () => {
-  it('test', async () => {
+  it('placeholder test', async () => {
     const res = await buildTestCase({});
     expect(res.modules[0]?.declarations?.[0]?.kind).toBe('class');
   });
