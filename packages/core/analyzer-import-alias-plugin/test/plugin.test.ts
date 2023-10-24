@@ -2,6 +2,7 @@ import fs from 'fs';
 import ts from 'typescript';
 import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
+import { baseCase } from './fixtures/default/unittest';
 
 const buildTestCase = async (config: ImportAliasPluginOptions) => {
   const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
@@ -19,8 +20,8 @@ const buildTestCase = async (config: ImportAliasPluginOptions) => {
 };
 
 describe('when using no parameters', () => {
-  it('placeholder test', async () => {
+  it('produces the base-case manifest where the superclass is ignored', async () => {
     const res = await buildTestCase({});
-    expect(res.modules[0]?.declarations?.[0]?.kind).toBe('class');
+    expect(res).toEqual(baseCase);
   });
 });
