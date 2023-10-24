@@ -13,7 +13,7 @@ export type ImportAliasPluginOptions = {
 
 export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
   return {
-    name: 'my-plugin',
+    name,
     // Runs for all modules in a project, before continuing to the `analyzePhase`
     collectPhase({ ts, node, context }) {},
     // Runs for each module

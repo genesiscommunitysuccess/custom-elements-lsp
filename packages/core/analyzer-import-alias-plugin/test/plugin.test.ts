@@ -4,8 +4,8 @@ import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 
 const buildTestCase = async (config: ImportAliasPluginOptions) => {
-  const baseFilePath = '/fixtures/default/sourcecode/default.js';
-  const parentFilePath = '/fixtures/default/sourcecode/superclass.js';
+  const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
+  const parentFilePath = '/test/fixtures/default/sourcecode/superclass.js';
 
   const defaultCode = fs.readFileSync(process.cwd() + baseFilePath).toString();
   const superclassCode = fs.readFileSync(process.cwd() + parentFilePath).toString();
