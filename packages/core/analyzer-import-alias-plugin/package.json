@@ -22,7 +22,7 @@
     "clean:dist": "rimraf ./dist",
     "dev": "tsc-watch --project ./src --outDir ./dist --onSuccess \"nodemon ./dist/dev.js\"",
     "start:debug": "node --inspect-brk ./dist/dev.js",
-    "test:unit": "jest",
+    "test:unit": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:unit:coverage": "jest --coverage",
     "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
     "test:unit:verbose": "cross-env TEST_LOG=1 jest",

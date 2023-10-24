@@ -2,7 +2,6 @@
   "paths": ["**/*"],
   "compilerOptions": {
     "target": "es2021",                                     /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-    "module": "ES2022",                                /* Specify what module code is generated. */
 		"moduleResolution": "Node",
     "sourceMap": true,                                /* Create source map files for emitted JavaScript files. */
     "esModuleInterop": true,                             /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables `allowSyntheticDefaultImports` for type compatibility. */

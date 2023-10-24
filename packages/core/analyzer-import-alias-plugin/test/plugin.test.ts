@@ -4,8 +4,8 @@ import ts from 'typescript';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 
 const buildTestCase = async (config: ImportAliasPluginOptions) => {
-  const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
-  const parentFilePath = '/test/fixtures/default/sourcecode/superclass.js';
+  const baseFilePath = '/fixtures/default/sourcecode/default.js';
+  const parentFilePath = '/fixtures/default/sourcecode/superclass.js';
 
   const defaultCode = fs.readFileSync(process.cwd() + baseFilePath).toString();
   const superclassCode = fs.readFileSync(process.cwd() + parentFilePath).toString();
@@ -15,17 +15,12 @@ const buildTestCase = async (config: ImportAliasPluginOptions) => {
     ts.createSourceFile(parentFilePath, superclassCode, ts.ScriptTarget.ES2021, true),
   ];
 
-  return (
-    (await getAnalyzerCreateHarness())({ modules, plugins: [importAliasPlugin(config)] }), null, 2
-  );
+  return (await getAnalyzerCreateHarness())({ modules, plugins: [importAliasPlugin(config)] });
 };
 
 describe('when using no parameters', () => {
-  it('blah', () => {
-    expect(1).toBe(1);
-  });
-
   it('test', async () => {
-    expect(await buildTestCase({})).toBe(1);
+    const res = await buildTestCase({});
+    expect(res.modules[0]?.declarations?.[0]?.kind).toBe('class');
   });
 });
