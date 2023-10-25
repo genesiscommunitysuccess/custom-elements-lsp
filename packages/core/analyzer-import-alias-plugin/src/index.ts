@@ -4,6 +4,13 @@ import * as ts from 'typescript';
 
 const pluginName = 'analyzer-import-alias-plugin';
 
+export type AppliedTransform = {
+  class: string;
+  package: string;
+  path: string;
+  superclass: string;
+};
+
 export type ImportAliasPluginOptions = {
   [moduleName: string]: {
     '*'?: (importName: string) => string;
@@ -56,15 +63,15 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
  * Apply any tranform config to the superclass name (if any) and then mangle the class
  * name to ensure it doesn't equal the new superclass name.
  * @param classDef - The class definition containing the superclass defintiion to transform.
- * @param config - The plugin config containing a potential transform.
- * @returns void - mutates the input variables
  * @param moduleDoc - The module doc containing the export definition which we need to change to match, or the definition will be culled.
+ * @param config - The plugin config containing a potential transform.
+ * @returns AppliedTransform - The transform applied to the class definition, used to reverse later. Or null if no transform was applied.
  */
 export function applySuperclassTransformMangleClass(
   classDef: ClassDeclaration,
   moduleDoc: Partial<Module>,
   config: ImportAliasPluginOptions,
-): void {
+): AppliedTransform | null {
   if (!classDef?.superclass?.package) {
     throw new Error('Class definition does not contain a superclass definition.');
   }
@@ -80,7 +87,14 @@ export function applySuperclassTransformMangleClass(
       const maybeNewName = importConfig['*']?.(name);
       return maybeNewName === name ? undefined : maybeNewName;
     })();
-  if (!maybeNewSuperclassName) return;
+  if (!maybeNewSuperclassName) return null;
+
+  const transform: AppliedTransform = {
+    path: moduleDoc.path!,
+    class: classDef.name,
+    package: pkg!,
+    superclass: classDef.superclass.name,
+  };
 
   const originalChildClassName = classDef.name;
   classDef.superclass!.name = maybeNewSuperclassName;
@@ -91,4 +105,5 @@ export function applySuperclassTransformMangleClass(
   );
   moduleExport!.name = classDef.name;
   moduleExport!.declaration!.name = classDef.name;
+  return transform;
 }
