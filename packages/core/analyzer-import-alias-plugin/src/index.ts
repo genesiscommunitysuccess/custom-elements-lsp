@@ -1,5 +1,5 @@
 import { Plugin } from '@custom-elements-manifest/analyzer';
-import type { ClassDeclaration, Reference } from 'custom-elements-manifest';
+import type { ClassDeclaration, Reference, Module } from 'custom-elements-manifest';
 import * as ts from 'typescript';
 
 const pluginName = 'analyzer-import-alias-plugin';
@@ -36,27 +36,55 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
             classDef?.superclass?.package &&
             checkedModules.includes(classDef?.superclass?.package)
           ) {
-            processOverride(classDef, config);
+            applySuperclassTransformMangleClass(classDef, moduleDoc, config);
           }
       }
     },
     moduleLinkPhase({ moduleDoc, context }) {},
     // Runs after modules have been parsed and after post-processing
     packageLinkPhase({ customElementsManifest, context }) {
+      debugger;
       // TODO: Can I set the names back here now?
+      // TODO: Need to account for changed names if other source files import your module we change
     },
   };
 }
 
-function processOverride(classDef: ClassDeclaration, config: ImportAliasPluginOptions): void {
-  debugger;
+/**
+ * Transforms the reference to the superclass name by the specified config.
+ * @remarks
+ * Apply any tranform config to the superclass name (if any) and then mangle the class
+ * name to ensure it doesn't equal the new superclass name.
+ * @param classDef - The class definition containing the superclass defintiion to transform.
+ * @param config - The plugin config containing a potential transform.
+ * @returns void - mutates the input variables
+ * @param moduleDoc - The module doc containing the export definition which we need to change to match, or the definition will be culled.
+ */
+export function applySuperclassTransformMangleClass(
+  classDef: ClassDeclaration,
+  moduleDoc: Partial<Module>,
+  config: ImportAliasPluginOptions,
+): void {
+  if (!classDef?.superclass?.package) {
+    throw new Error('Class definition does not contain a superclass definition.');
+  }
   const { package: pkg, name } = classDef.superclass as Reference;
   const importConfig = config[pkg as string];
 
+  if (!importConfig) {
+    throw new Error('Plugin config does not contain config for superclass package');
+  }
+
   const maybeOverrideName = importConfig.override?.[name];
   if (maybeOverrideName) {
+    const originalChildClassName = classDef.name;
     classDef.superclass!.name = maybeOverrideName;
     classDef.name = `s_${classDef.name}`;
+    const moduleExport = moduleDoc.exports?.find(
+      ({ name: exportName }) => exportName === originalChildClassName,
+    );
+    moduleExport!.name = classDef.name;
+    moduleExport!.declaration!.name = classDef.name;
     return;
   }
 

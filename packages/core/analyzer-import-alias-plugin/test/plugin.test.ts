@@ -1,10 +1,18 @@
 import fs from 'fs';
+import { Plugin } from '@custom-elements-manifest/analyzer';
 import ts from 'typescript';
 import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 import { baseCase } from './fixtures/default/unittest';
 
-const buildTestCase = async (config: ImportAliasPluginOptions) => {
+/**
+ * Sets of tests for the complete flow of the plugin.
+ */
+
+const buildTestCase = async (
+  config: ImportAliasPluginOptions,
+  phaseOverrides: Partial<Plugin> = {},
+) => {
   const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
   const parentFilePath = '/test/fixtures/default/sourcecode/superclass.js';
 

@@ -24,7 +24,7 @@ export const baseCase: Package = {
           ],
           superclass: {
             name: 'ParentElement',
-            module: '//test/fixtures/default/sourcecode/superclass',
+            package: 'my-library',
           },
         },
         {

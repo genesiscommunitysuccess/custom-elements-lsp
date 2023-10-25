@@ -11,4 +11,18 @@ const modules = [
   ts.createSourceFile('super-class.js', superclassCode, ts.ScriptTarget.ES2021, true),
 ];
 
-console.log(JSON.stringify(create({ modules, plugins: [importAliasPlugin({})] }), null, 2));
+console.log(
+  JSON.stringify(
+    create({
+      modules,
+      plugins: [
+        importAliasPlugin({
+          ['my-library']: { override: { ParentElement: 'MyElement' } },
+        }),
+      ],
+      context: { dev: true },
+    }),
+    null,
+    2,
+  ),
+);
