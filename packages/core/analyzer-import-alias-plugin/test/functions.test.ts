@@ -29,13 +29,14 @@ const moduleDoc: Module = {
 describe('applySuperclassOverrideMangleClass', () => {
   describe('when there is no superclass definition on the class definition', () => {
     it('throws an error', () => {
-      const classDefNoSuperclass: ClassDeclaration = {
-        ...classDef,
-        superclass: undefined,
-      };
+      const classDefNoSuperclass: ClassDeclaration = (() => {
+        const c = structuredClone(classDef);
+        c.superclass = undefined;
+        return c;
+      })();
       let err: Error;
       try {
-        applySuperclassTransformMangleClass(classDefNoSuperclass, { ...moduleDoc }, {});
+        applySuperclassTransformMangleClass(classDefNoSuperclass, structuredClone(moduleDoc), {});
       } catch (e) {
         err = e;
       }
@@ -47,7 +48,11 @@ describe('applySuperclassOverrideMangleClass', () => {
     it('throws an error', () => {
       let err: Error;
       try {
-        applySuperclassTransformMangleClass({ ...classDef }, { ...moduleDoc }, {});
+        applySuperclassTransformMangleClass(
+          structuredClone(classDef),
+          structuredClone(moduleDoc),
+          {},
+        );
       } catch (e) {
         err = e;
       }
@@ -57,13 +62,107 @@ describe('applySuperclassOverrideMangleClass', () => {
 
   describe('when there is no transform function or override config for the superclass', () => {
     it('does not change any of the input variables', () => {
-      const classDefCopy: ClassDeclaration = {
-        ...classDef,
-      };
-      const moduleDocCopy: Module = {
-        ...moduleDoc,
-      };
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
       applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, { ['my-library']: {} });
+      expect(classDefCopy).toEqual(classDef);
+      expect(moduleDocCopy).toEqual(moduleDoc);
+    });
+  });
+
+  describe('when there is a override setting for the superclass', () => {
+    it('it changes the superclass name as specified by the token, and mangles the class name in the definition and export', () => {
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
+      applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, {
+        ['my-library']: { override: { ParentElement: 'MyElement' } },
+      });
+      expect(classDefCopy).toEqual({
+        ...classDef,
+        name: 's_MyElement',
+        superclass: { ...classDef.superclass, name: 'MyElement' },
+      });
+      expect(moduleDocCopy).toEqual({
+        ...moduleDoc,
+        exports: [
+          {
+            kind: 'js',
+            name: 's_MyElement',
+            declaration: {
+              name: 's_MyElement',
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  describe('when there is a transformer setting for the superclass', () => {
+    it('it changes the superclass name as specified by the transformer, and mangles the class name in the definition and export', () => {
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
+      applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, {
+        ['my-library']: { '*': (token: string) => token.replace('Parent', 'Super') },
+      });
+      expect(classDefCopy).toEqual({
+        ...classDef,
+        name: 's_MyElement',
+        superclass: { ...classDef.superclass, name: 'SuperElement' },
+      });
+      expect(moduleDocCopy).toEqual({
+        ...moduleDoc,
+        exports: [
+          {
+            kind: 'js',
+            name: 's_MyElement',
+            declaration: {
+              name: 's_MyElement',
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  describe('when there is a override setting and a transformer for the superclass', () => {
+    it('it changes the superclass name as specified by the token, and mangles the class name in the definition and export', () => {
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
+      applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, {
+        ['my-library']: {
+          '*': (token: string) => token.replace('Parent', 'Super'),
+          override: { ParentElement: 'MyElement' },
+        },
+      });
+      expect(classDefCopy).toEqual({
+        ...classDef,
+        name: 's_MyElement',
+        superclass: { ...classDef.superclass, name: 'MyElement' },
+      });
+      expect(moduleDocCopy).toEqual({
+        ...moduleDoc,
+        exports: [
+          {
+            kind: 'js',
+            name: 's_MyElement',
+            declaration: {
+              name: 's_MyElement',
+            },
+          },
+        ],
+      });
+    });
+  });
+
+  describe('when there is a transformer for the superclass, but it does not alter the name', () => {
+    it('does not change any of the input variables', () => {
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
+      applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, {
+        ['my-library']: {
+          '*': (token: string) => token.replace('NoMatch', 'Super'),
+        },
+      });
       expect(classDefCopy).toEqual(classDef);
       expect(moduleDocCopy).toEqual(moduleDoc);
     });

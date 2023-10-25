@@ -74,24 +74,21 @@ export function applySuperclassTransformMangleClass(
   if (!importConfig) {
     throw new Error('Plugin config does not contain config for superclass package');
   }
+  const maybeNewSuperclassName =
+    importConfig.override?.[name] ||
+    (() => {
+      const maybeNewName = importConfig['*']?.(name);
+      return maybeNewName === name ? undefined : maybeNewName;
+    })();
+  if (!maybeNewSuperclassName) return;
 
-  const maybeOverrideName = importConfig.override?.[name];
-  if (maybeOverrideName) {
-    const originalChildClassName = classDef.name;
-    classDef.superclass!.name = maybeOverrideName;
-    classDef.name = `s_${classDef.name}`;
-    const moduleExport = moduleDoc.exports?.find(
-      ({ name: exportName }) => exportName === originalChildClassName,
-    );
-    moduleExport!.name = classDef.name;
-    moduleExport!.declaration!.name = classDef.name;
-    return;
-  }
-
-  const maybeOverrideAll = importConfig['*'];
-  if (maybeOverrideAll) {
-    classDef.superclass!.name = maybeOverrideAll(name);
-    classDef.name = `s_${classDef.name}`;
-    return;
-  }
+  const originalChildClassName = classDef.name;
+  classDef.superclass!.name = maybeNewSuperclassName;
+  classDef.name = `s_${classDef.name}`;
+  // Require to update the export name to match or one of the analyzer base systems will cull the definition.
+  const moduleExport = moduleDoc.exports?.find(
+    ({ name: exportName }) => exportName === originalChildClassName,
+  );
+  moduleExport!.name = classDef.name;
+  moduleExport!.declaration!.name = classDef.name;
 }
