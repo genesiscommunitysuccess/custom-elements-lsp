@@ -188,6 +188,22 @@ describe('applySuperclassOverrideMangleClass', () => {
       expect(res).toBeNull();
     });
   });
+
+  describe('when there is a transformer for the superclass, but the child class is never exported', () => {
+    it('does not change any of the input variables, returns undefined', () => {
+      const classDefCopy: ClassDeclaration = structuredClone(classDef);
+      const moduleDocCopy: Module = structuredClone(moduleDoc);
+      moduleDocCopy.exports = [];
+      const res = applySuperclassTransformMangleClass(classDefCopy, moduleDocCopy, {
+        ['my-library']: {
+          '*': (token: string) => token.replace('Parent', 'Super'),
+        },
+      });
+      expect(classDefCopy).toEqual(classDef);
+      expect(moduleDocCopy).toEqual({ ...moduleDoc, exports: [] });
+      expect(res).toBeNull();
+    });
+  });
 });
 
 describe('reverseTransform', () => {

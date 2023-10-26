@@ -61,7 +61,6 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
     packageLinkPhase({ customElementsManifest, context }) {
       debugger;
       transforms.forEach((transform) => reverseTransform(transform, customElementsManifest));
-      // TODO: Can I set the names back here now?
       // TODO: Handle package vs module
       // TODO: Need to account for changed names if other source files import your module we change
     },
@@ -128,7 +127,12 @@ export function applySuperclassTransformMangleClass(
       const mNewName = importConfig['*']?.(name);
       return mNewName === name ? undefined : mNewName;
     })();
-  if (!mNewSuperclassName) return null;
+  // Require to update the export name to match or one of the analyzer base systems will cull the definition.
+  // If there is no export then we bail now, as that definition is culled anyway.
+  const moduleExport = moduleDoc.exports?.find(
+    ({ name: exportName }) => exportName === classDef.name,
+  );
+  if (!mNewSuperclassName || !moduleExport) return null;
 
   const transform: AppliedTransform = {
     path: moduleDoc.path!,
@@ -137,13 +141,8 @@ export function applySuperclassTransformMangleClass(
     superclass: classDef.superclass.name,
   };
 
-  const originalChildClassName = classDef.name;
   classDef.superclass!.name = mNewSuperclassName;
   classDef.name = `s_${classDef.name}`;
-  // Require to update the export name to match or one of the analyzer base systems will cull the definition.
-  const moduleExport = moduleDoc.exports?.find(
-    ({ name: exportName }) => exportName === originalChildClassName,
-  );
   moduleExport!.name = classDef.name;
   moduleExport!.declaration!.name = classDef.name;
   return transform;
