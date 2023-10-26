@@ -75,6 +75,7 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
  * @param transform - The transform applied to the class definition to reverse.
  * @param manifest - The manifest containing the class definition and export to reverse.
  * @returns void
+ * @throws Error - If the class definition, export, or module cannot be found. This should not be possible.
  */
 export function reverseTransform(transform: AppliedTransform, manifest: Package) {
   const { path, class: className, superclass, package: pkg } = transform;

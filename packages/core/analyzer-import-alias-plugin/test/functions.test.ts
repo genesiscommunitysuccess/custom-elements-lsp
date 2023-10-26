@@ -1,31 +1,31 @@
-import type { ClassDeclaration, Module } from 'custom-elements-manifest';
+import type { ClassDeclaration, Module, Package } from 'custom-elements-manifest';
 
-import { applySuperclassTransformMangleClass } from '../src/';
-
-const classDef: ClassDeclaration = {
-  kind: 'class',
-  name: 'MyElement',
-  superclass: {
-    package: 'my-library',
-    name: 'ParentElement',
-  },
-};
-
-const moduleDoc: Module = {
-  kind: 'javascript-module',
-  path: 'module.js',
-  exports: [
-    {
-      kind: 'js',
-      name: 'MyElement',
-      declaration: {
-        name: 'MyElement',
-      },
-    },
-  ],
-};
+import { AppliedTransform, applySuperclassTransformMangleClass, reverseTransform } from '../src/';
 
 describe('applySuperclassOverrideMangleClass', () => {
+  const classDef: ClassDeclaration = {
+    kind: 'class',
+    name: 'MyElement',
+    superclass: {
+      package: 'my-library',
+      name: 'ParentElement',
+    },
+  };
+
+  const moduleDoc: Module = {
+    kind: 'javascript-module',
+    path: 'module.js',
+    exports: [
+      {
+        kind: 'js',
+        name: 'MyElement',
+        declaration: {
+          name: 'MyElement',
+        },
+      },
+    ],
+  };
+
   describe('when there is no superclass definition on the class definition', () => {
     it('throws an error', () => {
       const classDefNoSuperclass: ClassDeclaration = (() => {
@@ -186,6 +186,130 @@ describe('applySuperclassOverrideMangleClass', () => {
       expect(classDefCopy).toEqual(classDef);
       expect(moduleDocCopy).toEqual(moduleDoc);
       expect(res).toBeNull();
+    });
+  });
+});
+
+describe('reverseTransform', () => {
+  const transform: AppliedTransform = {
+    class: 'MyElement',
+    superclass: 'ParentElement',
+    path: 'module.js',
+    package: 'my-library',
+  };
+  const manifest: Package = {
+    modules: [
+      {
+        path: 'module.js',
+        kind: 'javascript-module',
+        exports: [
+          {
+            kind: 'js',
+            name: 's_MyElement',
+            declaration: {
+              name: 's_MyElement',
+              module: 'module.js',
+            },
+          },
+        ],
+        declarations: [
+          {
+            kind: 'class',
+            name: 's_MyElement',
+            superclass: {
+              name: 'MyElement',
+              package: 'my-library',
+            },
+          },
+        ],
+      },
+    ],
+    schemaVersion: '1.0.0',
+  };
+
+  describe('when there are no modules in the manifest matching the transform', () => {
+    it('throws an error', () => {
+      const emptyManifest: Package = {
+        modules: [],
+        schemaVersion: '1.0.0',
+      };
+      let err: Error;
+      try {
+        reverseTransform(structuredClone(transform), emptyManifest);
+      } catch (e) {
+        err = e;
+      }
+      expect(err!.message).toEqual(
+        'Could not find the transformed class definition, export, or module.',
+      );
+    });
+  });
+
+  describe('when there is no matching declaration in the module', () => {
+    it('throws an error', () => {
+      const noMatchingDeclarationManifest: Package = structuredClone(manifest);
+      noMatchingDeclarationManifest.modules[0].declarations![0].name = 'curry';
+      let err: Error;
+      try {
+        reverseTransform(structuredClone(transform), noMatchingDeclarationManifest);
+      } catch (e) {
+        err = e;
+      }
+      expect(err!.message).toEqual(
+        'Could not find the transformed class definition, export, or module.',
+      );
+    });
+  });
+
+  describe('when there is no matching export in the module', () => {
+    it('throws an error', () => {
+      const noMatchingExportManifest: Package = structuredClone(manifest);
+      noMatchingExportManifest.modules[0].exports![0].declaration.module = 'curry';
+      let err: Error;
+      try {
+        reverseTransform(structuredClone(transform), noMatchingExportManifest);
+      } catch (e) {
+        err = e;
+      }
+      expect(err!.message).toEqual(
+        'Could not find the transformed class definition, export, or module.',
+      );
+    });
+  });
+
+  describe('when the relevant export and declaration objects match the translation', () => {
+    it('throws an error', () => {
+      const clonedManifest = structuredClone(manifest);
+      reverseTransform(structuredClone(transform), clonedManifest);
+      expect(clonedManifest).toEqual({
+        modules: [
+          {
+            declarations: [
+              {
+                kind: 'class',
+                name: 'MyElement',
+                superclass: {
+                  name: 'ParentElement',
+                  package: 'my-library',
+                },
+              },
+            ],
+            exports: [
+              {
+                declaration: {
+                  module: 'module.js',
+                  name: 'MyElement',
+                },
+                kind: 'js',
+                name: 'MyElement',
+              },
+            ],
+            kind: 'javascript-module',
+            path: 'module.js',
+          },
+        ],
+        schemaVersion: '1.0.0',
+      });
     });
   });
 });
