@@ -26,6 +26,9 @@ export type ImportAliasPluginOptions = {
   };
 };
 
+// Used to namespace the classnames of local definitions to avoid collisions
+export const NAMESPACE_PREFIX = 's_';
+
 export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
   const checkedModules = Object.keys(config);
   const transforms: AppliedTransform[] = [];
@@ -56,7 +59,17 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
           }
       }
     },
-    moduleLinkPhase({ moduleDoc, context }) {},
+    moduleLinkPhase({ moduleDoc, context }) {
+      // debugger;
+      // // PoC: Change superclass here to account for changing names
+      // // Can we just change the name of all classes?
+      // const anotherDeclaration = moduleDoc.declarations?.find(
+      // ({ name }) => name === 'AnotherElement',
+      // );
+      // if (anotherDeclaration && anotherDeclaration.kind === 'class') {
+      // anotherDeclaration!.superclass!.name = `${namespacePrefix}MyElement`;
+      // }
+    },
     // Runs after modules have been parsed and after post-processing
     packageLinkPhase({ customElementsManifest, context }) {
       debugger;
@@ -82,11 +95,12 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
   const mDeclaration = mModule?.declarations?.find(
     (declaration) =>
       'superclass' in declaration &&
-      declaration.name === `s_${className}` &&
+      declaration.name === `${NAMESPACE_PREFIX}${className}` &&
       declaration.superclass?.package === pkg,
   ) as ClassDeclaration | CustomElementDeclaration | undefined;
   const mExport = mModule?.exports?.find(
-    ({ name, declaration }) => name === `s_${className}` && declaration.module === path,
+    ({ name, declaration }) =>
+      name === `${NAMESPACE_PREFIX}${className}` && declaration.module === path,
   );
   if (!mModule || !mDeclaration || !mExport) {
     throw new Error('Could not find the transformed class definition, export, or module.');
@@ -142,7 +156,7 @@ export function applySuperclassTransformMangleClass(
   };
 
   classDef.superclass!.name = mNewSuperclassName;
-  classDef.name = `s_${classDef.name}`;
+  classDef.name = `${NAMESPACE_PREFIX}${classDef.name}`;
   moduleExport!.name = classDef.name;
   moduleExport!.declaration!.name = classDef.name;
   return transform;

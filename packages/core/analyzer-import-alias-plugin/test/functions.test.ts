@@ -1,6 +1,11 @@
 import type { ClassDeclaration, Module, Package } from 'custom-elements-manifest';
 
-import { AppliedTransform, applySuperclassTransformMangleClass, reverseTransform } from '../src/';
+import {
+  AppliedTransform,
+  applySuperclassTransformMangleClass,
+  NAMESPACE_PREFIX,
+  reverseTransform,
+} from '../src/';
 
 describe('applySuperclassOverrideMangleClass', () => {
   const classDef: ClassDeclaration = {
@@ -81,7 +86,7 @@ describe('applySuperclassOverrideMangleClass', () => {
       });
       expect(classDefCopy).toEqual({
         ...classDef,
-        name: 's_MyElement',
+        name: `${NAMESPACE_PREFIX}MyElement`,
         superclass: { ...classDef.superclass, name: 'MyElement' },
       });
       expect(moduleDocCopy).toEqual({
@@ -89,9 +94,9 @@ describe('applySuperclassOverrideMangleClass', () => {
         exports: [
           {
             kind: 'js',
-            name: 's_MyElement',
+            name: `${NAMESPACE_PREFIX}MyElement`,
             declaration: {
-              name: 's_MyElement',
+              name: `${NAMESPACE_PREFIX}MyElement`,
             },
           },
         ],
@@ -114,7 +119,7 @@ describe('applySuperclassOverrideMangleClass', () => {
       });
       expect(classDefCopy).toEqual({
         ...classDef,
-        name: 's_MyElement',
+        name: `${NAMESPACE_PREFIX}MyElement`,
         superclass: { ...classDef.superclass, name: 'SuperElement' },
       });
       expect(moduleDocCopy).toEqual({
@@ -122,9 +127,9 @@ describe('applySuperclassOverrideMangleClass', () => {
         exports: [
           {
             kind: 'js',
-            name: 's_MyElement',
+            name: `${NAMESPACE_PREFIX}MyElement`,
             declaration: {
-              name: 's_MyElement',
+              name: `${NAMESPACE_PREFIX}MyElement`,
             },
           },
         ],
@@ -150,7 +155,7 @@ describe('applySuperclassOverrideMangleClass', () => {
       });
       expect(classDefCopy).toEqual({
         ...classDef,
-        name: 's_MyElement',
+        name: `${NAMESPACE_PREFIX}MyElement`,
         superclass: { ...classDef.superclass, name: 'MyElement' },
       });
       expect(moduleDocCopy).toEqual({
@@ -158,9 +163,9 @@ describe('applySuperclassOverrideMangleClass', () => {
         exports: [
           {
             kind: 'js',
-            name: 's_MyElement',
+            name: `${NAMESPACE_PREFIX}MyElement`,
             declaration: {
-              name: 's_MyElement',
+              name: `${NAMESPACE_PREFIX}MyElement`,
             },
           },
         ],
@@ -221,9 +226,9 @@ describe('reverseTransform', () => {
         exports: [
           {
             kind: 'js',
-            name: 's_MyElement',
+            name: `${NAMESPACE_PREFIX}MyElement`,
             declaration: {
-              name: 's_MyElement',
+              name: `${NAMESPACE_PREFIX}MyElement`,
               module: 'module.js',
             },
           },
@@ -231,7 +236,7 @@ describe('reverseTransform', () => {
         declarations: [
           {
             kind: 'class',
-            name: 's_MyElement',
+            name: `${NAMESPACE_PREFIX}MyElement`,
             superclass: {
               name: 'MyElement',
               package: 'my-library',

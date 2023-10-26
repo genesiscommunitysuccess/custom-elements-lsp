@@ -49,7 +49,7 @@ describe('when transforming an import not matching any override setting', () => 
 });
 
 describe('when transforming an import using a specific override', () => {
-  it('the matched override is changed and any child class is prepended with s_', async () => {
+  it('the matched override is changed and any child class is prepended with NAMESPACE_PREFIX', async () => {
     const res = await buildTestCase({
       ['my-library']: { override: { ParentElement: 'MyElement' } },
     });
