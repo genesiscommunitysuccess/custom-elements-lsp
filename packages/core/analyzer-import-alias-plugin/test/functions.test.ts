@@ -1,5 +1,4 @@
-import type { ClassDeclaration, Reference, Module } from 'custom-elements-manifest';
-import * as ts from 'typescript';
+import type { ClassDeclaration, Module } from 'custom-elements-manifest';
 
 import { applySuperclassTransformMangleClass } from '../src/';
 

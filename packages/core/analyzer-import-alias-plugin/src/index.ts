@@ -1,5 +1,11 @@
 import { Plugin } from '@custom-elements-manifest/analyzer';
-import type { ClassDeclaration, Reference, Module } from 'custom-elements-manifest';
+import type {
+  ClassDeclaration,
+  Reference,
+  Module,
+  Package,
+  CustomElementDeclaration,
+} from 'custom-elements-manifest';
 import * as ts from 'typescript';
 
 const pluginName = 'analyzer-import-alias-plugin';
@@ -22,6 +28,7 @@ export type ImportAliasPluginOptions = {
 
 export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
   const checkedModules = Object.keys(config);
+  const transforms: AppliedTransform[] = [];
   return {
     name: pluginName,
     // Runs for all modules in a project, before continuing to the `analyzePhase`
@@ -38,12 +45,14 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
           const classDef = moduleDoc.declarations?.find(
             ({ name, kind }) => name === className && kind === 'class',
           ) as ClassDeclaration | undefined;
-          debugger;
           if (
             classDef?.superclass?.package &&
             checkedModules.includes(classDef?.superclass?.package)
           ) {
-            applySuperclassTransformMangleClass(classDef, moduleDoc, config);
+            const mTransform = applySuperclassTransformMangleClass(classDef, moduleDoc, config);
+            if (mTransform) {
+              transforms.push(mTransform);
+            }
           }
       }
     },
@@ -51,10 +60,41 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
     // Runs after modules have been parsed and after post-processing
     packageLinkPhase({ customElementsManifest, context }) {
       debugger;
+      transforms.forEach((transform) => reverseTransform(transform, customElementsManifest));
       // TODO: Can I set the names back here now?
+      // TODO: Handle package vs module
       // TODO: Need to account for changed names if other source files import your module we change
     },
   };
+}
+
+/**
+ * Reverse the transformation applied to the class definition and export, reversing the mangled classname and changed superclass name.
+ * @remarks
+ * Doesn't reverse the change to `inheritedFrom` information for class members.
+ * @param transform - The transform applied to the class definition to reverse.
+ * @param manifest - The manifest containing the class definition and export to reverse.
+ * @returns void
+ */
+export function reverseTransform(transform: AppliedTransform, manifest: Package) {
+  const { path, class: className, superclass, package: pkg } = transform;
+  const mModule = manifest.modules?.find((module) => module.path === path);
+  const mDeclaration = mModule?.declarations?.find(
+    (declaration) =>
+      'superclass' in declaration &&
+      declaration.name === `s_${className}` &&
+      declaration.superclass?.package === pkg,
+  ) as ClassDeclaration | CustomElementDeclaration | undefined;
+  const mExport = mModule?.exports?.find(
+    ({ name, declaration }) => name === `s_${className}` && declaration.module === path,
+  );
+  if (!mModule || !mDeclaration || !mExport) {
+    throw new Error('Could not find the transformed class definition, export, or module.');
+  }
+  mDeclaration.name = className;
+  mDeclaration.superclass!.name = superclass;
+  mExport.name = className;
+  mExport.declaration!.name = className;
 }
 
 /**
@@ -81,13 +121,13 @@ export function applySuperclassTransformMangleClass(
   if (!importConfig) {
     throw new Error('Plugin config does not contain config for superclass package');
   }
-  const maybeNewSuperclassName =
+  const mNewSuperclassName =
     importConfig.override?.[name] ||
     (() => {
-      const maybeNewName = importConfig['*']?.(name);
-      return maybeNewName === name ? undefined : maybeNewName;
+      const mNewName = importConfig['*']?.(name);
+      return mNewName === name ? undefined : mNewName;
     })();
-  if (!maybeNewSuperclassName) return null;
+  if (!mNewSuperclassName) return null;
 
   const transform: AppliedTransform = {
     path: moduleDoc.path!,
@@ -97,7 +137,7 @@ export function applySuperclassTransformMangleClass(
   };
 
   const originalChildClassName = classDef.name;
-  classDef.superclass!.name = maybeNewSuperclassName;
+  classDef.superclass!.name = mNewSuperclassName;
   classDef.name = `s_${classDef.name}`;
   // Require to update the export name to match or one of the analyzer base systems will cull the definition.
   const moduleExport = moduleDoc.exports?.find(
