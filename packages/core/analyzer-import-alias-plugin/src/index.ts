@@ -12,9 +12,9 @@ const pluginName = 'analyzer-import-alias-plugin';
 
 export type AppliedTransform = {
   class: string;
-  package: string;
   path: string;
-  superclass: string;
+  package?: string;
+  superclass?: string;
 };
 
 export type ImportAliasPluginOptions = {
@@ -48,35 +48,23 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
           const classDef = moduleDoc.declarations?.find(
             ({ name, kind }) => name === className && kind === 'class',
           ) as ClassDeclaration | undefined;
-          if (
-            (classDef?.superclass?.package &&
-              checkedModules.includes(classDef?.superclass?.package)) ||
-            classDef?.superclass?.module
-          ) {
-            const mTransform = applySuperclassTransformMangleClass(classDef, moduleDoc, config);
-            if (mTransform) {
-              transforms.push(mTransform);
-            }
+          if (!classDef) return;
+
+          const mNewSuperclassName = getNewSuperclassName(classDef, config);
+          const mTransform = namespaceClassnameApplySuperclass(
+            classDef,
+            moduleDoc,
+            mNewSuperclassName,
+          );
+          if (mTransform) {
+            transforms.push(mTransform);
           }
       }
     },
-    moduleLinkPhase({ moduleDoc, context }) {
-      // debugger;
-      // // PoC: Change superclass here to account for changing names
-      // // Can we just change the name of all classes?
-      // const anotherDeclaration = moduleDoc.declarations?.find(
-      // ({ name }) => name === 'AnotherElement',
-      // );
-      // if (anotherDeclaration && anotherDeclaration.kind === 'class') {
-      // anotherDeclaration!.superclass!.name = `${namespacePrefix}MyElement`;
-      // }
-    },
+    moduleLinkPhase({ moduleDoc, context }) {},
     // Runs after modules have been parsed and after post-processing
     packageLinkPhase({ customElementsManifest, context }) {
-      debugger;
       transforms.forEach((transform) => reverseTransform(transform, customElementsManifest));
-      // TODO: Handle package vs module
-      // TODO: Need to account for changed names if other source files import your module we change
     },
   };
 }
@@ -95,9 +83,7 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
   const mModule = manifest.modules?.find((module) => module.path === path);
   const mDeclaration = mModule?.declarations?.find(
     (declaration) =>
-      'superclass' in declaration &&
-      declaration.name === `${NAMESPACE_PREFIX}${className}` &&
-      declaration.superclass?.package === pkg,
+      declaration.name === `${NAMESPACE_PREFIX}${className}` && declaration.kind === 'class',
   ) as ClassDeclaration | CustomElementDeclaration | undefined;
   const mExport = mModule?.exports?.find(
     ({ name, declaration }) =>
@@ -107,9 +93,37 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
     throw new Error('Could not find the transformed class definition, export, or module.');
   }
   mDeclaration.name = className;
-  mDeclaration.superclass!.name = superclass;
   mExport.name = className;
   mExport.declaration!.name = className;
+  if (mDeclaration.superclass && superclass) {
+    mDeclaration.superclass!.name = superclass;
+  }
+}
+
+function getNewSuperclassName(
+  classDef: ClassDeclaration,
+  config: ImportAliasPluginOptions,
+): string | null {
+  if (!classDef?.superclass?.package && !classDef?.superclass?.module) {
+    return null;
+  }
+  // package = npm, module = local
+  const { package: pkg, name, module } = classDef.superclass as Reference;
+
+  if (pkg) {
+    const importConfig = config[pkg as string];
+    return (
+      importConfig.override?.[name] ||
+      (() => {
+        const mNewName = importConfig['*']?.(name);
+        return mNewName === name ? null : mNewName;
+      })() ||
+      null
+    );
+  } else if (module) {
+    return `${NAMESPACE_PREFIX}${classDef.superclass.name}`;
+  }
+  return null;
 }
 
 /**
@@ -122,52 +136,32 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
  * @param config - The plugin config containing a potential transform.
  * @returns AppliedTransform - The transform applied to the class definition, used to reverse later. Or null if no transform was applied.
  */
-export function applySuperclassTransformMangleClass(
+export function namespaceClassnameApplySuperclass(
   classDef: ClassDeclaration,
   moduleDoc: Partial<Module>,
-  config: ImportAliasPluginOptions,
+  mNewSuperclassName: string | null,
 ): AppliedTransform | null {
-  if (!classDef?.superclass?.package && !classDef?.superclass?.module) {
-    throw new Error('Class definition does not contain a superclass definition.');
-  }
-  // package = npm, module = local
-  const { package: pkg, name, module } = classDef.superclass as Reference;
+  const pkg = classDef.superclass?.package;
   // Require to update the export name to match or one of the analyzer base systems will cull the definition.
   // If there is no export then we bail now, as that definition is culled anyway.
   const moduleExport = moduleDoc.exports?.find(
     ({ name: exportName }) => exportName === classDef.name,
   );
-
-  const mNewSuperclassName = (() => {
-    if (pkg) {
-      const importConfig = config[pkg as string];
-      if (!importConfig) {
-        throw new Error('Plugin config does not contain config for superclass package');
-      }
-      return (
-        importConfig.override?.[name] ||
-        (() => {
-          const mNewName = importConfig['*']?.(name);
-          return mNewName === name ? undefined : mNewName;
-        })()
-      );
-    } else if (module) {
-      return `${NAMESPACE_PREFIX}${classDef.superclass.name}`;
-    }
-  })();
-
-  if (!mNewSuperclassName || !moduleExport) return null;
+  // if there is no export then this definition is culled anyway.
+  if (!moduleExport) return null;
 
   const transform: AppliedTransform = {
     path: moduleDoc.path!,
     class: classDef.name,
-    package: pkg!,
-    superclass: classDef.superclass.name,
+    package: pkg,
+    superclass: classDef?.superclass?.name,
   };
 
-  classDef.superclass!.name = mNewSuperclassName;
   classDef.name = `${NAMESPACE_PREFIX}${classDef.name}`;
   moduleExport!.name = classDef.name;
   moduleExport!.declaration!.name = classDef.name;
+  if (classDef.superclass && mNewSuperclassName) {
+    classDef!.superclass!.name = mNewSuperclassName;
+  }
   return transform;
 }
