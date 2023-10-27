@@ -23,7 +23,7 @@
     "build:watch": "npx tsc --watch",
     "clean": "lerna run clean:dist && npm run clean:module",
     "clean:dist": "exit 0 # Not required",
-    "clean:module": "rimraf node_modules",
+    "clean:module": "rimraf -g **/node_modules",
     "commitlint": "node ./scripts/commitlint.js",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "lint:eslint": "eslint",
@@ -31,7 +31,8 @@
     "lint:eslint:all:fix": "node --max_old_space_size=4096 ./node_modules/eslint/bin/eslint.js \"./**/*.{ts,js}\" --fix",
     "publish:from-package": "lerna publish from-package --yes --ignore-scripts",
     "release": "semantic-release",
-    "test:unit": "lerna run test:unit --scope=@genesiscommunitysuccess/custom-elements-lsp"
+    "test": "npm run test:unit",
+    "test:unit": "lerna run test:unit"
   },
   "husky": {
     "hooks": {
@@ -49,6 +50,7 @@
     "@commitlint/config-conventional": "^17.6.7",
     "@commitlint/format": "^17.4.4",
     "@semantic-release/changelog": "^6.0.2",
+    "@semantic-release/exec": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^11.0.4",
     "@typescript-eslint/eslint-plugin": "^5.2.0",
@@ -61,13 +63,15 @@
     "eslint-config-ts-important-stuff": "^1.1.0",
     "eslint-import-resolver-typescript": "^3.5.3",
     "eslint-plugin-import": "^2.27.5",
-    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^8.0.3",
     "lerna": "7.2.0",
     "lint-staged": "^13.2.2",
     "rimraf": "5.0.5",
-    "semantic-release": "21.0.7"
+    "semantic-release": "21.0.7",
+    "semantic-release-replace-plugin": "^1.2.7",
+    "typescript": "4.9.5"
   },
   "workspaces": [
     "packages/core/*",
@@ -76,9 +80,5 @@
   "directories": {
     "doc": "docs"
   },
-  "author": "",
-  "dependencies": {
-    "@semantic-release/exec": "^6.0.3",
-    "semantic-release-replace-plugin": "^1.2.7"
-  }
+  "author": ""
 }

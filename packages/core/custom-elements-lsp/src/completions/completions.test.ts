@@ -13,11 +13,11 @@ import { CoreCompletionsServiceImpl } from './completions';
 
 const getCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
-  gdRes: GlobalDataService = getGDServiceFromStubbedResource()
+  gdRes: GlobalDataService = getGDServiceFromStubbedResource(),
 ) =>
   new CoreCompletionsServiceImpl(
     getLogger(),
-    buildServices({ customElements: ceRes, globalData: gdRes })
+    buildServices({ customElements: ceRes, globalData: gdRes }),
   );
 
 const baseCompletionInfo: CompletionInfo = {

@@ -67,7 +67,7 @@ export function constructGlobalAttrCompletion(name: string, type: GlobalAttrType
 }
 
 export function constructElementAttrCompletion(
-  attr: CustomElementAttribute | PlainElementAttribute
+  attr: CustomElementAttribute | PlainElementAttribute,
 ): CompletionEntry {
   const { name, type, referenceClass, deprecated } = {
     referenceClass: 'HTML Element',

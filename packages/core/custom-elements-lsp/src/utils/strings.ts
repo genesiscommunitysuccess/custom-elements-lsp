@@ -65,7 +65,7 @@ export function stringHasUnfinishedQuotedValue(line: string): boolean {
 export function getTokenSpanMatchingPattern(
   position: LineAndCharacter,
   context: TemplateContext,
-  pattern: RegExp
+  pattern: RegExp,
 ): TextSpan | null {
   let offset = context.toOffset(position);
   if (offset < 0 || offset >= context.rawText.length) {
@@ -104,7 +104,7 @@ export function getTokenSpanMatchingPattern(
  */
 export function getWholeTextReplacementSpan(
   position: LineAndCharacter,
-  context: TemplateContext
+  context: TemplateContext,
 ): TextSpan {
   const replacementSpan = { start: context.toOffset(position), length: 0 };
   while (context.text[replacementSpan.start] !== ' ') {
@@ -274,10 +274,10 @@ export type TokenType =
  */
 export function getTokenTypeWithInfo(
   context: TemplateContext,
-  position: LineAndCharacter
+  position: LineAndCharacter,
 ): TokenType {
   const processedLine = replaceQuotesAndInterpolationContents(
-    context.rawText.substring(0, context.toOffset(position))
+    context.rawText.substring(0, context.toOffset(position)),
   );
 
   if (stringHasUnfinishedQuotedValue(processedLine)) {

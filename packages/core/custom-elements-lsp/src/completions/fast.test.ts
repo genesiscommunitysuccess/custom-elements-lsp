@@ -14,11 +14,11 @@ import { FASTCompletionsService } from './fast';
 
 const getFASTCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),
-  gdRes: GlobalDataService = getGDServiceFromStubbedResource()
+  gdRes: GlobalDataService = getGDServiceFromStubbedResource(),
 ) =>
   new FASTCompletionsService(
     getLogger(),
-    buildServices({ customElements: ceRes, globalData: gdRes })
+    buildServices({ customElements: ceRes, globalData: gdRes }),
   );
 
 describe('convertFastEventAttributes', () => {
@@ -218,7 +218,7 @@ describe('addDynamicBooleanBindings', () => {
 
     const res = (service as any).addDynamicBooleanBindings(
       [...baseEntries, booleanEntry],
-      replacementSpan
+      replacementSpan,
     );
 
     expect(res).toEqual([
@@ -273,7 +273,7 @@ describe('getUpdatedAttributeEntries', () => {
       baseEntries,
       position,
       context,
-      tagName
+      tagName,
     );
 
     expect(res).toEqual([

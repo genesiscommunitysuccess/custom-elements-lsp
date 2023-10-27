@@ -44,7 +44,7 @@ const tsconfigPath =
   args.tsconfig ??
   (() => {
     console.log(
-      `Unable to get \`tsconfig\` path from args, falling back to \`process.cwd() = \`${process.cwd()}`
+      `Unable to get \`tsconfig\` path from args, falling back to \`process.cwd() = \`${process.cwd()}`,
     );
     return process.cwd();
   })();
@@ -56,7 +56,7 @@ if (tsConfig === null) {
 }
 
 const lspPluginConfigOptions = tsConfig?.config?.compilerOptions?.plugins?.find(
-  (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp'
+  (plugin) => plugin.name === '@genesiscommunitysuccess/custom-elements-lsp',
 );
 
 if (!lspPluginConfigOptions?.parser) {
@@ -81,7 +81,7 @@ const io = {
       nodepath.dirname(typescriptResolution) +
         '/' +
         lspPluginConfigOptions.srcRouteFromTSServer +
-        '/'
+        '/',
     ),
 };
 
@@ -89,7 +89,7 @@ const manifestRepo = new LiveUpdatingCEManifestRepository(
   logger,
   io,
   config,
-  !!lspPluginConfigOptions?.fastEnable
+  !!lspPluginConfigOptions?.fastEnable,
 );
 await manifestRepo.analyzeAndUpdate();
 

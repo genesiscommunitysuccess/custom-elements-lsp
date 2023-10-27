@@ -11,7 +11,7 @@ import { AnalyzerCLI, getAnalyzerCLI, getGlobby } from './analyzer';
  * Sets the defaults values for `SourceAnalyzerConfig` for values which are not configured by the user.
  */
 export const mixinParserConfigDefaults = (
-  config: Partial<SourceAnalyzerConfig> | undefined
+  config: Partial<SourceAnalyzerConfig> | undefined,
 ): SourceAnalyzerConfig => {
   const inputConfig = config ?? {};
   return {
@@ -36,7 +36,7 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     private logger: Logger,
     private io: IOService,
     private config: SourceAnalyzerConfig,
-    private fastEnabled: boolean
+    private fastEnabled: boolean,
   ) {
     this.logger.log(`Setting up LiveUpdatingCEManifestRepository`);
 
@@ -54,8 +54,8 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
   private async analyzeAndUpdate(): Promise<void> {
     this.logger.log(
       `Analyzing and updating manifest. Config: ${JSON.stringify(
-        this.config
-      )}. CWD: ${this.io.getNormalisedRootPath()}`
+        this.config,
+      )}. CWD: ${this.io.getNormalisedRootPath()}`,
     );
     if (!this.analyzer) {
       this.analyzer = await getAnalyzerCLI();
@@ -90,7 +90,7 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     this.logger.log(
       `Looking for dependencies in ${
         this.config.dependencies
-      } from path: ${this.io.getNormalisedRootPath()}`
+      } from path: ${this.io.getNormalisedRootPath()}`,
     );
     const libFiles = await globby(this.config.dependencies, {
       cwd: this.io.getNormalisedRootPath(),
@@ -100,7 +100,7 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
       const libDir = path.dirname(libFile);
       this.logger.log(`Found dependency ${libFile} in ${libDir}`);
       const lib = JSON.parse(
-        this.io.readFile(this.io.getNormalisedRootPath() + libFile) || '{"modules": []}'
+        this.io.readFile(this.io.getNormalisedRootPath() + libFile) || '{"modules": []}',
       );
 
       lib.modules.forEach((mod: Package['modules'][number]) => {

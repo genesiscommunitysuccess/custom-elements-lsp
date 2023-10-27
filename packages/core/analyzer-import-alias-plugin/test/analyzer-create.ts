@@ -1,4 +1,5 @@
-import { Package } from 'custom-elements-manifest';
+import type { Package } from 'custom-elements-manifest';
+import * as ts from 'typescript';
 
 /**
  * This is a glue layer to import the ESM modules into the commonjs plugin.
@@ -13,21 +14,14 @@ import { Package } from 'custom-elements-manifest';
  */
 const dynamicImport = new Function('specifier', 'return import(specifier)');
 
-export const getAnalyzerCLI = async () =>
-  (await dynamicImport('@custom-elements-manifest/analyzer/cli.js')).cli as ({
-    argv,
-    cwd,
-    noWrite,
-  }: {
-    argv?: string[];
-    cwd?: string;
-    noWrite?: boolean;
-  }) => Promise<Package>;
-export type AnalyzerCLI = Awaited<ReturnType<typeof getAnalyzerCLI>>;
+type Create = (args: {
+  modules: ts.SourceFile[];
+  plugins?: any[];
+  context?: { dev: boolean };
+}) => Package & {
+  readme: string;
+};
 
-export const getGlobby = async () =>
-  (await dynamicImport('globby')).globby as (
-    patterns: string | readonly string[],
-    options?: any,
-  ) => Promise<string[]>;
-export type Globby = Awaited<ReturnType<typeof getGlobby>>;
+export type CreateAPI = ReturnType<typeof getAnalyzerCreateHarness>;
+export const getAnalyzerCreateHarness = async () =>
+  (await dynamicImport('@custom-elements-manifest/analyzer/src/create.js')).create as Create;
