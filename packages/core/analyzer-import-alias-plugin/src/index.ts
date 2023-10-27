@@ -27,7 +27,7 @@ export type ImportAliasPluginOptions = {
 };
 
 // Used to namespace the classnames of local definitions to avoid collisions
-export const NAMESPACE_PREFIX = 's_';
+export const NAMESPACE_PREFIX = '<local>_';
 
 export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
   const checkedModules = Object.keys(config);
@@ -49,8 +49,9 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
             ({ name, kind }) => name === className && kind === 'class',
           ) as ClassDeclaration | undefined;
           if (
-            classDef?.superclass?.package &&
-            checkedModules.includes(classDef?.superclass?.package)
+            (classDef?.superclass?.package &&
+              checkedModules.includes(classDef?.superclass?.package)) ||
+            classDef?.superclass?.module
           ) {
             const mTransform = applySuperclassTransformMangleClass(classDef, moduleDoc, config);
             if (mTransform) {
@@ -126,26 +127,35 @@ export function applySuperclassTransformMangleClass(
   moduleDoc: Partial<Module>,
   config: ImportAliasPluginOptions,
 ): AppliedTransform | null {
-  if (!classDef?.superclass?.package) {
+  if (!classDef?.superclass?.package && !classDef?.superclass?.module) {
     throw new Error('Class definition does not contain a superclass definition.');
   }
-  const { package: pkg, name } = classDef.superclass as Reference;
-  const importConfig = config[pkg as string];
-
-  if (!importConfig) {
-    throw new Error('Plugin config does not contain config for superclass package');
-  }
-  const mNewSuperclassName =
-    importConfig.override?.[name] ||
-    (() => {
-      const mNewName = importConfig['*']?.(name);
-      return mNewName === name ? undefined : mNewName;
-    })();
+  // package = npm, module = local
+  const { package: pkg, name, module } = classDef.superclass as Reference;
   // Require to update the export name to match or one of the analyzer base systems will cull the definition.
   // If there is no export then we bail now, as that definition is culled anyway.
   const moduleExport = moduleDoc.exports?.find(
     ({ name: exportName }) => exportName === classDef.name,
   );
+
+  const mNewSuperclassName = (() => {
+    if (pkg) {
+      const importConfig = config[pkg as string];
+      if (!importConfig) {
+        throw new Error('Plugin config does not contain config for superclass package');
+      }
+      return (
+        importConfig.override?.[name] ||
+        (() => {
+          const mNewName = importConfig['*']?.(name);
+          return mNewName === name ? undefined : mNewName;
+        })()
+      );
+    } else if (module) {
+      return `${NAMESPACE_PREFIX}${classDef.superclass.name}`;
+    }
+  })();
+
   if (!mNewSuperclassName || !moduleExport) return null;
 
   const transform: AppliedTransform = {
