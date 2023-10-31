@@ -78,7 +78,7 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
  * @throws Error - If the class definition, export, or module cannot be found. This should not be possible.
  */
 export function reverseTransform(transform: AppliedTransform, manifest: Package) {
-  const { path, class: className, superclass, package: pkg } = transform;
+  const { path, class: className, superclass } = transform;
   const mModule = manifest.modules?.find((module) => module.path === path);
   const mDeclaration = mModule?.declarations?.find(
     (declaration) =>
@@ -109,7 +109,7 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
  * @param config - The plugin config containing a potential transform.
  * @returns string | null - The new superclass name, or null if not applicable.
  */
-function getNewSuperclassName(
+export function getNewSuperclassName(
   classDef: ClassDeclaration,
   config: ImportAliasPluginOptions,
 ): string | null {
@@ -122,9 +122,9 @@ function getNewSuperclassName(
   if (pkg) {
     const importConfig = config[pkg as string];
     return (
-      importConfig.override?.[name] ||
+      importConfig?.override?.[name] ||
       (() => {
-        const mNewName = importConfig['*']?.(name);
+        const mNewName = importConfig?.['*']?.(name);
         return mNewName === name ? null : mNewName;
       })() ||
       null
