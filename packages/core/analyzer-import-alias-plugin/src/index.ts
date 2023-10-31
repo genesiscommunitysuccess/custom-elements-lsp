@@ -30,7 +30,6 @@ export type ImportAliasPluginOptions = {
 export const NAMESPACE_PREFIX = '<local>_';
 
 export default function importAliasPlugin(config: ImportAliasPluginOptions): Plugin {
-  const checkedModules = Object.keys(config);
   const transforms: AppliedTransform[] = [];
   return {
     name: pluginName,
@@ -43,7 +42,6 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
         case ts.SyntaxKind.ClassDeclaration:
-          debugger;
           const classDeclerationNode = node as ts.ClassDeclaration;
           const className = classDeclerationNode.name?.getText();
           const classDef = moduleDoc.declarations?.find(
@@ -101,6 +99,16 @@ export function reverseTransform(transform: AppliedTransform, manifest: Package)
   }
 }
 
+/**
+ * Get the new superclass name for the class definition, or null if not applicable.
+ * @remarks
+ * If the superclass is an npm package, then it is transformed/substituted if defined by the config.
+ * If the superclass is a local definition, then we need to mangle the name to match any locally manged names.
+ * name to ensure it doesn't equal the new superclass name.
+ * @param classDef - The class definition containing the superclass defintiion to transform.
+ * @param config - The plugin config containing a potential transform.
+ * @returns string | null - The new superclass name, or null if not applicable.
+ */
 function getNewSuperclassName(
   classDef: ClassDeclaration,
   config: ImportAliasPluginOptions,
@@ -128,13 +136,13 @@ function getNewSuperclassName(
 }
 
 /**
- * Transforms the reference to the superclass name by the specified config.
+ * Namespace local classname and apply new superclass name, if required.
  * @remarks
- * Apply any tranform config to the superclass name (if any) and then mangle the class
- * name to ensure it doesn't equal the new superclass name.
+ * Need to namespace the name of a class so that the transformed superclass name doesn't match.
+ * If mNewSuperclassName is set, then we need to update the superclass to it.
  * @param classDef - The class definition containing the superclass defintiion to transform.
  * @param moduleDoc - The module doc containing the export definition which we need to change to match, or the definition will be culled.
- * @param config - The plugin config containing a potential transform.
+ * @param mNewSuperclassName - The new superclass name, or null if not applicable.
  * @returns AppliedTransform - The transform applied to the class definition, used to reverse later. Or null if no transform was applied.
  */
 export function namespaceClassnameApplySuperclass(
