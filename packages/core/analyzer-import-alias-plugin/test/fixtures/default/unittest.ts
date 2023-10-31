@@ -5,97 +5,136 @@ export const baseCase: Package = {
   readme: '',
   modules: [
     {
-      kind: 'javascript-module',
-      path: '/test/fixtures/default/sourcecode/default.js',
       declarations: [
         {
-          kind: 'class',
           description: '',
-          name: 'MyElement',
+          kind: 'class',
           members: [
             {
+              default: "'qix'",
               kind: 'field',
               name: 'baz',
               type: {
                 text: 'string',
               },
-              default: "'qix'",
             },
           ],
+          name: 'MyElement',
           superclass: {
             name: 'ParentElement',
             package: 'my-library',
           },
         },
         {
-          kind: 'class',
           description: '',
-          name: 'AnotherElement',
+          kind: 'class',
           members: [
             {
+              default: "'qix'",
+              inheritedFrom: {
+                module: '/test/fixtures/default/sourcecode/default.js',
+                name: '<local>_MyElement',
+              },
+              kind: 'field',
+              name: 'baz',
+              type: {
+                text: 'string',
+              },
+            },
+          ],
+          name: 'GrandchildElement',
+          superclass: {
+            module: '/test/fixtures/default/sourcecode/default.js',
+            name: 'MyElement',
+          },
+        },
+        {
+          customElement: true,
+          description: '',
+          kind: 'class',
+          members: [
+            {
+              default: "'b'",
               kind: 'field',
               name: 'a',
               type: {
                 text: 'string',
               },
-              default: "'b'",
             },
           ],
+          name: 'AnotherElement',
           superclass: {
             name: 'HTMLElement',
           },
-          customElement: true,
         },
       ],
       exports: [
         {
+          declaration: {
+            module: '/test/fixtures/default/sourcecode/default.js',
+            name: 'MyElement',
+          },
           kind: 'js',
           name: 'MyElement',
-          declaration: {
-            name: 'MyElement',
-            module: '/test/fixtures/default/sourcecode/default.js',
-          },
         },
         {
+          declaration: {
+            module: '/test/fixtures/default/sourcecode/default.js',
+            name: 'GrandchildElement',
+          },
+          kind: 'js',
+          name: 'GrandchildElement',
+        },
+        {
+          declaration: {
+            module: '/test/fixtures/default/sourcecode/default.js',
+            name: 'AnotherElement',
+          },
           kind: 'js',
           name: 'AnotherElement',
-          declaration: {
-            name: 'AnotherElement',
-            module: '/test/fixtures/default/sourcecode/default.js',
-          },
         },
       ],
+      kind: 'javascript-module',
+      path: '/test/fixtures/default/sourcecode/default.js',
     },
     {
-      kind: 'javascript-module',
-      path: '/test/fixtures/default/sourcecode/superclass.js',
       declarations: [
         {
-          kind: 'class',
           description: '',
-          name: 'MyElement',
+          kind: 'class',
           members: [
             {
+              default: "'qix'",
+              inheritedFrom: {
+                module: '/test/fixtures/default/sourcecode/default.js',
+                name: '<local>_MyElement',
+              },
               kind: 'field',
-              name: 'foo',
+              name: 'baz',
               type: {
                 text: 'string',
               },
-              default: "'bar'",
             },
           ],
+          name: 'AnotherClass',
+          superclass: {
+            module: '//test/fixtures/default/sourcecode/default',
+            name: 'MyElement',
+          },
         },
       ],
       exports: [
         {
-          kind: 'js',
-          name: 'MyElement',
           declaration: {
-            name: 'MyElement',
-            module: '/test/fixtures/default/sourcecode/superclass.js',
+            module: '/test/fixtures/default/sourcecode/another.js',
+            name: 'AnotherClass',
           },
+          kind: 'js',
+          name: 'AnotherClass',
         },
       ],
+      kind: 'javascript-module',
+      path: '/test/fixtures/default/sourcecode/another.js',
     },
   ],
 };
