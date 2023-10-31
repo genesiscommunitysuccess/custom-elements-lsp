@@ -43,6 +43,7 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
         case ts.SyntaxKind.ClassDeclaration:
+          debugger;
           const classDeclerationNode = node as ts.ClassDeclaration;
           const className = classDeclerationNode.name?.getText();
           const classDef = moduleDoc.declarations?.find(
