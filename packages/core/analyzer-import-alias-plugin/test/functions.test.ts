@@ -4,9 +4,114 @@ import {
   AppliedTransform,
   getNewSuperclassName,
   ImportAliasPluginOptions,
+  namespaceClassnameApplySuperclass,
   NAMESPACE_PREFIX,
   reverseTransform,
 } from '../src/';
+
+describe('namespaceClassnameApplySuperclass', () => {
+  const classDef: ClassDeclaration = {
+    kind: 'class',
+    name: 'MyElement',
+    superclass: {
+      package: 'my-library',
+      name: 'ParentElement',
+    },
+  };
+
+  const moduleDoc: Module = {
+    kind: 'javascript-module',
+    path: 'module.js',
+    exports: [
+      {
+        kind: 'js',
+        name: 'MyElement',
+        declaration: {
+          name: 'MyElement',
+        },
+      },
+    ],
+  };
+
+  describe('when there is no matching export to the classdef', () => {
+    it('returns null', () => {
+      const classDefWithNoMatchingExport = structuredClone(classDef);
+      classDefWithNoMatchingExport.name = 'banana';
+      const res = namespaceClassnameApplySuperclass(
+        classDefWithNoMatchingExport,
+        structuredClone(moduleDoc),
+        null,
+      );
+      expect(res).toBeNull();
+    });
+  });
+
+  describe('when there is no new superclass name', () => {
+    it('namespaces the classname and export, returns transform', () => {
+      const _classDef = structuredClone(classDef);
+      delete _classDef.superclass;
+      const _moduleDoc = structuredClone(moduleDoc);
+      const res = namespaceClassnameApplySuperclass(_classDef, _moduleDoc, null);
+      expect(_classDef).toEqual({
+        ...classDef,
+        name: `${NAMESPACE_PREFIX}${classDef.name}`,
+        superclass: undefined,
+      });
+      expect(_moduleDoc).toEqual({
+        ...moduleDoc,
+        exports: [
+          {
+            kind: 'js',
+            name: `${NAMESPACE_PREFIX}MyElement`,
+            declaration: {
+              name: `${NAMESPACE_PREFIX}MyElement`,
+            },
+          },
+        ],
+      });
+      expect(res).toEqual({
+        class: 'MyElement',
+        package: undefined,
+        path: 'module.js',
+        superclass: undefined,
+      });
+    });
+  });
+
+  describe('when there is a superclass name specified', () => {
+    it('namespaces the classname and export, applies the new superclass name, returns transform (including package and superclass name)', () => {
+      const _classDef = structuredClone(classDef);
+      const _moduleDoc = structuredClone(moduleDoc);
+      const res = namespaceClassnameApplySuperclass(_classDef, _moduleDoc, 'BaseClass');
+      expect(_classDef).toEqual({
+        ...classDef,
+        name: `${NAMESPACE_PREFIX}${classDef.name}`,
+        superclass: {
+          ...classDef.superclass,
+          name: 'BaseClass',
+        },
+      });
+      expect(_moduleDoc).toEqual({
+        ...moduleDoc,
+        exports: [
+          {
+            kind: 'js',
+            name: `${NAMESPACE_PREFIX}MyElement`,
+            declaration: {
+              name: `${NAMESPACE_PREFIX}MyElement`,
+            },
+          },
+        ],
+      });
+      expect(res).toEqual({
+        class: 'MyElement',
+        package: 'my-library',
+        path: 'module.js',
+        superclass: 'ParentElement',
+      });
+    });
+  });
+});
 
 describe('getNewSuperclassName', () => {
   const classDef: ClassDeclaration = {
