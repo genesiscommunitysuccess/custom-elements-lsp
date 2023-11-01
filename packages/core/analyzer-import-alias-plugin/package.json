@@ -1,7 +1,7 @@
 {
   "name": "@genesiscommunitysuccess/analyzer-import-alias-plugin",
   "version": "2.1.2",
-  "description": "",
+  "description": "Plugin for custom element manifest parser to handle import aliases",
   "type": "module",
   "main": "./dist",
   "types": "./dist/index.d.ts",
@@ -35,7 +35,9 @@
     "customelements",
     "webcomponents",
     "customelementsjson",
-    "customelementsmanifest"
+    "customelementsmanifest",
+    "import",
+    "alias"
   ],
   "author": "",
   "license": "MIT",
