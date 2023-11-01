@@ -8,6 +8,21 @@ import type {
 } from 'custom-elements-manifest';
 import * as ts from 'typescript';
 
+/**
+ * TECHNICAL OVERVIEW.
+ *
+ * 1. During the analyze phase, if we are on an AST node which is a class definition
+ * we check to see if it has a superclass definition.
+ * 2. If there is a superclass definition which is from an npm package then we check the plugin
+ * config and apply a transform if required.
+ * 3. Because a name transformation may end up making the superclass name the same as the class name,
+ * we namespace all of the local classnames to avoid collisions. Because of this, if the superclass is
+ * local then we need to namespace that too to ensure inheritance isn't broken.
+ * 4. Performing the above steps will allow the analyzer to correctly form the inheritance chain as required.
+ * However, we need to dis-apply the transforms to the manifest after the analyzer has finished, otherwise the classnames
+ * will be exported not matching the code.
+ */
+
 const pluginName = 'analyzer-import-alias-plugin';
 
 export type AppliedTransform = {
