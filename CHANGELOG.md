@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.2...v2.2.0) (2023-11-03)
+
+
+### Features
+
+* analyzer import alias plugin [FUI-1528](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1528) (#63) 2f78ec8
+
 ## [2.1.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.1...v2.1.2) (2023-10-20)
 
 

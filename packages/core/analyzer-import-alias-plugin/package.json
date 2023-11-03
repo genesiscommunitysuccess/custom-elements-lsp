@@ -1,6 +1,6 @@
 {
   "name": "@genesiscommunitysuccess/analyzer-import-alias-plugin",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Plugin for custom element manifest parser to handle import aliases",
   "type": "module",
   "main": "./dist",
