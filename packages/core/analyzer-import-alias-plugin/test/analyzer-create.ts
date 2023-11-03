@@ -17,10 +17,8 @@ const dynamicImport = new Function('specifier', 'return import(specifier)');
 type Create = (args: {
   modules: ts.SourceFile[];
   plugins?: any[];
-  context?: { dev: boolean };
-}) => Package & {
-  readme: string;
-};
+  context?: { dev?: boolean; thirdPartyCEMs?: Package[] };
+}) => Package;
 
 export type CreateAPI = ReturnType<typeof getAnalyzerCreateHarness>;
 export const getAnalyzerCreateHarness = async () =>

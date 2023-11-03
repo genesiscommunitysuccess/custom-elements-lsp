@@ -1,7 +1,7 @@
 {
   "name": "@genesiscommunitysuccess/analyzer-import-alias-plugin",
   "version": "2.1.2",
-  "description": "",
+  "description": "Plugin for custom element manifest parser to handle import aliases",
   "type": "module",
   "main": "./dist",
   "types": "./dist/index.d.ts",
@@ -25,7 +25,7 @@
     "start:debug": "node --inspect-brk ./dist/dev.js",
     "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:unit:coverage": "npm run test:unit -- --coverage",
-    "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",
+    "test:unit:debug": "cross-env NODE_OPTIONS=--experimental-vm-modules node --inspect-brk ../../../node_modules/jest/bin/jest.js",
     "test:unit:watch": "npm run test:unit -- --watchAll"
   },
   "keywords": [
@@ -35,7 +35,9 @@
     "customelements",
     "webcomponents",
     "customelementsjson",
-    "customelementsmanifest"
+    "customelementsmanifest",
+    "import",
+    "alias"
   ],
   "author": "",
   "license": "MIT",
