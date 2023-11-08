@@ -17,12 +17,13 @@ export class CEPPluginRespistoryImpl implements CEPPluginResistory {
   }
 
   private loadPlugin(packageName: string): Promise<Plugin> {
-    return new Promise(async (resolve) => {
+    return new Promise((resolve) => {
       try {
-        const mPluginLoader = (await this.dynamicImporter(packageName)).default.default as unknown;
-
-        if (typeof mPluginLoader !== 'function') throw new Error('Plugin must export a function');
-        resolve(mPluginLoader(this.logger, this.services));
+        this.dynamicImporter(packageName).then((importedModule: any) => {
+          const mPluginLoader = importedModule.default.default as unknown;
+          if (typeof mPluginLoader !== 'function') throw new Error('Plugin must export a function');
+          resolve(mPluginLoader(this.logger, this.services));
+        });
       } catch (e) {
         this.logger.log(`Error loading plugin ${packageName} "${e}". Skipping...`);
         // resolve with blank object so that plugin is skipped
