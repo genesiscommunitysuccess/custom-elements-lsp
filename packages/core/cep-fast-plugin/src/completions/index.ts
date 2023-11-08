@@ -38,7 +38,6 @@ export class FASTCompletionsService implements PartialCompletionsService {
     completions: CompletionInfo,
     { typeAndParam, position, context }: CompletionCtx,
   ): CompletionInfo {
-    this.logger.log(`FASTCompletionsService typeAndParam: ${JSON.stringify(typeAndParam)}`);
     const { key, params } = typeAndParam;
 
     let entries = completions.entries;

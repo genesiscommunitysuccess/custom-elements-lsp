@@ -3,7 +3,6 @@ import {
   Logger,
 } from 'typescript-template-language-service-decorator';
 import { CoreCompletionsServiceImpl, PartialCompletionsService } from './completions';
-import { FASTCompletionsService } from './completions/fast';
 import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
 import {
   LiveUpdatingCEManifestRepository,
@@ -77,15 +76,15 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
 
     plugins.then((loaders) =>
       loaders.forEach((plugin) => {
-        completions.concat(plugin.completions || []);
-        diagnostics.concat(plugin.diagnostics || []);
-        metadata.concat(plugin.metadata || []);
+        completions.push(...(plugin.completions || []));
+        diagnostics.push(...(plugin.diagnostics || []));
+        metadata.push(...(plugin.metadata || []));
       }),
     );
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
-      completions.push(new FASTCompletionsService(logger, services));
+      // completions.push(new FASTCompletionsService(logger, services));
       diagnostics.push(new FASTDiagnosticsService(logger, services));
       metadata.push(new FASTMetadataService(logger, services));
     }
