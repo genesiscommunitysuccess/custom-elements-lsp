@@ -14,7 +14,8 @@
             "node_modules/@genesiscommunitysuccess/example-lib/**/custom-elements.json",
             "!**/@custom-elements-manifest/**/*"
           ]
-        }
+        },
+        "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
       }
     ],
     "pretty": true,

@@ -19,6 +19,8 @@ import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
 import { FASTMetadataService } from './metadata/fast';
+import { CEPPluginRespistoryImpl } from './plugins/repository';
+import { CEPPluginServiceImpl } from './plugins/service';
 import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
 import { Services } from './utils/services.types';
 
@@ -60,6 +62,9 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       ts,
     });
 
+    const pluginLoader = new CEPPluginServiceImpl(new CEPPluginRespistoryImpl(logger, services));
+    const plugins = pluginLoader.loadPlugins(info.config.plugins || []);
+
     const completions: PartialCompletionsService[] = [
       new CoreCompletionsServiceImpl(logger, services),
     ];
@@ -69,6 +74,14 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     ];
 
     const metadata: PartialMetadataService[] = [new CoreMetadataServiceImpl(logger, services)];
+
+    plugins.then((loaders) =>
+      loaders.forEach((plugin) => {
+        completions.concat(plugin.completions || []);
+        diagnostics.concat(plugin.diagnostics || []);
+        metadata.concat(plugin.metadata || []);
+      }),
+    );
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
