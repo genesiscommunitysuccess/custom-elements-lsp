@@ -16,7 +16,6 @@ import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
-import { FASTMetadataService } from './metadata/fast';
 import { CEPPluginRespistoryImpl } from './plugins/repository';
 import { CEPPluginServiceImpl } from './plugins/service';
 import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
@@ -83,9 +82,6 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
 
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
-      // completions.push(new FASTCompletionsService(logger, services));
-      // diagnostics.push(new FASTDiagnosticsService(logger, services));
-      metadata.push(new FASTMetadataService(logger, services));
     }
 
     return decorateWithTemplateLanguageService(
