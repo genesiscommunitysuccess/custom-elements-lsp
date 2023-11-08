@@ -3,6 +3,10 @@
   "version": "2.2.0",
   "license": "MIT",
   "main": "./out",
+  "exports": {
+    ".": "./out/index.js",
+    "./out/plugins/export-interface": "./out/plugins/export-interface.js"
+  },
   "bin": {
     "custom-elements-analyze": "./parser/analyze.js"
   },
