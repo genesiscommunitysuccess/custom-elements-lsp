@@ -13,7 +13,6 @@ import { CustomElementsServiceImpl } from './custom-elements/service';
 import { CustomElementsLanguageService } from './customelements';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { FASTDiagnosticsService } from './diagnostics/fast';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
@@ -85,7 +84,7 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     if (info.config.fastEnable) {
       logger.log('FAST config enabled');
       // completions.push(new FASTCompletionsService(logger, services));
-      diagnostics.push(new FASTDiagnosticsService(logger, services));
+      // diagnostics.push(new FASTDiagnosticsService(logger, services));
       metadata.push(new FASTMetadataService(logger, services));
     }
 
