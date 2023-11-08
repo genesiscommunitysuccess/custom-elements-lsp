@@ -1,9 +1,9 @@
 import {
+  utils,
   CompletionCtx,
   PartialCompletionsService,
   Services,
-} from '@genesiscommunitysuccess/custom-elements-lsp';
-import { utils } from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
 import {
   CompletionEntry,
   CompletionInfo,

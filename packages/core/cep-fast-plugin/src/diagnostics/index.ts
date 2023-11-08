@@ -1,11 +1,9 @@
 import {
+  CONSTANTS,
+  utils,
   DiagnosticCtx,
   PartialDiagnosticsService,
   Services,
-} from '@genesiscommunitysuccess/custom-elements-lsp';
-import {
-  CONSTANTS,
-  utils,
 } from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';

@@ -3,8 +3,8 @@ import {
   PartialMetadataService,
   QuickInfoCtx,
   Services,
-} from '@genesiscommunitysuccess/custom-elements-lsp';
-import { utils } from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
+  utils,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
 import { QuickInfo, ScriptElementKind, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';
 

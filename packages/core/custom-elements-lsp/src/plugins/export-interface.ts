@@ -3,6 +3,18 @@ import * as DIAGNOSTIC_CODES from '../constants/diagnostic-codes';
 import { getStore } from '../utils/kvstore';
 import * as strings from '../utils/strings';
 
+export type { CEPPlugin } from '../plugins/plugins.types';
+export type { CompletionCtx, PartialCompletionsService } from '../completions/completions.types';
+export type { Services } from '../utils/services.types';
+export type { PartialDiagnosticsService, DiagnosticCtx } from '../diagnostics/diagnostics.types';
+export type { PartialMetadataService, QuickInfoCtx } from '../metadata/metadata.types';
+export type {
+  CustomElementAttribute,
+  CustomElementEvent,
+  CustomElementMember,
+  CustomElementDef,
+} from '../custom-elements/custom-elements.types';
+
 export const utils = {
   strings,
   getStore: (logger: Logger) => {
