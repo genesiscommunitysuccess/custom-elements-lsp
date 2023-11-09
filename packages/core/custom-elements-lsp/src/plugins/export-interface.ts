@@ -24,6 +24,7 @@ export type {
   GlobalDataInfo,
   PlainElementAttribute,
 } from '../global-data/global-data.types';
+export type { IOService, IORepository } from '../utils';
 
 export const utils = {
   strings,
