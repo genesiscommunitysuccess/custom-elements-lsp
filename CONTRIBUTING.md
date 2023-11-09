@@ -6,6 +6,12 @@ When contributing to Custom Elements LSP Plugin (CEP), please follow the standar
 
 ## Getting started
 
+### Plugin vs Core Change
+
+The first question you want to ask yourself when working on a CEP project is whether you need to change the core plugin itself, or whether you can write your own plugin which works with the exposed API. The API allows you to augment diagnostics, metadata, and completion info from the core. An example of a plugin is the [cep-fast-plugin](./packages/core/cep-fast-plugin/README.md) which is part of this monorepo. If you are not sure whether you are better writing a plugin or changing the core code, raise an issue on Github and ask.
+
+If you are writing a plugin then see [this section](#plugin). Else, the next sections cover contributions to the monorepo.
+
 ### Workstation Setup
 
 To work with the project you'll need Git, and Node.js.
@@ -251,3 +257,63 @@ It is critical to retain all the conventional commit information, as some of the
 
 An essential consideration in every pull request is its impact on the system. To manage impacts, we work collectively to ensure that we do not introduce unnecessary breaking changes, performance or functional regressions, or negative impacts on usability for users or supported partners.
 
+## Plugin
+
+This section covers some basic information for how to write a CEP Plugin. An example of this is the [cep-fast-plugin](./packages/core/cep-fast-plugin/README.md) which you can download and use as a template for your own plugin.
+
+The basic premise is that your project must expose a function which is of the TypeScript type `CEPPlugin`, and it is the default export.
+
+```typescript
+import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+
+const myPlugin: CEPPlugin = (logger, services) => {
+  logger.log('my plugin loaded');
+  return { }; // This plugin would do nothing except log "my plugin loaded" upon initialisation
+};
+export default myPlugin;
+```
+
+### Process
+
+`CEPPlugin` is a function which takes a `logger` and `services` and returns an object which can provide optional enhancements to `completions`, `diagnostics`, and `metadata` (e.g. quickinfo). If you look at `index.ts` in the `cep-fast-plugin` you can see that it is providing enhancements for all three sections, but you may only augment one or two of them if that is all you require.
+
+The process then works like a pipeline.
+1. The user performs an action in their IDE.
+2. `tsserver` generates a base LSP message.
+3. This is run in the CEP and there is some base functionality which happens.
+4. Any registered plugins will then have their applicable methods called, allowing them to augment the message.
+5. The message is returned back to `tsserver` and the appropriate action will be handled via the user's IDE.
+
+> The order in which plugins are specified in the `plugins` config in the CEP config block in the user's `tsconfig.json` is the same order that plugins will be applied in step 4.
+
+#### Process Example
+
+To explain the above 5 points with an example, consider the user installing the `cep-fast-plugin` and having the following template which should be valid
+```javascript
+<my-element :attr=${(x) => x.foo}></my-element>
+```
+
+1. Diagnostic actions are triggered by the IDE usually when a code change occurs in a file/buffer.
+2. `tsserver` generates an information message.
+3. The base CEP sees the property binding syntax `:attr`, but because that is FAST specific it just treats that as an invalid attribute. It will therefore generate an error diagnostic.
+4. The `cep-fast-plugin` diagnostics function knows how to handle property binding syntax, so it verifies that `<my-element>` has that as a valid property. It therefore removes that diagnostic from the pipeline.
+5. The message is returned to the IDE. Because step 4 removed it (because in this case it was valid) then the IDE should report no diagnostic issues.
+
+### Interface
+
+As well as the API interface that is exposed via the `logger` and `services` (as well as the interface that you can implement from typescript to actually have the required functions on your class), there are more things that the CEP expose for you.
+
+You can import all of these from the single import point
+```javascript
+import { utils, CONSTANTS, Services, /* and more */ } from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+```
+
+You can look at the declaration file from that import to see what is exposed. Some of the things which could be of interest.
+1. Access to the `kvstore` to work with the cache.
+2. Access to constants, such as what type of diagnostic issue something is.
+3. Access to functions for parsing and manipulating strings.
+4. Access to functions which can be used to construct fakes for unit tests.
+
+The `cep-fast-plugin` contains examples of using all of these different imports for you to look at. As the project is open source you can always look at the implementation in the main CEP project too.
+
+> The import large import path is cumbersome, but we have to use subpaths because of a limitation with `tsserver` and how it needs to import the main CEP from its package.
