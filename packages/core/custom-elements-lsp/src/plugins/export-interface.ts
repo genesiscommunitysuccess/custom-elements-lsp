@@ -18,6 +18,7 @@ export type {
 } from '../custom-elements/custom-elements.types';
 export type {
   GlobalDataService,
+  GlobalDataRepository,
   HTMLAttrType,
   GlobalAttrType,
   GlobalDataInfo,
