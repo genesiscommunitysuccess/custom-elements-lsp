@@ -5,11 +5,11 @@
         "name": "@genesiscommunitysuccess/custom-elements-lsp",
         "srcRouteFromTSServer": "../../..",
         "designSystemPrefix": "example",
-        "fastEnable": true,
         "parser": {
           "timeout": 1000,
           "src": "./packages/showcase/example-lib/lib/**/*.{js,ts}",
-          "dependencies": ["!**/@custom-elements-manifest/**/*"]
+          "dependencies": ["!**/@custom-elements-manifest/**/*"],
+          "fastEnable": true
         },
         "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
       }

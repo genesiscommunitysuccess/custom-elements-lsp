@@ -89,7 +89,7 @@ const manifestRepo = new LiveUpdatingCEManifestRepository(
   logger,
   io,
   config,
-  !!lspPluginConfigOptions?.fastEnable,
+  !!lspPluginConfigOptions?.parser?.fastEnable,
 );
 await manifestRepo.analyzeAndUpdate();
 

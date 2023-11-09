@@ -80,10 +80,6 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       }),
     );
 
-    if (info.config.fastEnable) {
-      logger.log('FAST config enabled');
-    }
-
     return decorateWithTemplateLanguageService(
       ts,
       info.languageService,
@@ -124,7 +120,6 @@ function initServices({
     logger,
     io,
     mixinParserConfigDefaults(config.parser),
-    config.fastEnable,
   );
   const cemRepository = new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
     designSystemPrefix: config.designSystemPrefix,

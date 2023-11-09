@@ -6,9 +6,9 @@
         "name": "@genesiscommunitysuccess/custom-elements-lsp",
         "srcRouteFromTSServer": "../../..",
         "designSystemPrefix": "example",
-        "fastEnable": true,
         "parser": {
           "timeout": 1000,
+          "fastEnable": true,
           "src": "./packages/showcase/example/src/**/*.{js,ts}",
           "dependencies": [
             "node_modules/@genesiscommunitysuccess/example-lib/**/custom-elements.json",
