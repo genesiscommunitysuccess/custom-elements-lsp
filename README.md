@@ -14,7 +14,7 @@ The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package 
 
 ### CEP FAST Plugin
 
-Plugin for @genesiscommunitysuccess/custom-elements-lsp which enables https://www.fast.design/ enhancements. Examples of this is using the `:prop` syntax for property bindings, and `?attr` syntax for boolean attributes.
+[Plugin](./packages/core/cep-fast-plugin/README.md) for the CEP which enables https://www.fast.design/ enhancements. Examples of this is using the `:prop` syntax for property bindings, and `?attr` syntax for boolean attributes.
 
 ### Analyzer Import Alias Plugin
 
