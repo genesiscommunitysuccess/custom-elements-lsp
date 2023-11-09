@@ -11,11 +11,8 @@ import { Logger } from 'typescript-template-language-service-decorator';
 const { stringHeadTail } = utils.strings;
 
 /**
- * If Microsoft FAST config is enabled then this service will provide
+ * This service will provide
  * enhanced diagnostics for FAST templating syntax.
- *
- * @remarks This should be used in conjunction with the CoreDiagnosticsServiceImpl
- * or another class which fully implements the DiagnosticsService interface.
  *
  * @privateRemarks as a PartialDiagnosticsService this class is not required to
  * implement every method of the DiagnosticsService interface if not required
