@@ -22,6 +22,7 @@
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.8.0",
     "@genesiscommunitysuccess/custom-elements-lsp": "2.2.0",
+    "@genesiscommunitysuccess/cep-fast-plugin": "2.2.0",
     "typescript": "4.9.5"
   },
   "customElements": "dist/custom-elements.json"

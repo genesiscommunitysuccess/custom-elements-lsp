@@ -10,7 +10,8 @@
           "timeout": 1000,
           "src": "./packages/showcase/example-lib/lib/**/*.{js,ts}",
           "dependencies": ["!**/@custom-elements-manifest/**/*"]
-        }
+        },
+        "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
       }
     ],
     "allowJs": true,
