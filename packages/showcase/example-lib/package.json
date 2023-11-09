@@ -3,8 +3,8 @@
   "private": true,
   "version": "2.2.0",
   "description": "Example library to demonstrate custom elements linking",
-  "main": "dist/esm/index.js",
-  "types": "dist/dts/index.d.ts",
+  "main": "./lib/index.ts",
+  "types": "./lib/index.d.ts",
   "scripts": {
     "clean:dist": "rimraf ./dist",
     "bootstrap:module": "npm run build && npm run cem:analyze",
