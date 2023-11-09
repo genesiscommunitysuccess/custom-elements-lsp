@@ -1,4 +1,5 @@
 import { Logger } from 'typescript-template-language-service-decorator';
+import * as jestUtils from '../../jest/';
 import * as DIAGNOSTIC_CODES from '../constants/diagnostic-codes';
 import { getStore } from '../utils/kvstore';
 import * as strings from '../utils/strings';
@@ -13,7 +14,15 @@ export type {
   CustomElementEvent,
   CustomElementMember,
   CustomElementDef,
+  CustomElementsService,
 } from '../custom-elements/custom-elements.types';
+export type {
+  GlobalDataService,
+  HTMLAttrType,
+  GlobalAttrType,
+  GlobalDataInfo,
+  PlainElementAttribute,
+} from '../global-data/global-data.types';
 
 export const utils = {
   strings,
@@ -30,4 +39,7 @@ export const utils = {
 };
 export const CONSTANTS = {
   DIAGNOSTIC_CODES,
+};
+export const testUtils = {
+  ...jestUtils,
 };

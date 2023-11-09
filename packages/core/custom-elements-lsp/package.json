@@ -5,7 +5,7 @@
   "main": "./out",
   "exports": {
     ".": "./out/index.js",
-    "./out/plugins/export-interface": "./out/plugins/export-interface.js"
+    "./out/src/plugins/export-interface": "./out/src/plugins/export-interface.js"
   },
   "bin": {
     "custom-elements-analyze": "./parser/analyze.js"

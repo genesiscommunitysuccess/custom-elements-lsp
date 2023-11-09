@@ -1,4 +1,4 @@
-import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
+import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import { FASTCompletionsService } from './completions';
 import { FASTDiagnosticsService } from './diagnostics';
 import { FASTMetadataService } from './metadata';

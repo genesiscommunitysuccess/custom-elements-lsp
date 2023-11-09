@@ -3,7 +3,7 @@ import {
   CompletionCtx,
   PartialCompletionsService,
   Services,
-} from '@genesiscommunitysuccess/custom-elements-lsp/out/plugins/export-interface';
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import {
   CompletionEntry,
   CompletionInfo,

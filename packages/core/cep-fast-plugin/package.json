@@ -48,6 +48,7 @@
 	},
   "devDependencies": {
     "@genesiscommunitysuccess/custom-elements-lsp": "2.2.0",
+    "@types/jest": "^29.5.1",
     "jest": "^29.5.0",
     "lint-staged": "^13.2.2",
     "semantic-release": "21.0.7",
