@@ -172,16 +172,15 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
           const attrStart = searchOffset - attr.length - offset;
 
-          return this.buildAttributeDiagnosticMessage(
-            classification,
-            attr,
-            tagName,
-            sourceFile,
-            attrStart,
-            attr.length,
-          );
-        })
-    );
+        return this.buildAttributeDiagnosticMessage(
+          classification,
+          attr,
+          tagName,
+          sourceFile,
+          attrStart,
+          attr.length,
+        );
+      });
   }
 
   private buildGlobalAttributeArray(): [string, CustomElementAttribute][] {

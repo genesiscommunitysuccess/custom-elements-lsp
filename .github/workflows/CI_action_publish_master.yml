@@ -38,6 +38,5 @@ jobs:
         echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
     - name: Publish (NPM registry)
-      run: npm run publish:from-package
       env:
         GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
