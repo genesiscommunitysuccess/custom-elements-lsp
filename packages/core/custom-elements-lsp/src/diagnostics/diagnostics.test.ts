@@ -16,8 +16,11 @@ import {
 } from '../constants/diagnostic-codes';
 import { CustomElementsService } from '../custom-elements/custom-elements.types';
 import { GlobalDataRepository } from '../global-data/global-data.types';
+import { polyFill } from '../utils/polyfill';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { TagsWithAttrs } from './diagnostics.types';
+
+polyFill();
 
 const getDiagnosticsService = (
   ce: CustomElementsService,
@@ -585,6 +588,7 @@ describe('diagnosticsInvalidElemAttribute', () => {
       const context = html`
         <template><div :wololo="${(_) => ''}" :wolo="${(_) => ''}"></div></template>
       `;
+      // @ts-expect-error
       (context.rawText as any) = context.rawText.replaceAll(':', bindingSymbol);
       const elementList = getElements(context);
       const result = (service as any).diagnosticsInvalidElemAttribute(context, elementList);

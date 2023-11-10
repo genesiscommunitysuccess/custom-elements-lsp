@@ -16,6 +16,7 @@ module.exports = {
     '**/out/**/*',
     '**/node_modules/**/*',
     'scripts/**/*',
+		'**/polyfill.ts'
   ],
   settings: {
     'import/resolver': {
