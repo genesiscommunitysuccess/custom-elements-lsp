@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.2.0...v3.0.0) (2023-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* add plugin api and refactor fast functionality into its own plugin FUI-1331 (#65)
+
+### Features
+
+* add plugin api and refactor fast functionality into its own plugin [FUI-1331](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1331) (#65) f1f7b8b
+
 ## [2.2.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.2...v2.2.0) (2023-11-03)
 
 
