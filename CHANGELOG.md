@@ -7,6 +7,7 @@
 
 * set npm config for publish pipeline [FUI-1512](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1512) 27efa1a
 
+
 ## [3.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.2.0...v3.0.0) (2023-11-10)
 
 

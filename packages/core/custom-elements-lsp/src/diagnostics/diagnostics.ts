@@ -11,6 +11,7 @@ import {
 import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
 import { escapeRegExp, getPositionOfNthOccuranceEnd, parseAttrNamesFromRawString } from '../utils';
 import { getStore } from '../utils/kvstore';
+import { polyFill } from '../utils/polyfill';
 import { Services } from '../utils/services.types';
 import {
   ATTIBUTE_CLASSIFICATION,
@@ -19,6 +20,8 @@ import {
   InvalidAttrDefinition,
   TagsWithAttrs,
 } from './diagnostics.types';
+
+polyFill();
 
 export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
   constructor(
@@ -139,33 +142,35 @@ export class CoreDiagnosticsServiceImpl implements DiagnosticsService {
 
     const errorAttrs = this.buildInvalidAttrDefinitions(withOccurrences);
 
-    return errorAttrs
-      .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
-      .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
-        let searchOffset = getPositionOfNthOccuranceEnd({
-          matcher: `<${tagName}`,
-          occurrence: tagNameOccurrence,
-          rawText: context.rawText,
-        });
+    return (
+      errorAttrs
+        // @ts-expect-error
+        .filter(({ attr }) => attr.replaceAll('x', '').length > 0)
+        .map(({ tagName, tagNameOccurrence, attr, attrOccurrence, classification }) => {
+          let searchOffset = getPositionOfNthOccuranceEnd({
+            matcher: `<${tagName}`,
+            occurrence: tagNameOccurrence,
+            rawText: context.rawText,
+          });
 
-        /**
-         * If the attribute is a binding type (used in dialects such as FAST) then
-         * we can avoid matching on substrings just by appending `=` to the match.
-         * Else, we can avoid substring matches using the word boundary matcher `\b`.
-         * If we are using a binding type we need to subtract 1 account for the
-         * `=` character.
-         */
-        const [matcher, offset] = /[@:?]/.test(attr)
-          ? [new RegExp(escapeRegExp(attr) + '='), 1]
-          : [new RegExp(`\\b${escapeRegExp(attr)}\\b`), 0];
+          /**
+           * If the attribute is a binding type (used in dialects such as FAST) then
+           * we can avoid matching on substrings just by appending `=` to the match.
+           * Else, we can avoid substring matches using the word boundary matcher `\b`.
+           * If we are using a binding type we need to subtract 1 account for the
+           * `=` character.
+           */
+          const [matcher, offset] = /[@:?]/.test(attr)
+            ? [new RegExp(escapeRegExp(attr) + '='), 1]
+            : [new RegExp(`\\b${escapeRegExp(attr)}\\b`), 0];
 
-        searchOffset += getPositionOfNthOccuranceEnd({
-          matcher,
-          occurrence: attrOccurrence,
-          rawText: context.rawText.substring(searchOffset),
-        });
+          searchOffset += getPositionOfNthOccuranceEnd({
+            matcher,
+            occurrence: attrOccurrence,
+            rawText: context.rawText.substring(searchOffset),
+          });
 
-        const attrStart = searchOffset - attr.length - offset;
+          const attrStart = searchOffset - attr.length - offset;
 
         return this.buildAttributeDiagnosticMessage(
           classification,
