@@ -1,12 +1,20 @@
+import {
+  CustomElementsService,
+  GlobalDataRepository,
+  IOService,
+  testUtils,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import { TextSpan } from 'typescript/lib/tsserverlibrary';
-import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
-import { getGDServiceFromStubbedResource } from '../../jest/global-data';
-import { getIOServiceFromStubResource } from '../../jest/io';
-import { buildServices, getLogger, html } from '../../jest/utils';
-import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { GlobalDataRepository } from '../global-data/global-data.types';
-import { IOService } from '../utils';
-import { FASTMetadataService } from './fast';
+import { FASTMetadataService } from '.';
+
+const {
+  getCEServiceFromStubbedResource,
+  getGDServiceFromStubbedResource,
+  getIOServiceFromStubResource,
+  buildServices,
+  getLogger,
+  html,
+} = testUtils;
 
 const getFastMetadataService = ({
   ce = getCEServiceFromStubbedResource(),

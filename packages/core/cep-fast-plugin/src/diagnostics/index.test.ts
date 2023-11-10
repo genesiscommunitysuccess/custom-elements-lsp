@@ -1,11 +1,19 @@
+import {
+  CONSTANTS,
+  testUtils,
+  CustomElementsService,
+  GlobalDataRepository,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import { Diagnostic, DiagnosticCategory, SourceFile } from 'typescript/lib/tsserverlibrary';
-import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
-import { getGDServiceFromStubbedResource } from '../../jest/global-data';
-import { buildServices, getLogger } from '../../jest/utils';
-import { DUPLICATE_ATTRIBUTE, UNKNOWN_ATTRIBUTE } from '../constants/diagnostic-codes';
-import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { GlobalDataRepository } from '../global-data/global-data.types';
-import { FASTDiagnosticsService } from './fast';
+import { FASTDiagnosticsService } from '.';
+
+const {
+  getCEServiceFromStubbedResource,
+  getGDServiceFromStubbedResource,
+  buildServices,
+  getLogger,
+} = testUtils;
+const { DUPLICATE_ATTRIBUTE, UNKNOWN_ATTRIBUTE } = CONSTANTS.DIAGNOSTIC_CODES;
 
 const getFASTDiagnosticsService = (
   ce: CustomElementsService,

@@ -3,7 +3,6 @@ import {
   Logger,
 } from 'typescript-template-language-service-decorator';
 import { CoreCompletionsServiceImpl, PartialCompletionsService } from './completions';
-import { FASTCompletionsService } from './completions/fast';
 import { CEM_FIRST_LOADED_EVENT } from './constants/misc';
 import {
   LiveUpdatingCEManifestRepository,
@@ -14,11 +13,11 @@ import { CustomElementsServiceImpl } from './custom-elements/service';
 import { CustomElementsLanguageService } from './customelements';
 import { CoreDiagnosticsServiceImpl } from './diagnostics';
 import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
-import { FASTDiagnosticsService } from './diagnostics/fast';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
-import { FASTMetadataService } from './metadata/fast';
+import { CEPPluginRespistoryImpl } from './plugins/repository';
+import { CEPPluginServiceImpl } from './plugins/service';
 import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
 import { Services } from './utils/services.types';
 
@@ -60,6 +59,9 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
       ts,
     });
 
+    const pluginLoader = new CEPPluginServiceImpl(new CEPPluginRespistoryImpl(logger, services));
+    const plugins = pluginLoader.loadPlugins(info.config.plugins || []);
+
     const completions: PartialCompletionsService[] = [
       new CoreCompletionsServiceImpl(logger, services),
     ];
@@ -70,12 +72,13 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
 
     const metadata: PartialMetadataService[] = [new CoreMetadataServiceImpl(logger, services)];
 
-    if (info.config.fastEnable) {
-      logger.log('FAST config enabled');
-      completions.push(new FASTCompletionsService(logger, services));
-      diagnostics.push(new FASTDiagnosticsService(logger, services));
-      metadata.push(new FASTMetadataService(logger, services));
-    }
+    plugins.then((loaders) =>
+      loaders.forEach((plugin) => {
+        completions.push(...(plugin.completions || []));
+        diagnostics.push(...(plugin.diagnostics || []));
+        metadata.push(...(plugin.metadata || []));
+      }),
+    );
 
     return decorateWithTemplateLanguageService(
       ts,
@@ -117,7 +120,6 @@ function initServices({
     logger,
     io,
     mixinParserConfigDefaults(config.parser),
-    config.fastEnable,
   );
   const cemRepository = new CustomElementsAnalyzerManifestParser(logger, liveManifest, {
     designSystemPrefix: config.designSystemPrefix,

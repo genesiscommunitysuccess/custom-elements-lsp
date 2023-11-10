@@ -1,16 +1,24 @@
 import {
+  CompletionCtx,
+  CustomElementsService,
+  GlobalDataService,
+  testUtils,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+import {
   CompletionEntry,
   CompletionInfo,
   ScriptElementKind,
   TextSpan,
 } from 'typescript/lib/tsserverlibrary';
-import { getCEServiceFromStubbedResource } from '../../jest/custom-elements';
-import { getGDServiceFromStubbedResource } from '../../jest/global-data';
-import { buildServices, getLogger, html } from '../../jest/utils';
-import { CustomElementsService } from '../custom-elements/custom-elements.types';
-import { GlobalDataService } from '../global-data/global-data.types';
-import { CompletionCtx } from './completions.types';
-import { FASTCompletionsService } from './fast';
+import { FASTCompletionsService } from '.';
+
+const {
+  getCEServiceFromStubbedResource,
+  getGDServiceFromStubbedResource,
+  buildServices,
+  getLogger,
+  html,
+} = testUtils;
 
 const getFASTCompletionsService = (
   ceRes: CustomElementsService = getCEServiceFromStubbedResource(),

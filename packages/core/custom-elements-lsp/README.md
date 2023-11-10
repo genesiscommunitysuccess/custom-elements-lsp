@@ -24,14 +24,15 @@ To use this plugin you have a version of typescript as part of the project, loca
         "name": "@genesiscommunitysuccess/custom-elements-lsp",
         "srcRouteFromTSServer": "../../..",
         "designSystemPrefix": "example",
-        "fastEnable": true,
         "parser": {
+          "fastEnable": true,
           "timeout": 2000,
           "dependencies": [
             "node_modules/example-lib/**/custom-elements.json",
             "!**/@custom-elements-manifest/**/*"
           ]
-        }
+        },
+        "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
       }
     ]
   }
@@ -46,7 +47,7 @@ Base options.
 | `name`                | False                | Need to set as `@genesiscommunitysuccess/custom-elements-lsp` to enable this plugin.                                                                                                                                                                                         |
 | `srcRootFromTSServer` | True (`"../../../"`)   | `srcRouteFromTSServer` is the relative path from the `tsserver.js` executable in your node modules, to your directory with the `package.json` where the project web root is located. This is likely to be `node_modules/typescript/lib/tsserver.js` hence we use `../../..`. *WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory.|
 | `designSystemPrefix`  | True (N/A)           | Used to work with `%%prefix%%` to handle components registered as part of a design system. See [here](#advanced-usage).                                                                                                                                                      |
-| `fastEnable`          | True (disabled)      | Enables Microsoft FAST parsing and completion (e.g. `:prop` property binding syntax).                                                                                                                                                                                        |
+| `plugins`  | True (`[]`)           | Set of optional plugins you can add to the CEP to enhance its functionality. Specified plugins are applied in order. |
 
 
 Parser options. These control the analysis of the source code to understand semantics such as whether a custom element has a property or not. This is not controlling the LSP working with the html in the templates to understand whether there are diagnostic issues, or to aid with completion suggestions.
@@ -56,6 +57,7 @@ Parser options. These control the analysis of the source code to understand sema
 | `src` | True (`"src/**/*.{js,ts}"`) | The glob of the source files in the current project to analyze live.  |
 | `timeout` | True (2000) | Time in milliseconds to debounce calls between running the analyzer on the source files. The lower the time the more responsive the LSP will be to changes in the source code but the more resources it will use. |
 | `dependencies` | True (`[]`) | An array of strings of globs that find `custom-elements.json` from library dependencies to use with the LSP. Libraries will ship production code with which the analyzer will not be able to parse, so the libraries need to ship the manifest generated [from the analyzer](https://custom-elements-manifest.open-wc.org/analyzer/config/). An example default you could use to load all files would be `["node_modules/**/custom-elements.json","!**/@custom-elements-manifest/**/*"]` which will find all of the manifests in your dependencies, but ignore the test manifests from the analzyer dependency itself.
+| `fastEnable`          | True (disabled)      | Enables Microsoft FAST parsing of local components. You need to enable the plugin too for full functionality |
 
 Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
 
@@ -63,9 +65,10 @@ Only the `src` files are watched for changes to update the analyzer, if you upda
 
 ### FAST Syntax
 
-Enable enhanced completions and diagnostics by setting the `"fastEnable": true` option in your `tsconfig.json`. This will enable syntax such as `@event` on the template definitions.
-
-<!-- If we get more language plugins then we need to also explain about setting the language for the lsp analyzer as well as the plugin -->
+There is current support for enhanced FAST handing (syntax such as `@event` on the template definitions). To enable this you'll need perform the following steps:
+1. Enable enhanced completions and diagnostics by setting the `"fastEnable": true` parser option in your `tsconfig.json`.
+2. Install the `@genesiscommunitysuccess/cep-fast-plugin` to your project with your package manager.
+3. Add the package from step 2 in your `plugins` array in your main config block in your `tsconfig.json`. See the example at the top of the page.
 
 ### VSCode
 

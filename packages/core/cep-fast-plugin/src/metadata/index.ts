@@ -1,9 +1,14 @@
+import {
+  CustomElementAttribute,
+  PartialMetadataService,
+  QuickInfoCtx,
+  Services,
+  utils,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import { QuickInfo, ScriptElementKind, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';
-import { CustomElementAttribute } from '../custom-elements/custom-elements.types';
-import { stringHeadTail } from '../utils';
-import { Services } from '../utils/services.types';
-import { PartialMetadataService, QuickInfoCtx } from './metadata.types';
+
+const { stringHeadTail } = utils.strings;
 
 /**
  */

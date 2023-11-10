@@ -36,7 +36,6 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
     private logger: Logger,
     private io: IOService,
     private config: SourceAnalyzerConfig,
-    private fastEnabled: boolean,
   ) {
     this.logger.log(`Setting up LiveUpdatingCEManifestRepository`);
 
@@ -61,7 +60,8 @@ export class LiveUpdatingCEManifestRepository implements ManifestRepository {
       this.analyzer = await getAnalyzerCLI();
     }
     const analyzerArgs = ['analyze', '--globs', this.config.src];
-    if (this.fastEnabled) {
+    if (this.config?.fastEnable) {
+      this.logger.log('FAST parsing mode enabled');
       analyzerArgs.push('--fast');
     }
     if (this.config.dependencies.length > 0) {

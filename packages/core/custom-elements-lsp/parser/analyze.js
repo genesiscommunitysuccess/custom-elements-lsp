@@ -19,7 +19,7 @@ import resolve from 'resolve/sync.js';
 import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
-} from '../out/custom-elements/manifest/repository.js';
+} from '../out/src/custom-elements/manifest/repository.js';
 
 const EXIT_CODES = {
   cant_resolve_typescript: 1,
@@ -89,7 +89,7 @@ const manifestRepo = new LiveUpdatingCEManifestRepository(
   logger,
   io,
   config,
-  !!lspPluginConfigOptions?.fastEnable,
+  !!lspPluginConfigOptions?.parser?.fastEnable,
 );
 await manifestRepo.analyzeAndUpdate();
 

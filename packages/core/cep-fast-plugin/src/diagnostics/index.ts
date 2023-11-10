@@ -1,17 +1,18 @@
+import {
+  CONSTANTS,
+  utils,
+  DiagnosticCtx,
+  PartialDiagnosticsService,
+  Services,
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
 import { Diagnostic, DiagnosticCategory } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';
-import { UNKNOWN_ATTRIBUTE, UNKNOWN_EVENT } from '../constants/diagnostic-codes';
-import { stringHeadTail } from '../utils';
-import { getStore } from '../utils/kvstore';
-import { Services } from '../utils/services.types';
-import { DiagnosticCtx, PartialDiagnosticsService } from './diagnostics.types';
+
+const { stringHeadTail } = utils.strings;
 
 /**
- * If Microsoft FAST config is enabled then this service will provide
+ * This service will provide
  * enhanced diagnostics for FAST templating syntax.
- *
- * @remarks This should be used in conjunction with the CoreDiagnosticsServiceImpl
- * or another class which fully implements the DiagnosticsService interface.
  *
  * @privateRemarks as a PartialDiagnosticsService this class is not required to
  * implement every method of the DiagnosticsService interface if not required
@@ -34,7 +35,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     return diagnostics
       .map((d) => {
         switch (d.code) {
-          case UNKNOWN_ATTRIBUTE:
+          case CONSTANTS.DIAGNOSTIC_CODES.UNKNOWN_ATTRIBUTE:
             return this.mapAndFilterValidAttributes(d);
           default:
             return d;
@@ -44,7 +45,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
   }
 
   private mapAndFilterValidAttributes(diag: Diagnostic): Diagnostic | null {
-    if (diag.code !== UNKNOWN_ATTRIBUTE) {
+    if (diag.code !== CONSTANTS.DIAGNOSTIC_CODES.UNKNOWN_ATTRIBUTE) {
       return diag;
     }
     const msgRegex = /Unknown attribute "(.+)" for (?:custom )?element "(.+)"/;
@@ -81,13 +82,15 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     attr: string,
     tagName: string,
   ): Diagnostic | null {
-    const totalEventsNameMap = getStore(this.logger).TSUnsafeGetOrAdd('total-events-names', () => {
-      const totalEventsNames = this.services.customElements
-        .getAllEvents()
-        .map(({ name }) => name)
-        .concat(this.services.globalData.getEvents().map((e) => e.replace('on', '')));
-      return new Map(totalEventsNames.map((name) => [name, true]));
-    });
+    const totalEventsNameMap = utils
+      .getStore(this.logger)
+      .TSUnsafeGetOrAdd('total-events-names', () => {
+        const totalEventsNames = this.services.customElements
+          .getAllEvents()
+          .map(({ name }) => name)
+          .concat(this.services.globalData.getEvents().map((e) => e.replace('on', '')));
+        return new Map(totalEventsNames.map((name) => [name, true]));
+      });
 
     if (totalEventsNameMap.has(attr)) {
       return null;
@@ -96,7 +99,7 @@ export class FASTDiagnosticsService implements PartialDiagnosticsService {
     return {
       ...diag,
       category: DiagnosticCategory.Warning,
-      code: UNKNOWN_EVENT,
+      code: CONSTANTS.DIAGNOSTIC_CODES.UNKNOWN_EVENT,
       messageText: `Unknown event binding "@${attr}" for ${
         tagName.includes('-') ? 'custom ' : ''
       }element "${tagName}"`,
