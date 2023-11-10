@@ -17,7 +17,10 @@ import { MetadataService, QuickInfoCtx } from './metadata.types';
  * Handles metadata requests such as signature and definition info.
  */
 export class CoreMetadataServiceImpl implements MetadataService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     this.logger.log(`Setting up CoreMetadataService`);
   }
 
@@ -53,7 +56,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
   getDefinitionAndBoundSpan(
     context: TemplateContext,
-    position: LineAndCharacter
+    position: LineAndCharacter,
   ): DefinitionInfoAndBoundSpan {
     const maybeTokenSpan = getTokenSpanMatchingPattern(position, context, /[\w-]/);
     if (!maybeTokenSpan) {
@@ -77,7 +80,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
   private quickInfoForCEAttribute(
     tokenSpan: TextSpan,
     attrName: string,
-    tagName: string
+    tagName: string,
   ): QuickInfo | undefined {
     const attrs = this.services.customElements.getCEAttributes(tagName);
     const maybeAttr = attrs.find(({ name }) => name === attrName);
@@ -105,7 +108,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
   private quickInfoForPlainHTMLAttribute(
     tokenSpan: TextSpan,
     attrName: string,
-    tagName: string
+    tagName: string,
   ): QuickInfo | undefined {
     const attrs = this.services.globalData.getHTMLAttributes(tagName);
     const maybeAttr = attrs.find(({ name }) => name === attrName);
@@ -146,7 +149,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .map(({ name, type }) => ({
           kind: 'text',
           text: `${name} \`${type}\``,
-        }))
+        })),
     );
 
     return {
@@ -190,7 +193,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .map(({ name, type }) => ({
           kind: 'text',
           text: `${name} \`${type}\``,
-        }))
+        })),
     );
     buildAndAddJSDocTag(tags, 'properties', () =>
       this.services.customElements
@@ -199,13 +202,13 @@ export class CoreMetadataServiceImpl implements MetadataService {
         .map(({ name, type, isStatic }) => ({
           kind: 'text',
           text: `${name} \`${type}\`${isStatic ? ' (static)' : ''}`,
-        }))
+        })),
     );
     buildAndAddJSDocTag(tags, 'events', () =>
       this.services.customElements.getCEEvents(tagName).map(({ name }) => ({
         kind: 'text',
         text: `${name}`,
-      }))
+      })),
     );
 
     return {
@@ -232,7 +235,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
   private getCustomElementDefinitionInfo(
     tokenSpan: TextSpan,
     tagName: string,
-    context: TemplateContext
+    context: TemplateContext,
   ): DefinitionInfoAndBoundSpan {
     const path = this.services.customElements.getCEPath(tagName, { getFullPath: true });
     if (!path) {
@@ -249,7 +252,7 @@ export class CoreMetadataServiceImpl implements MetadataService {
 
     if (typeof maybeFileName !== 'string') {
       this.logger.log(
-        `getCustomElementDefinitionInfo - Unable to get filename of definition for tag ${tagName}`
+        `getCustomElementDefinitionInfo - Unable to get filename of definition for tag ${tagName}`,
       );
       return {
         textSpan: tokenSpan,
@@ -260,11 +263,11 @@ export class CoreMetadataServiceImpl implements MetadataService {
     // naive but simple approach to finding the definition location in the source file
     const definitionStart = this.services.io.getLocationOfStringInFile(
       maybeFileName,
-      tagDefinitionName ?? ''
+      tagDefinitionName ?? '',
     );
     if (!definitionStart) {
       throw new Error(
-        `Couldn't find definition for custom element with tagName: ${tagDefinitionName} defined in file ${maybeFileName}`
+        `Couldn't find definition for custom element with tagName: ${tagDefinitionName} defined in file ${maybeFileName}`,
       );
     }
 

@@ -16,7 +16,7 @@ const buildLanguageService = (overrides: Partial<LanguageServiceConstructorParam
     overrides.diagnostics ?? [],
     overrides.completions ?? [],
     overrides.metadata ?? [],
-    overrides.servicesReady ?? (() => true)
+    overrides.servicesReady ?? (() => true),
   );
 
 const buildMockPartialServices = <T>(length: number = 2, fn: () => T): T[] =>
@@ -28,7 +28,7 @@ describe('getSemanticDiagnostics', () => {
       count,
       (): PartialDiagnosticsService => ({
         getSemanticDiagnostics: jest.fn(),
-      })
+      }),
     );
 
   it('returns an empty array if the services are not yet ready', () => {
@@ -56,16 +56,16 @@ describe('getSemanticDiagnostics', () => {
     expect(res).toEqual(['output']);
     // Can't use toHaveBeenCalledWith or calls[0][0] because calling with objects is causing errors in jest
     expect(
-      (mockDiagnostics[1].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].context
+      (mockDiagnostics[1].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].context,
     ).toEqual(context);
     expect(
-      (mockDiagnostics[1].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].diagnostics
+      (mockDiagnostics[1].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].diagnostics,
     ).toEqual([]);
     expect(
-      (mockDiagnostics[2].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].context
+      (mockDiagnostics[2].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].context,
     ).toEqual(context);
     expect(
-      (mockDiagnostics[2].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].diagnostics
+      (mockDiagnostics[2].getSemanticDiagnostics as jest.Mock).mock.calls[0][0].diagnostics,
     ).toEqual(['hello']);
   });
 });
@@ -76,7 +76,7 @@ describe('getCompletionsAtPosition', () => {
       count,
       (): PartialCompletionsService => ({
         getCompletionsAtPosition: jest.fn(),
-      })
+      }),
     );
 
   it('returns no completions if the services are not yet ready', () => {
@@ -127,7 +127,7 @@ describe('getCompletionsAtPosition', () => {
           key: 'none',
           param: undefined,
         },
-      }
+      },
     );
     expect(mockCompletions[2].getCompletionsAtPosition as jest.Mock).toHaveBeenCalledWith(
       ['completion-1'],
@@ -138,7 +138,7 @@ describe('getCompletionsAtPosition', () => {
           key: 'none',
           param: undefined,
         },
-      }
+      },
     );
   });
 });
@@ -149,7 +149,7 @@ describe('getQuickInfoAsPosition', () => {
       count,
       (): PartialMetadataService => ({
         getQuickInfoAtPosition: jest.fn(),
-      })
+      }),
     );
 
   it('returns undefined if the services are not yet ready', () => {

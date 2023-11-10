@@ -1,7 +1,11 @@
 import { LineAndCharacter } from 'typescript/lib/tsserverlibrary';
 import { TemplateContext } from 'typescript-template-language-service-decorator';
-// eslint-disable-next-line camelcase
-import { STRINGS__TOKEN_TYPE_empty_attr } from './shaped-test-cases';
+import {
+  // eslint-disable-next-line camelcase
+  STRINGS__TOKEN_TYPE_empty_attr,
+  // eslint-disable-next-line camelcase
+  UTILS__TEMPLATE_SECOND_INDENTATION_LEVEL,
+} from './shaped-test-cases';
 import { html } from './utils';
 
 /**
@@ -32,19 +36,6 @@ const testCaseFour = html`
     </div>
   </template>
 `;
-
-// This looks strange because it is testing a template string that is defined on the second indentation level
-function getTestCaseFive() {
-  return (() =>
-    html`
-      <template>
-        <div>
-          <test-ce></test-ce>
-          <invalid-ce></invalid-ce>
-        </div>
-      </template>
-    `)();
-}
 
 describe('toOffset', () => {
   it('Returns the correct offset for a single line', () => {
@@ -89,7 +80,7 @@ describe('toOffset', () => {
 
   it('Returns the correct with multiple values, that are indented in the page', () => {
     // Info 164  [13:46:01.335] [CE] diagnosticsUnknownTags: offsets: 32, 60
-    const testCaseFive = getTestCaseFive();
+    const testCaseFive = UTILS__TEMPLATE_SECOND_INDENTATION_LEVEL();
     const res = testCaseFive.toOffset({
       line: 3,
       character: testCaseFive.rawText.split('\n')[3].indexOf('test-ce'),
@@ -113,8 +104,8 @@ describe('toPosition', () => {
   // Info 281  [15:07:03.043] [CE] getQuickInfoAtPosition: {"line":2,"character":13} 28
 
   const testCases: [[TemplateContext, number], LineAndCharacter][] = [
-    [[getTestCaseFive(), 50], { line: 3, character: 18 }],
-    [[getTestCaseFive(), 83], { line: 4, character: 21 }],
+    [[UTILS__TEMPLATE_SECOND_INDENTATION_LEVEL(), 50], { line: 3, character: 18 }],
+    [[UTILS__TEMPLATE_SECOND_INDENTATION_LEVEL(), 83], { line: 4, character: 21 }],
     [[testCaseThree, 28], { line: 2, character: 13 }],
   ];
 

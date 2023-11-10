@@ -24,9 +24,9 @@ Update test steps to match your PR:
 ```
 1. Checkout branch
 2. `npm run bootstrap`
-3. `npm run test:unit`
+3. `npm run test`
 
-To test the LSP is working correctly in VSCode
+Other packages are completely tested via tests from `npm run test`. To test the LSP is working correctly in VSCode:
 1. `cd packages/showcase/example`
 2. `code .` (or manually open VSCode via the UI to the `example` directory on your filesystem).
 3. Open a typescript file such as `root.ts`

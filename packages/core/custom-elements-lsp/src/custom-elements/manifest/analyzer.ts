@@ -28,6 +28,6 @@ export type AnalyzerCLI = Awaited<ReturnType<typeof getAnalyzerCLI>>;
 export const getGlobby = async () =>
   (await dynamicImport('globby')).globby as (
     patterns: string | readonly string[],
-    options?: any
+    options?: any,
   ) => Promise<string[]>;
 export type Globby = Awaited<ReturnType<typeof getGlobby>>;

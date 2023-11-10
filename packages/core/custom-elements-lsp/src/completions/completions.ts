@@ -19,13 +19,16 @@ import {
  * and potentially adjusted by other services.
  */
 export class CoreCompletionsServiceImpl implements CompletionsService {
-  constructor(private logger: Logger, private services: Services) {
+  constructor(
+    private logger: Logger,
+    private services: Services,
+  ) {
     logger.log('Setting up Completions Service');
   }
 
   getCompletionsAtPosition(
     completions: CompletionInfo,
-    { typeAndParam }: CompletionCtx
+    { typeAndParam }: CompletionCtx,
   ): CompletionInfo {
     const { key, params } = typeAndParam;
 
@@ -70,7 +73,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
     this.logger.log(
       `${
         isCustomElement ? 'custom-element' : 'html-element'
-      }-attribute: ${tagName}, ${JSON.stringify(attrs)}`
+      }-attribute: ${tagName}, ${JSON.stringify(attrs)}`,
     );
 
     const globalAttrs = getStore(this.logger).TSUnsafeGetOrAdd('global-attributes', () =>
@@ -78,7 +81,7 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
         .getAttributes()
         .map(([name, type]): CompletionEntry => constructGlobalAttrCompletion(name, type))
         .concat(this.services.globalData.getAriaAttributes().map(constructGlobalAriaCompletion))
-        .concat(this.services.globalData.getEvents().map(constructGlobalEventCompletion))
+        .concat(this.services.globalData.getEvents().map(constructGlobalEventCompletion)),
     );
 
     return attrs.map(constructElementAttrCompletion).concat(globalAttrs);
@@ -106,8 +109,8 @@ export class CoreCompletionsServiceImpl implements CompletionsService {
             labelDetails: {
               description: 'HTML Element',
             },
-          }))
-        )
+          })),
+        ),
     );
   }
 }

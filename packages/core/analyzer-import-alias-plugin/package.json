@@ -1,9 +1,10 @@
 {
   "name": "@genesiscommunitysuccess/analyzer-import-alias-plugin",
-  "version": "2.1.1-prerelease.1",
-  "description": "",
+  "version": "3.0.0",
+  "description": "Plugin for custom element manifest parser to handle import aliases",
   "type": "module",
-  "main": "index.js",
+  "main": "./dist",
+  "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/genesiscommunitysuccess/custom-elements-lsp.git"
@@ -16,11 +17,16 @@
     "url": "https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues"
   },
   "scripts": {
-    "bootstrap:module": "echo 'not implemented yet'",
-    "clean:dist": "exit 0 # not implemented yet",
-    "start": "nodemon dev.js",
-    "start:debug": "node --inspect-brk dev.js",
-    "test": "uvu test"
+    "bootstrap:module": "npm run build",
+    "build": "tsc -p ./src/tsconfig.json",
+    "build:watch": "tsc -p ./src/tsconfig.json --watch",
+    "clean:dist": "rimraf ./dist",
+    "dev": "tsc-watch --project ./src --outDir ./dist --onSuccess \"nodemon ./dist/dev.js\"",
+    "start:debug": "node --inspect-brk ./dist/dev.js",
+    "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
+    "test:unit:coverage": "npm run test:unit -- --coverage",
+    "test:unit:debug": "cross-env NODE_OPTIONS=--experimental-vm-modules node --inspect-brk ../../../node_modules/jest/bin/jest.js",
+    "test:unit:watch": "npm run test:unit -- --watchAll"
   },
   "keywords": [
     "custom-elements",
@@ -29,15 +35,22 @@
     "customelements",
     "webcomponents",
     "customelementsjson",
-    "customelementsmanifest"
+    "customelementsmanifest",
+    "import",
+    "alias"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
-    "@custom-elements-manifest/analyzer": "^0.1.14",
+    "@custom-elements-manifest/analyzer": "0.9.0",
+    "@types/jest": "^29.5.1",
+    "cross-env": "^7.0.3",
     "globby": "^11.0.3",
+    "jest": "^29.5.0",
     "nodemon": "^2.0.7",
-    "typescript": "^4.3.2",
+    "ts-jest": "^29.1.0",
+    "tsc-watch": "^6.0.4",
+    "typescript": "4.3.2",
     "uvu": "^0.5.1"
   }
 }

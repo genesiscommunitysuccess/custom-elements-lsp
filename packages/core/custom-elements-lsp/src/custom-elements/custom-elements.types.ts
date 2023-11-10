@@ -4,6 +4,7 @@ export type SourceAnalyzerConfig = {
   timeout: number;
   src: string;
   dependencies: string[];
+  fastEnable?: boolean;
 };
 
 export interface ManifestRepository {

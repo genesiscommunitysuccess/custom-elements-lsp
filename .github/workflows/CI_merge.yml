@@ -29,8 +29,14 @@ jobs:
       - name: Lint
         run: npm run lint:eslint:all
 
-      - name: Unit Test
-        run: npm run test:unit
+      - name: Test
+        run: npm run test
+
+      - name: "NPM Identity"
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
       - name: "NPM Identity"
         env:

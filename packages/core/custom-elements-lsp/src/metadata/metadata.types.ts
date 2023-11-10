@@ -10,7 +10,7 @@ import { TokenType } from '../utils';
 export interface MetadataService {
   getDefinitionAndBoundSpan(
     context: TemplateContext,
-    position: LineAndCharacter
+    position: LineAndCharacter,
   ): DefinitionInfoAndBoundSpan;
 
   getQuickInfoAtPosition(ctx: QuickInfoCtx): QuickInfo | undefined;
