@@ -8,7 +8,10 @@ import {
 } from './global-data.types';
 
 export class GlobalDataServiceImpl implements GlobalDataService {
-  constructor(private logger: Logger, private repo: GlobalDataRepository) {
+  constructor(
+    private logger: Logger,
+    private repo: GlobalDataRepository,
+  ) {
     this.logger.log('Setting up GlobalDataServiceImpl');
   }
 

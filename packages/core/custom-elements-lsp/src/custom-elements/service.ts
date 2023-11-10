@@ -15,7 +15,10 @@ import {
 const PARSE_PATH_REGEXP = /node_modules\/(?:(?:(@[^\/]+\/[^\/]+))|(?:([^\/]+)\/))/;
 
 export class CustomElementsServiceImpl implements CustomElementsService {
-  constructor(private logger: Logger, private ceData: CustomElementsResource) {
+  constructor(
+    private logger: Logger,
+    private ceData: CustomElementsResource,
+  ) {
     this.logger.log('Setting up CustomElementsServiceImpl');
   }
 
@@ -34,8 +37,8 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     return getStore(this.logger).TSUnsafeGetOrAdd('ce-get-all-events', () =>
       this.getCENames().reduce(
         (acum: CustomElementEvent[], ceName: string) => acum.concat(this.getCEEvents(ceName)),
-        []
-      )
+        [],
+      ),
     );
   }
 
@@ -103,7 +106,7 @@ export class CustomElementsServiceImpl implements CustomElementsService {
     const key = config.getFullPath ? 'ce-get-all-paths-full' : 'ce-get-all-paths-short';
     const mapWithFullPaths = getStore(this.logger).TSUnsafeGetOrAdd(
       key,
-      () => new Map(this.getAllCEInfo(config).map(({ tagName, path }) => [tagName, path]))
+      () => new Map(this.getAllCEInfo(config).map(({ tagName, path }) => [tagName, path])),
     );
     return mapWithFullPaths.get(name) ?? null;
   }

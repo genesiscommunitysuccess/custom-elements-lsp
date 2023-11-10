@@ -29,7 +29,13 @@ jobs:
       run: npm run lint:eslint:all
 
     - name: Test
-      run: npm run test:unit
+      run: npm run test
+
+    - name: "NPM Identity"
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      run: |
+        echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > .npmrc
 
     - name: "NPM Identity"
       env:
@@ -40,4 +46,3 @@ jobs:
     - name: Publish (NPM registry)
       env:
         GH_TOKEN: ${{secrets.GH_USER_TOKEN}}
-      run: npm run publish:from-package

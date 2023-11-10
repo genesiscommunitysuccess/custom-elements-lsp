@@ -1,18 +1,25 @@
 {
-  "schemaVersion": "0.1.0",
+  "schemaVersion": "1.0.0",
   "readme": "",
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "my-element.js",
+      "path": "super-class.js",
       "declarations": [
         {
           "kind": "class",
           "description": "",
           "name": "MyElement",
-          "superclass": {
-            "name": "ParentElement"
-          }
+          "members": [
+            {
+              "kind": "field",
+              "name": "foo",
+              "type": {
+                "text": "string"
+              },
+              "default": "'bar'"
+            }
+          ]
         }
       ],
       "exports": [
@@ -21,7 +28,7 @@
           "name": "MyElement",
           "declaration": {
             "name": "MyElement",
-            "module": "my-element.js"
+            "module": "super-class.js"
           }
         }
       ]

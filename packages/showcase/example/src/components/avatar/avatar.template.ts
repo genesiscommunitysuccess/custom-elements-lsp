@@ -32,7 +32,7 @@ export const avatarTemplate = html<Avatar>`
               <p>${(_) => placeholder}</p>
             </slot>
           </div>
-        `
+        `,
       )}
     </div>
   </template>

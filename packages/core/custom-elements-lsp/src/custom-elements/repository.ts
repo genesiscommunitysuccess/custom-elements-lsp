@@ -17,11 +17,11 @@ export class CustomElementsAnalyzerManifestParser
   constructor(
     private logger: Logger,
     private manifestRepository: ManifestRepository,
-    private config: CEMTConfig
+    private config: CEMTConfig,
   ) {
     super();
     logger.log(
-      `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`
+      `Setting up CustomElementsAnalyzerManifestParser class with config ${JSON.stringify(config)}`,
     );
     this.manifestRepository.registerCallbackForPostUpdate(() => {
       this.logger.log(`callbackAfterUpdate`);
@@ -65,7 +65,7 @@ export class CustomElementsAnalyzerManifestParser
    */
   private parseRegisterComposedCustomElement(module: JavaScriptModule): boolean {
     const declaration = module.declarations?.filter(
-      (d) => d.kind === 'class' && 'customElement' in d && d.customElement && 'tagName' in d
+      (d) => d.kind === 'class' && 'customElement' in d && d.customElement && 'tagName' in d,
     )[0] as CustomElement | undefined;
 
     if (declaration === undefined) return false;
@@ -97,7 +97,7 @@ export class CustomElementsAnalyzerManifestParser
     this.logger.log(`name: ${JSON.stringify(name)}`);
 
     const declaration = module.declarations?.filter(
-      (d) => d.kind === 'class' && 'customElement' in d && d.customElement
+      (d) => d.kind === 'class' && 'customElement' in d && d.customElement,
     )[0];
 
     this.logger.log(`declaration: ${JSON.stringify(declaration)}`);

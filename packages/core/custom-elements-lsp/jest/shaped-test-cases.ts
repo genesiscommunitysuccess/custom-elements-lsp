@@ -30,3 +30,16 @@ export const DIAGNOSTICS__UNKNOWN_TAGS_on_new_line_and_substring = html`
     </div>
   </template>
 `;
+
+export const UTILS__TEMPLATE_SECOND_INDENTATION_LEVEL =
+function getTestCaseFive() {
+  return (() =>
+    html`
+      <template>
+        <div>
+          <test-ce></test-ce>
+          <invalid-ce></invalid-ce>
+        </div>
+      </template>
+    `)();
+}

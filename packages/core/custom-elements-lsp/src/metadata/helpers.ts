@@ -12,7 +12,7 @@ import { JSDocTagInfo } from 'typescript/lib/tsserverlibrary';
 export function buildAndAddJSDocTag(
   tags: JSDocTagInfo[],
   name: string,
-  fn: () => JSDocTagInfo['text']
+  fn: () => JSDocTagInfo['text'],
 ): boolean {
   const text = fn()?.map(({ kind, text: tagText }) => ({
     kind,
