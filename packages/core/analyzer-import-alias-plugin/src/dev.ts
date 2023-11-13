@@ -11,8 +11,8 @@ const superclassManifest = JSON.parse(
 );
 
 const modules = [
-  ts.createSourceFile('my-element.js', defaultCode, ts.ScriptTarget.ES2021, true),
-  ts.createSourceFile('another-class.js', anotherCode, ts.ScriptTarget.ES2021, true),
+  ts.createSourceFile('my-element.js', defaultCode, ts.ScriptTarget.ES2015, true),
+  ts.createSourceFile('another-class.js', anotherCode, ts.ScriptTarget.ES2015, true),
 ];
 
 console.log(

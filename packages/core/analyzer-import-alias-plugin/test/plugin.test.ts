@@ -24,8 +24,8 @@ const buildTestCase = async (
   const superclassCode = fs.readFileSync(process.cwd() + anotherFilePath).toString();
 
   const modules = [
-    ts.createSourceFile(baseFilePath, defaultCode, ts.ScriptTarget.ES2021, true),
-    ts.createSourceFile(anotherFilePath, superclassCode, ts.ScriptTarget.ES2021, true),
+    ts.createSourceFile(baseFilePath, defaultCode, ts.ScriptTarget.ES2015, true),
+    ts.createSourceFile(anotherFilePath, superclassCode, ts.ScriptTarget.ES2015, true),
   ];
 
   return (await getAnalyzerCreateHarness())({

@@ -38,7 +38,7 @@ To use this plugin you have a version of typescript as part of the project, loca
   }
 }
 ```
-> You need to use a target of `ES2021` or later.
+> You need to use a target of `ES2015` or later.
 
 Base options.
 
