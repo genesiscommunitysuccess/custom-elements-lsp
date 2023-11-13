@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1-prerelease.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.1-prerelease.1...v2.1.1-prerelease.2) (2023-11-13)
+
+
+### Bug Fixes
+
+* bracket c81b1e5
+
 ## [2.1.1-prerelease.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.1.0...v2.1.1-prerelease.1) (2023-10-18)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@genesiscommunitysuccess/cep-fast-plugin",
-  "version": "3.0.0",
+  "version": "2.1.1-prerelease.2",
   "license": "MIT",
   "main": "./out",
   "description": "Plugin for @genesiscommunitysuccess/custom-elements-lsp which enables https://www.fast.design/ enhancements",
@@ -47,7 +47,7 @@
     "typescript-template-language-service-decorator": "^2.3.2"
   },
   "devDependencies": {
-    "@genesiscommunitysuccess/custom-elements-lsp": "3.0.0",
+    "@genesiscommunitysuccess/custom-elements-lsp": "2.1.1-prerelease.2",
     "@types/jest": "^29.5.1",
     "jest": "^29.5.0",
     "lint-staged": "^13.2.2",
