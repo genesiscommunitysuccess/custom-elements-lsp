@@ -1,7 +1,7 @@
 {
   "paths": ["**/*"],
   "compilerOptions": {
-    "target": "es2021" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
+    "target": "es2015" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
     "moduleResolution": "Node",
     "sourceMap": true /* Create source map files for emitted JavaScript files. */,
     "declaration": true /* Emit .d.ts files */,
