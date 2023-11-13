@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v3.0.0...v3.1.0) (2023-11-13)
+
+
+### Features
+
+* allow usage with tsconfig target es2015 or later [FUI-1576](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1576) (#70) 58735f6, closes FUI-1567
+
 ## [3.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v2.2.0...v3.0.0) (2023-11-10)
 
 
