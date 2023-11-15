@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "clean:dist": "rimraf ./dist",
-    "bootstrap:module": "npm run build && npm run lsp:analyze",
+    "bootstrap:module": "npm run build",
     "build": "tsc -p ./src/tsconfig.json && vite build",
     "dev": "npm run build && npm run start",
     "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
