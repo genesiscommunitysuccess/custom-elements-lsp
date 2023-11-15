@@ -42,6 +42,7 @@
     "bootstrap:module": "npm run build",
     "build": "tsc -b ./src/main/tsconfig.json",
     "build:watch": "tsc -b ./src/main/tsconfig.json --watch",
+    "build:analyzer": "tsc -b ./src/parser/tsconfig.json",
     "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "test:unit": "jest",
