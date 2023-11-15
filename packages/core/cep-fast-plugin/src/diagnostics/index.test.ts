@@ -3,7 +3,7 @@ import {
   testUtils,
   CustomElementsService,
   GlobalDataRepository,
-} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/main/plugins/export-interface';
 import { Diagnostic, DiagnosticCategory, SourceFile } from 'typescript/lib/tsserverlibrary';
 import { FASTDiagnosticsService } from '.';
 
