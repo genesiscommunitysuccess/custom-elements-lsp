@@ -8,7 +8,7 @@
     "./out/main/plugins/export-interface": "./out/main/plugins/export-interface.js"
   },
   "bin": {
-    "custom-elements-analyze": "./out/parser/analyze.js"
+    "custom-elements-analyze": "./scripts/custom-elements-analyze/index.js"
   },
   "description": "TypeScript plugin to enable Intellisense in custom element tagged templates",
   "keywords": [
