@@ -1,11 +1,11 @@
 import { readFileSync, existsSync } from 'fs';
 import { Package } from 'custom-elements-manifest';
-import { CEMTConfig, CustomElementDef } from '../src/custom-elements/custom-elements.types';
-import { CustomElementsAnalyzerManifestParser } from '../src/custom-elements/repository';
-import { CustomElementsServiceImpl } from '../src/custom-elements/service';
+import { CEMTConfig, CustomElementDef } from '../main/custom-elements/custom-elements.types';
+import { CustomElementsAnalyzerManifestParser } from '../main/custom-elements/repository';
+import { CustomElementsServiceImpl } from '../main/custom-elements/service';
 import { getLogger } from './utils';
 
-const MANIFSST_PATH = './jest/ce-test.json';
+const MANIFSST_PATH = './src/jest/ce-test.json';
 
 let manifest: string;
 

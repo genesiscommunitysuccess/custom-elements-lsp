@@ -2,10 +2,10 @@
   "name": "@genesiscommunitysuccess/custom-elements-lsp",
   "version": "3.1.0",
   "license": "MIT",
-  "main": "./out/src",
+  "main": "./out/main/",
   "exports": {
-    ".": "./out/src/index.js",
-    "./out/src/plugins/export-interface": "./out/src/plugins/export-interface.js"
+    ".": "./out/main/index.js",
+    "./out/main/plugins/export-interface": "./out/main/plugins/export-interface.js"
   },
   "bin": {
     "custom-elements-analyze": "./parser/analyze.js"
@@ -40,8 +40,8 @@
   },
   "scripts": {
     "bootstrap:module": "npm run build",
-    "build": "tsc -b ./src/tsconfig.json",
-    "build:watch": "tsc -b ./src/tsconfig.json --watch",
+    "build": "tsc -b ./src/main/tsconfig.json",
+    "build:watch": "tsc -b ./src/main/tsconfig.json --watch",
     "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
     "test:unit": "jest",
