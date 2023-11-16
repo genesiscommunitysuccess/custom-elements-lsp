@@ -1,11 +1,11 @@
 import { readFileSync, existsSync } from 'fs';
 import { Package } from 'custom-elements-manifest';
-import { CEMTConfig, CustomElementDef } from '../src/custom-elements/custom-elements.types';
-import { CustomElementsAnalyzerManifestParser } from '../src/custom-elements/repository';
-import { CustomElementsServiceImpl } from '../src/custom-elements/service';
+import { CEMTConfig, CustomElementDef } from '../main/custom-elements/custom-elements.types';
+import { CustomElementsAnalyzerManifestParser } from '../main/custom-elements/repository';
+import { CustomElementsServiceImpl } from '../main/custom-elements/service';
 import { getLogger } from './utils';
 
-const MANIFSST_PATH = './jest/ce-test.json';
+const MANIFEST_PATH = './src/jest/ce-test.json';
 
 let manifest: string;
 
@@ -78,14 +78,14 @@ export const getCEServiceFromStubbedResource = (
  */
 export function getCEServiceFromTestJsonResource(configOverride: Partial<CEMTConfig>) {
   if (!manifest) {
-    if (!existsSync(MANIFSST_PATH)) {
+    if (!existsSync(MANIFEST_PATH)) {
       console.error(`ERROR: tests require manifest from /example application to exists.`);
       console.error(
         `ERROR: to generate manifest go into the 'example' directory and run 'npm run lsp:analyze'`,
       );
       process.exit(1);
     }
-    manifest = readFileSync(MANIFSST_PATH, 'utf8');
+    manifest = readFileSync(MANIFEST_PATH, 'utf8');
     manifest = JSON.parse(manifest);
   }
 

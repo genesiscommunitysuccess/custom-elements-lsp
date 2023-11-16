@@ -264,7 +264,7 @@ This section covers some basic information for how to write a CEP Plugin. An exa
 The basic premise is that your project must expose a function which is of the TypeScript type `CEPPlugin`, and it is the default export.
 
 ```typescript
-import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/main/plugins/export-interface';
 
 const myPlugin: CEPPlugin = (logger, services) => {
   logger.log('my plugin loaded');
@@ -305,7 +305,7 @@ As well as the API interface that is exposed via the `logger` and `services` (as
 
 You can import all of these from the single import point
 ```javascript
-import { utils, CONSTANTS, Services, /* and more */ } from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+import { utils, CONSTANTS, Services, /* and more */ } from '@genesiscommunitysuccess/custom-elements-lsp/out/main/plugins/export-interface';
 ```
 
 You can look at the declaration file from that import to see what is exposed. Some of the things which could be of interest.

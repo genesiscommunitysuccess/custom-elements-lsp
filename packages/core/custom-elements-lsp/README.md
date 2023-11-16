@@ -101,7 +101,7 @@ You can generate a copy of the manifest file that the plugin is using by running
 ```json
 {
   "scripts": {
-    "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
+    "lsp:analyze": "custom-elements-analyze --tsconfig=./src/tsconfig.json",
   },
 }
 ```

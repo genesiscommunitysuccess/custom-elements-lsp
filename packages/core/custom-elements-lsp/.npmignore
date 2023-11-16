@@ -1,4 +1,4 @@
 *
 
-!out/**
-!parser/**
+!out/main/**
+!out/parser/**

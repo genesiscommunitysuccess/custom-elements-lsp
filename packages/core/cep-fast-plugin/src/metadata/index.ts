@@ -4,7 +4,7 @@ import {
   QuickInfoCtx,
   Services,
   utils,
-} from '@genesiscommunitysuccess/custom-elements-lsp/out/src/plugins/export-interface';
+} from '@genesiscommunitysuccess/custom-elements-lsp/out/main/plugins/export-interface';
 import { QuickInfo, ScriptElementKind, TextSpan } from 'typescript/lib/tsserverlibrary';
 import { Logger } from 'typescript-template-language-service-decorator';
 

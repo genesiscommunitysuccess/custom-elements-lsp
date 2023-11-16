@@ -11,7 +11,7 @@
     "build": "npm run build:tsc",
     "build:tsc": "tsc -b tsconfig.json",
     "cem:analyze": "cem analyze --config custom-elements-manifest.config.js",
-    "lsp:analyze": "custom-elements-analyze --tsconfig='./tsconfig.json'"
+    "lsp:analyze": "custom-elements-analyze --tsconfig=./tsconfig.json"
   },
   "dependencies": {
     "@microsoft/fast-components": "2.21.3",

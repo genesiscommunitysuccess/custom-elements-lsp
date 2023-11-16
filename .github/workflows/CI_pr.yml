@@ -28,3 +28,6 @@ jobs:
 
       - name: Test
         run: npm run test
+
+      - name: Analyze
+        run: npm run lsp:analyze:all
