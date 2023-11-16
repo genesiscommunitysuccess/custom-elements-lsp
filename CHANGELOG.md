@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v3.1.0...v4.0.0) (2023-11-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* changing the output bundle breaks the import path for cep plugins
+
+### Bug Fixes
+
+* manifset analyzer debug script [FUI-1286](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1286) (#71) c3580a1, closes FUI-1331
+
 ## [3.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v3.0.0...v3.1.0) (2023-11-13)
 
 
