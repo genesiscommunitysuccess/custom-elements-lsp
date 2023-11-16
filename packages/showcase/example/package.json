@@ -7,7 +7,7 @@
     "bootstrap:module": "npm run build",
     "build": "tsc -p ./src/tsconfig.json && vite build",
     "dev": "npm run build && npm run start",
-    "lsp:analyze": "custom-elements-analyze --tsconfig='./src/tsconfig.json'",
+    "lsp:analyze": "custom-elements-analyze --tsconfig=./src/tsconfig.json",
     "preview": "vite preview",
     "start": "vite"
   },
