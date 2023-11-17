@@ -10,7 +10,7 @@ import {
   mixinParserConfigDefaults,
 } from '../main/custom-elements/manifest/repository.js';
 import { IOService } from '../main/utils/index.js';
-import { PluginConfig } from './analyze.types.js';
+import { PluginConfig } from '../main/plugins/plugins.types';
 
 const EXIT_CODES = {
   cant_resolve_typescript: 1,
