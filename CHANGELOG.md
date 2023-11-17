@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.0.0...v4.0.1) (2023-11-17)
+
+
+### Bug Fixes
+
+* **custom-elements-lsp:** publish test util files which are used by plugins [FUI-1595](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1595) (#72) f93b4f0
+
 ## [4.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v3.1.0...v4.0.0) (2023-11-16)
 
 
