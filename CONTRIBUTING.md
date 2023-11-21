@@ -266,7 +266,7 @@ The basic premise is that your project must expose a function which is of the Ty
 ```typescript
 import { CEPPlugin } from '@genesiscommunitysuccess/custom-elements-lsp/out/main/plugins/export-interface';
 
-const myPlugin: CEPPlugin = (logger, services) => {
+const myPlugin: CEPPlugin = (logger, services, userConfig) => {
   logger.log('my plugin loaded');
   return { }; // This plugin would do nothing except log "my plugin loaded" upon initialisation
 };
@@ -275,7 +275,7 @@ export default myPlugin;
 
 ### Process
 
-`CEPPlugin` is a function which takes a `logger` and `services` and returns an object which can provide optional enhancements to `completions`, `diagnostics`, and `metadata` (e.g. quickinfo). If you look at `index.ts` in the `cep-fast-plugin` you can see that it is providing enhancements for all three sections, but you may only augment one or two of them if that is all you require.
+`CEPPlugin` is a function which takes `logger`, `services`, `userConfig` and returns an object which can provide optional enhancements to `completions`, `diagnostics`, and `metadata` (e.g. quickinfo). If you look at `index.ts` in the `cep-fast-plugin` you can see that it is providing enhancements for all three sections, but you may only augment one or two of them if that is all you require.
 
 The process then works like a pipeline.
 1. The user performs an action in their IDE.

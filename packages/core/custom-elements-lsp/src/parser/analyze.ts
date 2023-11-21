@@ -9,8 +9,8 @@ import {
   LiveUpdatingCEManifestRepository,
   mixinParserConfigDefaults,
 } from '../main/custom-elements/manifest/repository.js';
+import { PluginConfig } from '../main/plugins/plugins.types';
 import { IOService } from '../main/utils/index.js';
-import { PluginConfig } from './analyze.types.js';
 
 const EXIT_CODES = {
   cant_resolve_typescript: 1,

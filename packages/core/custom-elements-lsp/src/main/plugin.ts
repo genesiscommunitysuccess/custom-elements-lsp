@@ -16,6 +16,7 @@ import { PartialDiagnosticsService } from './diagnostics/diagnostics.types';
 import { GlobalDataRepositoryImpl } from './global-data/repository';
 import { GlobalDataServiceImpl } from './global-data/service';
 import { CoreMetadataServiceImpl, PartialMetadataService } from './metadata';
+import { PluginConfig } from './plugins/plugins.types';
 import { CEPPluginRespistoryImpl } from './plugins/repository';
 import { CEPPluginServiceImpl } from './plugins/service';
 import { LanguageServiceLogger, IOServiceImpl, TypescriptCompilerIORepository } from './utils';
@@ -53,14 +54,18 @@ export function init(modules: { typescript: typeof import('typescript/lib/tsserv
     const logger = new LanguageServiceLogger(info, 'CE');
     logger.log('Setting up main plugin');
 
+    const config = info.config as PluginConfig;
+
     const services = initServices({
       logger,
-      config: info.config,
+      config,
       ts,
     });
 
-    const pluginLoader = new CEPPluginServiceImpl(new CEPPluginRespistoryImpl(logger, services));
-    const plugins = pluginLoader.loadPlugins(info.config.plugins || []);
+    const pluginLoader = new CEPPluginServiceImpl(
+      new CEPPluginRespistoryImpl(logger, services, config),
+    );
+    const plugins = pluginLoader.loadPlugins(config.plugins || []);
 
     const completions: PartialCompletionsService[] = [
       new CoreCompletionsServiceImpl(logger, services),
