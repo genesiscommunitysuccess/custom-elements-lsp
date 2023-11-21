@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.0.1...v4.1.0) (2023-11-21)
+
+
+### Features
+
+* **custom-elements-lsp:** pass user config into any plugins [FUI-1600](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1600) (#73) d803287
+
 ## [4.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.0.0...v4.0.1) (2023-11-17)
 
 
