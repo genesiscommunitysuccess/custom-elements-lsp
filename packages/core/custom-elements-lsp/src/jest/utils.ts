@@ -64,7 +64,7 @@ export const html = (
   const rawText = String.raw({ raw: strings }, ...values.map((v) => '${' + v + '}')) ?? '';
 
   return {
-    typescript: jest.fn() as any,
+    typescript: { _info: 'not implemented' } as any,
     fileName: 'test.ts',
     text: String.raw({ raw: strings }, ...values.map((v) => 'x'.repeat(v.toString().length))) ?? '',
     rawText,
