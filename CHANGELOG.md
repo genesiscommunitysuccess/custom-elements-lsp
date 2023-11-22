@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.0...v4.1.1) (2023-11-22)
+
+
+### Bug Fixes
+
+* **custom-elements-lsp:** decouple tests exports from jest [FUI-1595](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1595) (#74) 609abc1
+
 ## [4.1.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.0.1...v4.1.0) (2023-11-21)
 
 
