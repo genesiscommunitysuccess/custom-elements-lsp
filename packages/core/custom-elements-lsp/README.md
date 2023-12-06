@@ -4,9 +4,19 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 # Custom Elements LSP Plugin
 
->> This is a pre-release version of the plugin; therefore, it will be missing features and likely contain bugs.
+Install this TypeScript plugin in your project to enhance your LSP enabled editor with IntelliSense handling for [web component custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). This includes: autocompletion, diagonstics, and jump to definition.
 
-<!-- Add an intro to the LSP stuff in FUI-1186 -->
+![Autocompletion of custom element tag names](./docs/images/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](./docs/images/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](./docs/images/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/images/base_jump_to_definition.gif "Jumpy to Definition")
+
+Quicklook information is also provided, as well as IntelliSense for standard HTML elements. As previously stated, you can use any LSP enabled editor, such as Vim/NeoVim with LSP plugins for example.
+
+![Autocompletion and quicklook of a standard HTML element in vim editor](./docs/images/vim_tagname_quicklook.gif "Element IntelliSense in NeoVim") ![A second example of autocompletion and quicklook of a standard HTML element in vim editor](./docs/images/vim_tagname_quicklook_two.gif "Another Example")
+
+There is an additional [companion plugin](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) which enables functionality when working with [FAST](https://www.fast.design/).
+
+![Example of custom element completion with property bindings and quicklook using FAST](./docs/images/vim_ce.gif "FAST Plugin Demo")
+
+> Follow the readme of the [linked plugin](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) to set that up too if required.
 
 ## Plugin Setup and Usage
 
