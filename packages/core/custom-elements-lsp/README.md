@@ -6,7 +6,7 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 Install this TypeScript plugin in your project to enhance your LSP enabled editor with IntelliSense handling for [web component custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). This includes: autocompletion, diagonstics, and jump to definition.
 
-![Autocompletion of custom element tag names](./docs/images/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](./docs/images/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](./docs/images/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/images/base_jump_to_definition.gif "Jump to Definition")
+![Autocompletion of custom element tag names](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
 
 Quicklook information is also provided, as well as IntelliSense for standard HTML elements. As previously stated, you can use any LSP enabled editor, such as Vim/NeoVim with LSP plugins for example.
 
@@ -48,8 +48,8 @@ To use this plugin you have a version of typescript as part of the project, loca
   }
 }
 ```
-> You need to use a target of `ES2015` or later in your `tsconfig.json`.
 > See [here](#example-config) for an example.
+3. You need to use a target of `ES2015` or later in your `tsconfig.json`.
 
 Base options.
 
