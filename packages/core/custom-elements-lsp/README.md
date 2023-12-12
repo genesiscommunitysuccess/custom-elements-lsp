@@ -24,7 +24,7 @@ These instructions are for setting up the LSP in your application. If you are wa
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
 
 1. Ensure the package is installed in your `package.json` and you've run `npm install`.
-2. Update your `tsconfig.json` with the following info:
+2. Configure the plugin in the `tsconfig.json`. The following is an example shape, see below for full explanations.
 
 ```json
 {
@@ -32,23 +32,24 @@ To use this plugin you have a version of typescript as part of the project, loca
     "plugins": [
       {
         "name": "@genesiscommunitysuccess/custom-elements-lsp",
-        "srcRouteFromTSServer": "../../..",
-        "designSystemPrefix": "example",
+        "srcRouteFromTSServer": "configure this to set the relative path between your project route and your `tsserver.js`",
+        "designSystemPrefix": "configure this to handle a library of components with a prefix",
         "parser": {
-          "fastEnable": true,
           "timeout": 2000,
+          "src: "configure this to define the source code to parse",
           "dependencies": [
-            "node_modules/example-lib/**/custom-elements.json",
-            "!**/@custom-elements-manifest/**/*"
+            "configure these globs to find manifest files from your dependencies",
+            "and use the ! pattern to ignore manifests"
           ]
         },
-        "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
+        "plugins": ["set plugins here!"]
       }
     ]
   }
 }
 ```
-> You need to use a target of `ES2015` or later.
+> You need to use a target of `ES2015` or later in your `tsconfig.json`.
+> See [here](#example-config) for an example.
 
 Base options.
 
@@ -72,6 +73,37 @@ Parser options. These control the analysis of the source code to understand sema
 Only the `src` files are watched for changes to update the analyzer, if you update the dependencies containing manifest files you must restart the LSP for it to be aware of the changes.
 
 *WARNING:* If you are using a monorepo pattern with workspaces, you must account for potential hoisting of the TypeScript library in the `node_modules` to a parent directory. The path of `src` and `dependencies` will be relative to the path created from the typescript install location and the `srcRouteFromTSServer` config option.
+
+### Example Config
+
+```json
+{
+  "compilerOptions": {
+    "plugins": [
+      {
+        "name": "@genesiscommunitysuccess/custom-elements-lsp",
+        "srcRouteFromTSServer": "../../..",
+        "designSystemPrefix": "example",
+        "parser": {
+          "fastEnable": true,
+          "timeout": 2000,
+          "dependencies": [
+            "node_modules/example-lib/**/custom-elements.json",
+            "!**/@custom-elements-manifest/**/*"
+          ]
+        },
+        "plugins": ["@genesiscommunitysuccess/cep-fast-plugin"]
+      }
+    ]
+  }
+}
+```
+
+The above configuration would set the following:
+* Enable the plugin.
+* Set `example` as the design system, so any component prefix like that would be of the pattern `example-X`, such as `example-button`.
+* Set up the [FAST plugin](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) by enabling parsing of the syntax, and the plugin itself in the `plugins` array.
+* Use the default path for the source code parsing, find all manifests from the `example-lib` dependency, and ignore the manifests from `@custom-elements-manifest` directory.
 
 ### FAST Syntax
 
