@@ -36,7 +36,7 @@ To use this plugin you have a version of typescript as part of the project, loca
         "designSystemPrefix": "configure this to handle a library of components with a prefix",
         "parser": {
           "timeout": 2000,
-          "src: "configure this to define the source code to parse",
+          "src": "configure this to define the source code to parse",
           "dependencies": [
             "configure these globs to find manifest files from your dependencies",
             "and use the ! pattern to ignore manifests"
