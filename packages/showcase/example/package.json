@@ -1,6 +1,6 @@
 {
   "name": "@genesiscommunitysuccess/example-fast-codebase",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "private": true,
   "scripts": {
     "clean:dist": "rimraf ./dist",
@@ -18,9 +18,9 @@
     "tslib": "^2.4.1"
   },
   "devDependencies": {
-    "@genesiscommunitysuccess/cep-fast-plugin": "4.1.1",
-    "@genesiscommunitysuccess/custom-elements-lsp": "4.1.1",
-    "@genesiscommunitysuccess/example-lib": "4.1.1",
+    "@genesiscommunitysuccess/cep-fast-plugin": "4.1.2",
+    "@genesiscommunitysuccess/custom-elements-lsp": "4.1.2",
+    "@genesiscommunitysuccess/example-lib": "4.1.2",
     "typescript": "4.9.5",
     "vite": "^4.3.9"
   }

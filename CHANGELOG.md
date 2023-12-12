@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.1...v4.1.2) (2023-12-12)
+
+
+### Bug Fixes
+
+* documentation examples and gif demos [FUI-1591](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1591)  (#75) 69c48f2
+
 ## [4.1.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.0...v4.1.1) (2023-11-22)
 
 
