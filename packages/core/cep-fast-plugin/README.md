@@ -1,6 +1,6 @@
 The [Genesis Global](https://genesis.global) Community Success initiative is committed to open-sourcing select technologies that we believe the open-source community would benefit from.
 
-[![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
+[![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/cep-fast-plugin)](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
 
 # CEP FAST Plugin
 
@@ -9,6 +9,8 @@ This is a [@genesiscommunitysuccess/custom-elements-lsp](https://www.npmjs.com/p
 * Support for property bindings autocompletion and diagnostics for `:prop`. Extra info in quickinfo window.
 * Support for boolean attribute bindings in templates `?attr`.
 * Support for event bindings autocompletion and diagnostics for `@events`. Extra info in quickinfo window.
+
+![Property binding autocompletion](./docs/images/fast_property_binding.gif "Property Binding Autocompletion") ![Boolean attribute autocompletion](./docs/images/fast_boolean_attr_binding.gif "Boolean Attribute Binding Autocompletion") ![Event binding autocompletion](./docs/images/fast_event_binding.gif "Event Binding Autocompletion") ![Extra quickinfo functionality](./docs/images/fast_quicklook.gif "Quickinfo Extended Functionality")
 
 ## Setup
 
