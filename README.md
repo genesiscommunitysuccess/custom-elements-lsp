@@ -11,7 +11,7 @@ To get started run `$ npm run bootstrap` in your shell.
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
 The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package of the monorepo, and is a plugin for the TypeScript language server which adds in support for custom elements.
 
-![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion" =25%x) ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion" =25%x) ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics" =25%x) ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition" =25%x)
+![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
 
 ### CEP FAST Plugin
 
