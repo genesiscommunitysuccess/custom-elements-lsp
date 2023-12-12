@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.1.3](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.2...v4.1.3) (2023-12-12)
+
+
+### Bug Fixes
+
+* links to doc images accounting for monorepo [FUI-1591](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1591) (#76) 9f67399, closes FUi-1591
+
 ## [4.1.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.1...v4.1.2) (2023-12-12)
 
 

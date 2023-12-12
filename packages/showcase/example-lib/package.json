@@ -1,7 +1,7 @@
 {
   "name": "@genesiscommunitysuccess/example-lib",
   "private": true,
-  "version": "4.1.2",
+  "version": "4.1.3",
   "description": "Example library to demonstrate custom elements linking",
   "main": "dist/esm/index.js",
   "types": "dist/dts/index.d.ts",
@@ -21,8 +21,8 @@
   },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "^0.8.0",
-    "@genesiscommunitysuccess/cep-fast-plugin": "4.1.2",
-    "@genesiscommunitysuccess/custom-elements-lsp": "4.1.2",
+    "@genesiscommunitysuccess/cep-fast-plugin": "4.1.3",
+    "@genesiscommunitysuccess/custom-elements-lsp": "4.1.3",
     "typescript": "4.9.5"
   },
   "customElements": "dist/custom-elements.json"
