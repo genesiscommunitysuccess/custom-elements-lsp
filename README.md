@@ -11,7 +11,7 @@ To get started run `$ npm run bootstrap` in your shell.
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
 The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package of the monorepo, and is a plugin for the TypeScript language server which adds in support for custom elements.
 
-![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
+![Autocompletion of custom element tag names](./packages/core/custom-elements-lsp/docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion" =25%x) ![Autocompletion of custom element attribute](./packages/core/custom-elements-lsp/docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion" =25%x) ![Diagnostics of invalid attributes on a custom element](./packages/core/custom-elements-lsp/docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics" =25%x) ![Jumping to definition source file of a custom element](./packages/core/custom-elements-lsp/docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition" =25%x)
 
 ### CEP FAST Plugin
 
@@ -19,7 +19,7 @@ The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package 
 [Plugin](./packages/core/cep-fast-plugin/README.md) for the CEP which enables https://www.fast.design/ enhancements. Examples of this is using the `:prop` syntax for property bindings, and `?attr` syntax for boolean attributes.
 
 
-![Property binding autocompletion](./docs/cep-fast-plugin/fast_property_binding.gif "Property Binding Autocompletion") ![Boolean attribute autocompletion](./docs/cep-fast-plugin/fast_boolean_attr_binding.gif "Boolean Attribute Binding Autocompletion") ![Event binding autocompletion](./docs/cep-fast-plugin/fast_event_binding.gif "Event Binding Autocompletion") ![Extra quickinfo functionality](./docs/cep-fast-plugin/fast_quicklook.gif "Quickinfo Extended Functionality")
+![Property binding autocompletion](./packages/core/cep-fast-plugin/docs/cep-fast-plugin/fast_property_binding.gif "Property Binding Autocompletion") ![Boolean attribute autocompletion](./packages/core/cep-fast-plugin/docs/cep-fast-plugin/fast_boolean_attr_binding.gif "Boolean Attribute Binding Autocompletion") ![Event binding autocompletion](./packages/core/cep-fast-plugin/docs/cep-fast-plugin/fast_event_binding.gif "Event Binding Autocompletion") ![Extra quickinfo functionality](./packages/core/cep-fast-plugin/docs/cep-fast-plugin/fast_quicklook.gif "Quickinfo Extended Functionality")
 
 ### Analyzer Import Alias Plugin
 
