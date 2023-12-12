@@ -48,8 +48,8 @@ To use this plugin you have a version of typescript as part of the project, loca
   }
 }
 ```
-> You need to use a target of `ES2015` or later in your `tsconfig.json`.
 > See [here](#example-config) for an example.
+3. You need to use a target of `ES2015` or later in your `tsconfig.json`.
 
 Base options.
 
