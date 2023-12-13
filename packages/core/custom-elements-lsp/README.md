@@ -153,7 +153,7 @@ You can see an example of this in this repository - `./example/.vscode/settings.
 
 ### NVIM
 
-If you have an LSP setup for typescript this should work straight away using the project's TypeScript.
+If you have an LSP setup for typescript this should work straight away using the project's TypeScript. There are lots of different ways you can configure NeoVim/Vim as an LSP client, configuring that is out of the scope of these instructions.
 
 ### JetBrains
 
