@@ -22,6 +22,7 @@
     "build:watch": "tsc -p ./src/tsconfig.json --watch",
     "clean:dist": "rimraf ./dist",
     "dev": "tsc-watch --project ./src --outDir ./dist --onSuccess \"nodemon ./dist/dev.js\"",
+    "postinstall": "node ./scripts/postinstall.cjs",
     "start:debug": "node --inspect-brk ./dist/dev.js",
     "test:unit": "cross-env NODE_OPTIONS=--experimental-vm-modules jest",
     "test:unit:coverage": "npm run test:unit -- --coverage",

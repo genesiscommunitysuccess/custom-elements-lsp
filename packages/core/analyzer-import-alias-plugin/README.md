@@ -24,7 +24,11 @@ This plugin will allow you to fix this issue.
 
 ### Installation
 
-Install this package as a dependency in the same project that you're using the custom elements manifest analyzer.
+Install this package as a dev dependency in the same project that you're using the custom elements manifest analyzer.
+
+```shell
+npm i @genesiscommunitysuccess/analyzer-import-alias-plugin --save-dev
+```
 
 You then need to apply this plugin in the `plugins` settings in your `custom-elements-manifest.config.mjs`, see [here](https://custom-elements-manifest.open-wc.org/analyzer/config/#config-file).
 
