@@ -128,11 +128,6 @@ There is current support for enhanced FAST handing (syntax such as `@event` on t
 ### VSCode
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
-
-1. You need to create a `settings.json` file inside of a `.vscode` directory, this is to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install).
-2. Launch VSCode on the project directory that contains the `.vscode` directory.
-3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
-
 1. Create a directory `.vscode` in the root of the monorepo. Inside of that create a file called `settings.json`. Then fill it with the following contents:
 ```json
 {
@@ -142,7 +137,7 @@ You just need to setup VSCode to use your local typescript install as by default
 You can see an example of this in this repository - `./example/.vscode/settings.json`.
 > If you already have that file and directory because you've created your own project config, then you can simply add the key/value pair from the json block into your existing config.
 
-> Advanced: If npm has hoisted your typescript install, ensure the path you configure accounts for that.
+> Advanced: If npm has hoisted your typescript install, ensure the path you configure accounts for that (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install).
 
 2. Launch VSCode on the root directory of the monorepo (so in the folder structure you'll have `.vscode` directory from step 1 at the root). You can do this via the GUI or if you've installed VSCode on your path you can navigate to the root and run `code .`.
 
