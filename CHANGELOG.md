@@ -1,5 +1,16 @@
 # Changelog
 
+## [5.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.3...v5.0.0) (2023-12-13)
+
+
+### ⚠ BREAKING CHANGES
+
+* **analyzer-import-alias-plugin:** Changes the API of the import plugin, users will need to update their config after this change
+
+### Features
+
+* **analyzer-import-alias-plugin:** simplify override api [FUI-1706](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1706) (#78) f9853a0
+
 ## [4.1.3](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.2...v4.1.3) (2023-12-12)
 
 
