@@ -49,36 +49,31 @@ export default {
 
 This will effectively treat any imported superclass from `my-library` as without the `Lib` prefix, so in the first example in the readme the local `Button` class will be correctly inheriting from the package `Button` class.
 
-The shape of the function defined as `*` is `(x: string) => string` so you may perform more complicated logic than the above example to mutate the names. If you don't want to change a name you should return the input name.
+The shape of the catch-all function defined as `*` is `(name: string) => string` so you may perform more complicated logic than the above example to mutate the names. If you don't want to change a name you should return the input name.
 
 There is also an option to set specific replacements for names such as the following:
 
 ```typescript
 aliasPlugin({
     'my-library': {
-        '*': (name) => name.replace('Lib',''),
-        override: {
-            LibButton: 'MyButton'
-        }
+        '*': (name) => name.replace('Lib', ''),
+        LibButton: 'MyButton',
+        LibCheckbox: (name) => name.replace('Lib', 'My'),
     }
 })
 ```
 
-When using this above configuration, the `LibButton` superclass inheritance will be treated as `MyButton`. *Important*, the matching `override` definition will take precedence over the `*` function.
+When using this above configuration, the `LibButton` superclass inheritance will be treated as `MyButton`. *Important*, any explicit definition will take precedence over the catch-all `*` function.
 
-For completeness, you may define as many library imports as you wish, and they may have replacement functions, overrides, or both defined.
+For completeness, you may define as many library imports as you wish.
 
 ```typescript
 aliasPlugin({
-    'my-library': {
-        override: {
-            LibButton: 'MyButton'
-        }
+    'my-library': { 
+        LibButton: 'MyButton'
     },
     'another-library': {
-        override: {
-            Banana: 'Apple'
-        }
+        '*': (name) => name.replace('Another', ''),
     }
 })
 ```

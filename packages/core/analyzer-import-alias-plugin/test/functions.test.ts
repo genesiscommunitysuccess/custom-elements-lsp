@@ -180,7 +180,7 @@ describe('getNewSuperclassName', () => {
   describe('when the superclass package is specified, and there is a replacement override', () => {
     it('returns the override name if there is a match', () => {
       const config: ImportAliasPluginOptions = {
-        'my-library': { override: { SuperClass: 'ParentClass' } },
+        'my-library': { SuperClass: 'ParentClass' },
       };
       const res = getNewSuperclassName(
         { ...classDef, superclass: { package: 'my-library', name: 'SuperClass' } },
@@ -194,8 +194,8 @@ describe('getNewSuperclassName', () => {
     it('falls back on the transformer function if there is no matching override', () => {
       const config: ImportAliasPluginOptions = {
         'my-library': {
-          override: { banana: 'apple' },
           '*': (name) => name.replace('Super', 'Base'),
+          banana: 'apple',
         },
       };
       const res = getNewSuperclassName(

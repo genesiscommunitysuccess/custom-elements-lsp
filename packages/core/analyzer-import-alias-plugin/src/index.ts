@@ -35,9 +35,7 @@ export type AppliedTransform = {
 export type ImportAliasPluginOptions = {
   [moduleName: string]: {
     '*'?: (importName: string) => string;
-    override?: {
-      [importName: string]: string;
-    };
+    [key: string]: string | ((importName: string) => string) | undefined;
   };
 };
 
@@ -49,16 +47,14 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
   return {
     name: pluginName,
     // Runs for all modules in a project, before continuing to the `analyzePhase`
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    collectPhase({ ts, node, context }) {},
+    collectPhase() {},
     // Runs for each module
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    analyzePhase({ ts, node, moduleDoc, context }) {
+    analyzePhase({ ts: analyzerTs, node, moduleDoc }) {
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
-        case ts.SyntaxKind.ClassDeclaration:
-          const classDeclerationNode = node as ts.ClassDeclaration;
-          const className = classDeclerationNode.name?.getText();
+        case analyzerTs.SyntaxKind.ClassDeclaration:
+          const classDeclarationNode = node as ts.ClassDeclaration;
+          const className = classDeclarationNode.name?.getText();
           const classDef = moduleDoc.declarations?.find(
             ({ name, kind }) => name === className && kind === 'class',
           ) as ClassDeclaration | undefined;
@@ -135,12 +131,16 @@ export function getNewSuperclassName(
   const { package: pkg, name, module } = classDef.superclass as Reference;
 
   if (pkg) {
-    const importConfig = config[pkg as string];
+    const importConfig = config[pkg as string] ?? {};
     return (
-      importConfig?.override?.[name] ||
+      (importConfig[name] as string) ||
       (() => {
-        const mNewName = importConfig?.['*']?.(name);
-        return mNewName === name ? null : mNewName;
+        const catchAllReplacement = importConfig['*'];
+        if (!catchAllReplacement) {
+          return null;
+        }
+        const replacedName = catchAllReplacement(name);
+        return replacedName !== name ? replacedName : null;
       })() ||
       null
     );

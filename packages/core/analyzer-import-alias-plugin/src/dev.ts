@@ -21,7 +21,9 @@ console.log(
       modules,
       plugins: [
         importAliasPlugin({
-          ['my-library']: { override: { ParentElement: 'MyElement' } },
+          ['my-library']: {
+            ParentElement: 'MyElement',
+          },
         }),
       ],
       context: { dev: true, thirdPartyCEMs: [superclassManifest] },
