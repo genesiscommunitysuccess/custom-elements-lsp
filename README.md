@@ -1,8 +1,16 @@
+The [Genesis Global](https://genesis.global) Community Success initiative is committed to open-sourcing select technologies that we believe the open-source community would benefit from.
+
 # Custom Elements Monorepo
 
 This repository contains multiple packages which can be used to work with [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
 
-To get started run `$ npm run bootstrap` in your shell.
+| Editor | Completions | Diagnostics | Quickinfo | Info |
+|---|---|---|---|---|
+| VSCode | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration to use local tsserver instance. |
+| Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. |
+| JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. |
+
+Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
 
 ## Packages
 
