@@ -23,7 +23,12 @@ There is an additional [companion plugin](https://www.npmjs.com/package/@genesis
 These instructions are for setting up the LSP in your application. If you are wanting to set up the LSP test it or contribute to it then go to [this section](#plugin-development).
 To use this plugin you have a version of typescript as part of the project, located inside of the `node_modules`.
 
-1. Ensure the package is installed in your `package.json` and you've run `npm install`.
+1. Install this package as a dev dependency in the target project.
+
+```shell
+npm i @genesiscommunitysuccess/custom-elements-lsp --save-dev
+```
+
 2. Configure the plugin in the `tsconfig.json`. The following is an example shape, see below for full explanations.
 
 ```json

@@ -46,6 +46,7 @@
     "build:watch": "npm run build:lsp -- --watch",
     "clean:dist": "rimraf ./out",
     "copy-manifest": "cp ./example/ce.json ./src/jest/ce-test.json",
+    "postinstall": "node ./scripts/postinstall.cjs",
     "test:unit": "jest",
     "test:unit:coverage": "jest --coverage",
     "test:unit:debug": "node --inspect-brk node_modules/jest/bin/jest.js",

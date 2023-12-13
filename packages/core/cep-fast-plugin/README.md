@@ -15,7 +15,13 @@ This is a [@genesiscommunitysuccess/custom-elements-lsp](https://www.npmjs.com/p
 ## Setup
 
 1. You need to follow the setup guide for the CEP [here](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp).
-2. You need to install this plugin and configure it with the CEP. See instructions [here](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp#fast-syntax).
+2. You need to install this plugin.
+
+```shell
+npm i @genesiscommunitysuccess/cep-fast-plugin --save-dev
+```
+
+3. You need to configure this plugin within the CEP. See instructions [here](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp#fast-syntax).
 
 > If using this plugin and you're using a design system you'll likely want to configure `designSystemPrefix` as specified in the main instructions too.
 
