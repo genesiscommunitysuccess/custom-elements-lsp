@@ -129,9 +129,32 @@ There is current support for enhanced FAST handing (syntax such as `@event` on t
 
 You just need to setup VSCode to use your local typescript install as by default it will try and use a version of typescript it is bundled with.
 
-1. You need to create a `settings.json` file inside of a `.vscode` directory, this is to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install). You can see an example of this in this repository - `./example/.vscode/settings.json`. If npm has hoisted your typescript install, ensure the path you configure accounts for that.
+1. You need to create a `settings.json` file inside of a `.vscode` directory, this is to configure VSCode to see the locally installed typescript binary (ensure `typescript.tdsk` points to the `lib` directory of the project typescript install).
 2. Launch VSCode on the project directory that contains the `.vscode` directory.
 3. Configure workspace version to local using `Typescript: Select Typescript Version` from the command palette https://code.visualstudio.com/docs/typescript/typescript-compiling#_using-the-workspace-version-of-typescript. If you are having issues seeing this menu option ensure you have a typescript file open.
+
+1. Create a directory `.vscode` in the root of the monorepo. Inside of that create a file called `settings.json`. Then fill it with the following contents:
+```json
+{
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
+```
+You can see an example of this in this repository - `./example/.vscode/settings.json`.
+> If you already have that file and directory because you've created your own project config, then you can simply add the key/value pair from the json block into your existing config.
+
+> Advanced: If npm has hoisted your typescript install, ensure the path you configure accounts for that.
+
+2. Launch VSCode on the root directory of the monorepo (so in the folder structure you'll have `.vscode` directory from step 1 at the root). You can do this via the GUI or if you've installed VSCode on your path you can navigate to the root and run `code .`.
+
+3. Ensuring you have a typescript file open, open the command palette (Ctrl/Cmd + Shift + P) and search for `TypeScript: Select Typescript Version...`
+![](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/lsp_vscode_one.png)
+> If you don't see this option then ensure you have a `.ts` file open.
+
+4. Select the workspace version, which should have the path matching the path set in the value of step 1.
+![](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/lsp_vscode_two.png)
+> If you don't see this option then ensure that you've opened the project in VSCode that has the `.vscode` directory from step 1 at the root.
+
+5. That should be it! Please note that you'll not see any diagnostics information after the LSP had loaded until you interact and change the file.
 
 ### NVIM
 
@@ -148,7 +171,12 @@ This section covers all of JetBrains IDEs, such as WebStorm and IntelliJ.
 To use the LSP in your JetBrains IDE.
 1. Launch the IDE with the project at the root of the monorepo.
 2. Open the preferences menu option from the settings.
+![](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/lsp_jetbrains_one.png)
 3. Navigate to the `Typescript` settings in the `Languages & Frameworks` settings, and ensure that the typescript option is set to the `node_modules/typescript` of your _local_ project, as shown in the image. This may be the default already, in which case you don't need to do anything. You'll also want to enable at least the three options which are enabled in the image below.
+![](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/lsp_jetbrains_two.png)
+4. That should be it! Please note that you'll not see any diagnostics information after the LSP had loaded until you interact and change the file.
+
+> Please note the location and appearance of menus may differ between IDEs and versions.
 
 ### Advanced Usage
 
