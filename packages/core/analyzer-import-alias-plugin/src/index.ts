@@ -34,10 +34,12 @@ export type AppliedTransform = {
 
 export type ImportAliasPluginOptions = {
   [moduleName: string]: {
-    '*'?: (importName: string) => string;
-    override?: {
-      [importName: string]: string;
-    };
+    /**
+     * @privateRemarks
+     * Not convinced we need to enforce catch-all to be a function.
+     * If users want to do a static replacement like `{ '*': 'noop' }` then so be it.
+     */
+    [key: string]: string | ((importName: string) => string);
   };
 };
 
@@ -135,12 +137,18 @@ export function getNewSuperclassName(
   const { package: pkg, name, module } = classDef.superclass as Reference;
 
   if (pkg) {
-    const importConfig = config[pkg as string];
+    const importConfig = config[pkg as string] ?? {};
     return (
-      importConfig?.override?.[name] ||
+      (importConfig[name] as string) ||
       (() => {
-        const mNewName = importConfig?.['*']?.(name);
-        return mNewName === name ? null : mNewName;
+        let catchAllReplacement = importConfig['*'];
+        if (!catchAllReplacement) {
+          return null;
+        }
+        if (typeof catchAllReplacement === 'function') {
+          catchAllReplacement = catchAllReplacement(name);
+        }
+        return catchAllReplacement !== name ? catchAllReplacement : null;
       })() ||
       null
     );

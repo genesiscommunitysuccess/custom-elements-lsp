@@ -78,7 +78,7 @@ describe('when transforming an import not matching any import', () => {
 
 describe('when transforming an import not matching any override setting', () => {
   it('produces the base-case manifest where the superclass is ignored', async () => {
-    const res = await buildTestCase({ ['my-library']: { override: { noMatch: 'null' } } });
+    const res = await buildTestCase({ ['my-library']: { noMatch: 'null' } });
     expect(res).toEqual(baseCase);
   });
 });
@@ -86,7 +86,7 @@ describe('when transforming an import not matching any override setting', () => 
 describe('when transforming an import using a specific override to allow it to reference the superclass manifest', () => {
   it('the produced manifest has the correct inherited information', async () => {
     const res = await buildTestCase({
-      ['my-library']: { override: { ParentElement: 'MyElement' } },
+      ['my-library']: { ParentElement: 'MyElement' },
     });
     expect(res).toEqual(getCorrectTestAssersion());
   });
@@ -105,8 +105,8 @@ describe('config override takes precedent over the transformer function', () => 
   it('the produced manifest has the correct inherited information', async () => {
     const res = await buildTestCase({
       ['my-library']: {
-        override: { ParentElement: 'MyElement' },
         '*': (name) => name.replace('Parent', 'Base'),
+        ParentElement: 'MyElement',
       },
     });
     expect(res).toEqual(getCorrectTestAssersion());
