@@ -1,7 +1,7 @@
-import { readFileSync } from 'fs';
+import fs from 'fs';
 import { Plugin } from '@custom-elements-manifest/analyzer';
 import type { ClassMember } from 'custom-elements-manifest';
-import { createSourceFile, ScriptTarget } from 'typescript';
+import ts from 'typescript';
 import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 import { baseCase } from './fixtures/default/unittest';
@@ -17,15 +17,15 @@ const buildTestCase = async (
   const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
   const anotherFilePath = '/test/fixtures/default/sourcecode/another.js';
   const superclassManifest = JSON.parse(
-    readFileSync(process.cwd() + '/test/fixtures/default/superclass.manifest.json').toString(),
+    fs.readFileSync(process.cwd() + '/test/fixtures/default/superclass.manifest.json').toString(),
   );
 
-  const defaultCode = readFileSync(process.cwd() + baseFilePath).toString();
-  const superclassCode = readFileSync(process.cwd() + anotherFilePath).toString();
+  const defaultCode = fs.readFileSync(process.cwd() + baseFilePath).toString();
+  const superclassCode = fs.readFileSync(process.cwd() + anotherFilePath).toString();
 
   const modules = [
-    createSourceFile(baseFilePath, defaultCode, ScriptTarget.ES2015, true),
-    createSourceFile(anotherFilePath, superclassCode, ScriptTarget.ES2015, true),
+    ts.createSourceFile(baseFilePath, defaultCode, ts.ScriptTarget.ES2015, true),
+    ts.createSourceFile(anotherFilePath, superclassCode, ts.ScriptTarget.ES2015, true),
   ];
 
   return (await getAnalyzerCreateHarness())({

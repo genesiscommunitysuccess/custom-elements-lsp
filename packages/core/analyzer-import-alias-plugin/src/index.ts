@@ -6,7 +6,7 @@ import type {
   Package,
   CustomElementDeclaration,
 } from 'custom-elements-manifest';
-import { ClassDeclaration as TSClassDeclaration, SyntaxKind } from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * TECHNICAL OVERVIEW.
@@ -49,11 +49,11 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
     // Runs for all modules in a project, before continuing to the `analyzePhase`
     collectPhase() {},
     // Runs for each module
-    analyzePhase({ node, moduleDoc }) {
+    analyzePhase({ ts: analyzerTs, node, moduleDoc }) {
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
-        case SyntaxKind.ClassDeclaration:
-          const classDeclarationNode = node as TSClassDeclaration;
+        case analyzerTs.SyntaxKind.ClassDeclaration:
+          const classDeclarationNode = node as ts.ClassDeclaration;
           const className = classDeclarationNode.name?.getText();
           const classDef = moduleDoc.declarations?.find(
             ({ name, kind }) => name === className && kind === 'class',

@@ -1,5 +1,5 @@
 import type { Package } from 'custom-elements-manifest';
-import type { SourceFile } from 'typescript';
+import * as ts from 'typescript';
 
 /**
  * This is a glue layer to import the ESM modules into the commonjs plugin.
@@ -15,7 +15,7 @@ import type { SourceFile } from 'typescript';
 const dynamicImport = new Function('specifier', 'return import(specifier)');
 
 type Create = (args: {
-  modules: SourceFile[];
+  modules: ts.SourceFile[];
   plugins?: any[];
   context?: { dev?: boolean; thirdPartyCEMs?: Package[] };
 }) => Package;
