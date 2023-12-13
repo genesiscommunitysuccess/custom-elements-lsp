@@ -15,8 +15,12 @@ Any editor/IDE configured as an LSP client using the instance of tsserver which 
 ## Packages
 
 ### Custom Elements LSP Plugin
-
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
+
+```shell
+npm i @genesiscommunitysuccess/custom-elements-lsp --save-dev
+```
+
 The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package of the monorepo, and is a plugin for the TypeScript language server which adds in support for custom elements.
 
 ![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of html in neovim](./docs/custom-elements-lsp/vim_tagname_quicklook.gif "Element Intellisense in NeoVim") ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Autocompletion of custom element in neovim](./docs/custom-elements-lsp/vim_ce.gif "Custom Element in NeoVim") ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
@@ -24,16 +28,25 @@ The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package 
 ### CEP FAST Plugin
 
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/cep-fast-plugin)](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
-[Plugin](./packages/core/cep-fast-plugin/README.md) for the CEP which enables https://www.fast.design/ enhancements. Examples of this is using the `:prop` syntax for property bindings, and `?attr` syntax for boolean attributes.
+
+```shell
+npm i @genesiscommunitysuccess/cep-fast-plugin --save-dev
+```
+
+The [FAST Plugin](./packages/core/cep-fast-plugin/README.md) for the CEP enables https://www.fast.design/ enhancements. Examples of this is using the `:prop` syntax for property bindings, and `?attr` syntax for boolean attributes.
 
 
 ![Property binding autocompletion](./docs/cep-fast-plugin/fast_property_binding.gif "Property Binding Autocompletion") ![Boolean attribute autocompletion](./docs/cep-fast-plugin/fast_boolean_attr_binding.gif "Boolean Attribute Binding Autocompletion") ![Event binding autocompletion](./docs/cep-fast-plugin/fast_event_binding.gif "Event Binding Autocompletion") ![Extra quickinfo functionality](./docs/cep-fast-plugin/fast_quicklook.gif "Quickinfo Extended Functionality")
 
 ### Analyzer Import Alias Plugin
 
-The [Analyzer Plugin](./packages/core/analyzer-import-alias-plugin/README.md) is a plugin for the [custom elements analyzer](https://custom-elements-manifest.open-wc.org/analyzer/getting-started/) which enhances its support for import aliases.
-
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/analyzer-import-alias-plugin)](https://www.npmjs.com/package/@genesiscommunitysuccess/analyzer-import-alias-plugin) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
+
+```shell
+npm i @genesiscommunitysuccess/analyzer-import-alias-plugin --save-dev
+```
+
+The [Analyzer Plugin](./packages/core/analyzer-import-alias-plugin/README.md) is a plugin for the [custom elements analyzer](https://custom-elements-manifest.open-wc.org/analyzer/getting-started/) which enhances its support for import aliases.
 
 ### Showcase Example
 
