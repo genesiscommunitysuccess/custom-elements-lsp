@@ -8,9 +8,9 @@ Install this TypeScript plugin in your project to enhance your LSP enabled edito
 
 | Editor | Completions | Diagnostics | Quickinfo | Info |
 |---|---|---|---|---|
-| VSCode | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration to use local tsserver instance. |
-| Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. |
-| JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. |
+| VSCode | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration to use local tsserver instance. [Setup](#vscode) |
+| Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. [Setup](#nvim) |
+| JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. [Setup](#jetbrains) |
 
 Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
 
@@ -153,7 +153,7 @@ You can see an example of this in this repository - `./example/.vscode/settings.
 
 ### NVIM
 
-If you have an LSP setup for typescript this should work straight away using the project's TypeScript.
+If you have an LSP setup for typescript this should work straight away using the project's TypeScript. There are lots of different ways you can configure NeoVim/Vim as an LSP client, configuring that is out of the scope of these instructions.
 
 ### JetBrains
 
