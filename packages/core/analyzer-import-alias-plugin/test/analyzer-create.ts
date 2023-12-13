@@ -1,10 +1,10 @@
 import type { Package } from 'custom-elements-manifest';
-import * as ts from 'typescript';
+import type { SourceFile } from 'typescript';
 
 /**
  * This is a glue layer to import the ESM modules into the commonjs plugin.
  *
- * 1. A package such as the The analyzer is an ESM module.
+ * 1. A package such as the analyzer is an ESM module.
  * 2. The plugin is a commonjs module, required to interface with tsserver.
  * 3. Using rollup to bundle the plugin, we can't work with cjs modules without using the cjs plugin.
  * 4. The cjs plugin doesn't work with chockkidar https://github.com/rollup/rollup/issues/3681
@@ -15,7 +15,7 @@ import * as ts from 'typescript';
 const dynamicImport = new Function('specifier', 'return import(specifier)');
 
 type Create = (args: {
-  modules: ts.SourceFile[];
+  modules: SourceFile[];
   plugins?: any[];
   context?: { dev?: boolean; thirdPartyCEMs?: Package[] };
 }) => Package;

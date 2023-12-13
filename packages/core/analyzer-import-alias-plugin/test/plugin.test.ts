@@ -1,7 +1,7 @@
-import fs from 'fs';
+import { readFileSync } from 'fs';
 import { Plugin } from '@custom-elements-manifest/analyzer';
 import type { ClassMember } from 'custom-elements-manifest';
-import ts from 'typescript';
+import { createSourceFile, ScriptTarget } from 'typescript';
 import importAliasPlugin, { ImportAliasPluginOptions } from '../src';
 import { getAnalyzerCreateHarness } from './analyzer-create';
 import { baseCase } from './fixtures/default/unittest';
@@ -17,15 +17,15 @@ const buildTestCase = async (
   const baseFilePath = '/test/fixtures/default/sourcecode/default.js';
   const anotherFilePath = '/test/fixtures/default/sourcecode/another.js';
   const superclassManifest = JSON.parse(
-    fs.readFileSync(process.cwd() + '/test/fixtures/default/superclass.manifest.json').toString(),
+    readFileSync(process.cwd() + '/test/fixtures/default/superclass.manifest.json').toString(),
   );
 
-  const defaultCode = fs.readFileSync(process.cwd() + baseFilePath).toString();
-  const superclassCode = fs.readFileSync(process.cwd() + anotherFilePath).toString();
+  const defaultCode = readFileSync(process.cwd() + baseFilePath).toString();
+  const superclassCode = readFileSync(process.cwd() + anotherFilePath).toString();
 
   const modules = [
-    ts.createSourceFile(baseFilePath, defaultCode, ts.ScriptTarget.ES2015, true),
-    ts.createSourceFile(anotherFilePath, superclassCode, ts.ScriptTarget.ES2015, true),
+    createSourceFile(baseFilePath, defaultCode, ScriptTarget.ES2015, true),
+    createSourceFile(anotherFilePath, superclassCode, ScriptTarget.ES2015, true),
   ];
 
   return (await getAnalyzerCreateHarness())({
@@ -110,5 +110,34 @@ describe('config override takes precedent over the transformer function', () => 
       },
     });
     expect(res).toEqual(getCorrectTestAssersion());
+  });
+});
+
+describe(`catch-all '*' overrides are limited to function types`, () => {
+  it('should raise a TS error if the user tries to apply a string', async () => {
+    const config: ImportAliasPluginOptions = {
+      ['my-library']: {
+        // @ts-expect-error
+        '*': 'Base',
+      },
+    };
+  });
+  it('should NOT raise a TS error if the user applies a function', async () => {
+    const config: ImportAliasPluginOptions = {
+      ['my-library']: {
+        '*': () => '',
+      },
+    };
+  });
+});
+
+describe('Explicit overrides can be either a function or string type', () => {
+  it('should NOT raise a TS error if the user applies either', async () => {
+    const config: ImportAliasPluginOptions = {
+      ['my-library']: {
+        LibButton: 'MyButton',
+        LibCheckbox: (name) => name.replace('Lib', 'My'),
+      },
+    };
   });
 });

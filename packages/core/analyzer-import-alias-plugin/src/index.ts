@@ -6,7 +6,7 @@ import type {
   Package,
   CustomElementDeclaration,
 } from 'custom-elements-manifest';
-import * as ts from 'typescript';
+import { ClassDeclaration as TSClassDeclaration, SyntaxKind } from 'typescript';
 
 /**
  * TECHNICAL OVERVIEW.
@@ -34,12 +34,8 @@ export type AppliedTransform = {
 
 export type ImportAliasPluginOptions = {
   [moduleName: string]: {
-    /**
-     * @privateRemarks
-     * Not convinced we need to enforce catch-all to be a function.
-     * If users want to do a static replacement like `{ '*': 'noop' }` then so be it.
-     */
-    [key: string]: string | ((importName: string) => string);
+    '*'?: (importName: string) => string;
+    [key: string]: string | ((importName: string) => string) | undefined;
   };
 };
 
@@ -51,16 +47,14 @@ export default function importAliasPlugin(config: ImportAliasPluginOptions): Plu
   return {
     name: pluginName,
     // Runs for all modules in a project, before continuing to the `analyzePhase`
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    collectPhase({ ts, node, context }) {},
+    collectPhase() {},
     // Runs for each module
-    // eslint-disable-next-line @typescript-eslint/no-shadow
-    analyzePhase({ ts, node, moduleDoc, context }) {
+    analyzePhase({ node, moduleDoc }) {
       // Runs for each module, after analyzing, all information about your module should now be available
       switch (node.kind) {
-        case ts.SyntaxKind.ClassDeclaration:
-          const classDeclerationNode = node as ts.ClassDeclaration;
-          const className = classDeclerationNode.name?.getText();
+        case SyntaxKind.ClassDeclaration:
+          const classDeclarationNode = node as TSClassDeclaration;
+          const className = classDeclarationNode.name?.getText();
           const classDef = moduleDoc.declarations?.find(
             ({ name, kind }) => name === className && kind === 'class',
           ) as ClassDeclaration | undefined;
@@ -141,14 +135,12 @@ export function getNewSuperclassName(
     return (
       (importConfig[name] as string) ||
       (() => {
-        let catchAllReplacement = importConfig['*'];
+        const catchAllReplacement = importConfig['*'];
         if (!catchAllReplacement) {
           return null;
         }
-        if (typeof catchAllReplacement === 'function') {
-          catchAllReplacement = catchAllReplacement(name);
-        }
-        return catchAllReplacement !== name ? catchAllReplacement : null;
+        const replacedName = catchAllReplacement(name);
+        return replacedName !== name ? replacedName : null;
       })() ||
       null
     );
