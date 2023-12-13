@@ -10,7 +10,7 @@ Install this TypeScript plugin in your project to enhance your LSP enabled edito
 
 Quicklook information is also provided, as well as IntelliSense for standard HTML elements. As previously stated, you can use any LSP enabled editor, such as Vim/NeoVim with LSP plugins for example.
 
-![Autocompletion and quicklook of a standard HTML element in vim editor](./docs/images/vim_tagname_quicklook.gif "Element IntelliSense in NeoVim") ![A second example of autocompletion and quicklook of a standard HTML element in vim editor](./docs/images/vim_tagname_quicklook_two.gif "Another Example")
+![Autocompletion and quicklook of a standard HTML element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook.gif "Element IntelliSense in NeoVim") ![A second example of autocompletion and quicklook of a standard HTML element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook_two.gif "Another Example") ![An example of autocompletion and quicklook of a custom element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_ce.gif "Custom Element in NeoVim")
 
 There is an additional [companion plugin](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) which enables functionality when working with [FAST](https://www.fast.design/).
 
