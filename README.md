@@ -1,8 +1,16 @@
+The [Genesis Global](https://genesis.global) Community Success initiative is committed to open-sourcing select technologies that we believe the open-source community would benefit from.
+
 # Custom Elements Monorepo
 
 This repository contains multiple packages which can be used to work with [Custom Elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements).
 
-To get started run `$ npm run bootstrap` in your shell.
+| Editor | Completions | Diagnostics | Quickinfo | Info |
+|---|---|---|---|---|
+| VSCode | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration to use local tsserver instance. |
+| Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. |
+| JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. |
+
+Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
 
 ## Packages
 
@@ -11,7 +19,7 @@ To get started run `$ npm run bootstrap` in your shell.
 [![NPM version](https://img.shields.io/npm/v/@genesiscommunitysuccess/custom-elements-lsp)](https://www.npmjs.com/package/@genesiscommunitysuccess/custom-elements-lsp) [![License](https://img.shields.io/github/license/genesiscommunitysuccess/custom-elements-lsp)](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/LICENSE)
 The [CEP](./packages/core/custom-elements-lsp/README.md) is the primary package of the monorepo, and is a plugin for the TypeScript language server which adds in support for custom elements.
 
-![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
+![Autocompletion of custom element tag names](./docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of html in neovim](./docs/custom-elements-lsp/vim_tagname_quicklook.gif "Element Intellisense in NeoVim") ![Autocompletion of custom element attribute](./docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Autocompletion of custom element in neovim](./docs/custom-elements-lsp/vim_ce.gif "Custom Element in NeoVim") ![Diagnostics of invalid attributes on a custom element](./docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](./docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
 
 ### CEP FAST Plugin
 
