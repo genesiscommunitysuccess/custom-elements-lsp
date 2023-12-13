@@ -6,6 +6,14 @@ The [Genesis Global](https://genesis.global) Community Success initiative is com
 
 Install this TypeScript plugin in your project to enhance your LSP enabled editor with IntelliSense handling for [web component custom elements](https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements). This includes: autocompletion, diagonstics, and jump to definition.
 
+| Editor | Completions | Diagnostics | Quickinfo | Info |
+|---|---|---|---|---|
+| VSCode | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration to use local tsserver instance. |
+| Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. |
+| JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. |
+
+Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
+
 ![Autocompletion of custom element tag names](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
 
 Quicklook information is also provided, as well as IntelliSense for standard HTML elements. As previously stated, you can use any LSP enabled editor, such as Vim/NeoVim with LSP plugins for example.
@@ -128,6 +136,19 @@ You just need to setup VSCode to use your local typescript install as by default
 ### NVIM
 
 If you have an LSP setup for typescript this should work straight away using the project's TypeScript.
+
+### JetBrains
+
+This section covers all of JetBrains IDEs, such as WebStorm and IntelliJ.
+[Currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) there is only partial support for the CEP.
+* Full diagnostics support.
+* Partial completions support, provided by the IDE itself *not* using the CEP - but enhanced because of the manifest files that are used with the plugin.
+* No support for quicklook/quickinfo, as JetBrains run this closed source without using `tsserver` in their IDEs.
+
+To use the LSP in your JetBrains IDE.
+1. Launch the IDE with the project at the root of the monorepo.
+2. Open the preferences menu option from the settings.
+3. Navigate to the `Typescript` settings in the `Languages & Frameworks` settings, and ensure that the typescript option is set to the `node_modules/typescript` of your _local_ project, as shown in the image. This may be the default already, in which case you don't need to do anything. You'll also want to enable at least the three options which are enabled in the image below.
 
 ### Advanced Usage
 
