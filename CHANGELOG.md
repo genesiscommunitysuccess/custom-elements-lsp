@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v5.0.1...v5.0.2) (2023-12-20)
+
+
+### Bug Fixes
+
+* relocate chalk to packages [FUI-1722](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1722) (#85) c63e1e3
+
 ## [5.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v5.0.0...v5.0.1) (2023-12-20)
 
 

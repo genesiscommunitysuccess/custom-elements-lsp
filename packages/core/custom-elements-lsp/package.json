@@ -1,6 +1,6 @@
 {
   "name": "@genesiscommunitysuccess/custom-elements-lsp",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "license": "MIT",
   "main": "./out/main/",
   "exports": {
