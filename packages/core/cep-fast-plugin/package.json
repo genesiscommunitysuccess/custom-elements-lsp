@@ -45,6 +45,7 @@
     "test:unit:watch": "jest --watchAll"
   },
   "dependencies": {
+    "chalk": "^4.1.1",
     "typescript-template-language-service-decorator": "^2.3.2"
   },
   "devDependencies": {

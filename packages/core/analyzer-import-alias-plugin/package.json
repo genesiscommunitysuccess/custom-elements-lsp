@@ -42,6 +42,9 @@
   ],
   "author": "",
   "license": "MIT",
+  "dependencies": {
+    "chalk": "^4.1.1"
+  },
   "devDependencies": {
     "@custom-elements-manifest/analyzer": "0.9.0",
     "@types/jest": "^29.5.1",
