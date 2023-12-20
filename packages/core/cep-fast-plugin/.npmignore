@@ -3,3 +3,4 @@
 !out/**/*.js
 out/**/*.test.js
 !docs/**
+!scripts/**
