@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.1](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v5.0.0...v5.0.1) (2023-12-20)
+
+
+### Bug Fixes
+
+* exclude scripts dirs from .npmignore [FUI-1722](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1722) (#84) 0c78f7b
+
 ## [5.0.0](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v4.1.3...v5.0.0) (2023-12-13)
 
 
