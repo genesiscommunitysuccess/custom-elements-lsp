@@ -14,11 +14,30 @@ Install this TypeScript plugin in your project to enhance your LSP enabled edito
 
 Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
 
-![Autocompletion of custom element tag names](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_ce_completion.gif "Custom Element Completion") ![Autocompletion of custom element attribute](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_attr_completion.gif "Attribute Completion") ![Diagnostics of invalid attributes on a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_invalid_attr.gif "Diagnostics") ![Jumping to definition source file of a custom element](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_jump_to_definition.gif "Jump to Definition")
+## Quickstart Example
+
+**A simple setup in your project should take less than five minutes.** Follow along with a video [here](https://www.loom.com/share/3dfdb245cbfc4fc1a166df8b19c123a5?sid=c478ca86-f0ba-4cfe-af9d-7ee6d30e26c6) and look at [this example project](https://github.com/genesiscommunitysuccess/cep-setup-example) and see the [changeset required to enable the LSP](https://github.com/genesiscommunitysuccess/cep-setup-example/pull/2/files).
+
+## Demos
+
+<img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_ce_completion.gif" alt="Custom Element Completion">
+<details>
+    <summary>Show more examples</summary>
+    <br>
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_attr_completion.gif" alt="Attribute Completion">
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_invalid_attr.gif" alt="Diagnostics">
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_jump_to_definition.gif" alt="Jump to Definition">
+</details>
 
 Quicklook information is also provided, as well as IntelliSense for standard HTML elements. As previously stated, you can use any LSP enabled editor, such as Vim/NeoVim with LSP plugins for example.
 
-![Autocompletion and quicklook of a standard HTML element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook.gif "Element IntelliSense in NeoVim") ![A second example of autocompletion and quicklook of a standard HTML element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook_two.gif "Another Example") ![An example of autocompletion and quicklook of a custom element in vim editor](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_ce.gif "Custom Element in NeoVim")
+<img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_ce.gif" alt="Custom Element in NeoVim">
+<details>
+    <summary>Show more examples</summary>
+    <br>
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook.gif" alt="Element IntelliSense in NeoVim">
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/vim_tagname_quicklook_two.gif" alt="Another Example">
+</details>
 
 There is an additional [companion plugin](https://www.npmjs.com/package/@genesiscommunitysuccess/cep-fast-plugin) which enables functionality when working with [FAST](https://www.fast.design/).
 

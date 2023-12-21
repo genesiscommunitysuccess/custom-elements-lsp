@@ -10,7 +10,14 @@ This is a [@genesiscommunitysuccess/custom-elements-lsp](https://www.npmjs.com/p
 * Support for boolean attribute bindings in templates `?attr`.
 * Support for event bindings autocompletion and diagnostics for `@events`. Extra info in quickinfo window.
 
-![Property binding autocompletion](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_property_binding.gif "Property Binding Autocompletion") ![Boolean attribute autocompletion](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_boolean_attr_binding.gif "Boolean Attribute Binding Autocompletion") ![Event binding autocompletion](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_event_binding.gif "Event Binding Autocompletion") ![Extra quickinfo functionality](https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_quicklook.gif "Quickinfo Extended Functionality")
+<img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_property_binding.gif" alt="Property Binding Autocompletion">
+<details>
+    <summary>Show more examples</summary>
+    <br>
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_boolean_attr_binding.gif" alt="Boolean Attribute Binding Autocompletion">
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_event_binding.gif" alt="Event Binding Autocompletion">
+    <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/cep-fast-plugin/fast_quicklook.gif" alt="Quickinfo Extended Functionality">
+</details>
 
 ## Setup
 
