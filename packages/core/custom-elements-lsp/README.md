@@ -16,7 +16,7 @@ Any editor/IDE configured as an LSP client using the instance of tsserver which 
 
 ## Quickstart Example
 
-**A simple setup in your project should take less than five minutes.** Follow along with a video [here](https://www.loom.com/share/3dfdb245cbfc4fc1a166df8b19c123a5?sid=c478ca86-f0ba-4cfe-af9d-7ee6d30e26c6) and look at [this example project](https://github.com/genesiscommunitysuccess/cep-setup-example) and see the [changeset required to enable the LSP](https://github.com/genesiscommunitysuccess/cep-setup-example/pull/2/files).
+**Project setup takes less than 5 minutes.** Follow along with our [Setup Walkthrough Video](https://www.loom.com/share/3dfdb245cbfc4fc1a166df8b19c123a5?sid=c478ca86-f0ba-4cfe-af9d-7ee6d30e26c6), try our pre-setup [Example Project](https://github.com/genesiscommunitysuccess/cep-setup-example), and see the [Changeset](https://github.com/genesiscommunitysuccess/cep-setup-example/pull/2/files) required to enable the LSP in the example project.
 
 ## Demos
 
