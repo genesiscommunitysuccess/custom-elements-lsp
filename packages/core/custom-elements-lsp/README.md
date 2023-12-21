@@ -12,6 +12,8 @@ Install this TypeScript plugin in your project to enhance your LSP enabled edito
 | Vim/NeoVim | :white_check_mark: | :white_check_mark: | :white_check_mark: | Requires configuration as an LSP client for TypeScript. [Setup](#nvim) |
 | JetBrains (IntelliJ/Webstorm/etc...) | :heavy_minus_sign: | :white_check_mark: | :x: | JetBrains IDEs [currently](https://youtrack.jetbrains.com/issue/WEB-62815/Ability-to-use-tsserver-to-implement-all-LSP-functionality-from-TypeScript) only have partial support as an LSP client. [Setup](#jetbrains) |
 
+**A simple setup in your project should not take long.** Follow along with a video [here](https://www.loom.com/share/3dfdb245cbfc4fc1a166df8b19c123a5?sid=c478ca86-f0ba-4cfe-af9d-7ee6d30e26c6) and look at [this example project](https://github.com/genesiscommunitysuccess/cep-setup-example) and see the [changeset required to enable the LSP](https://github.com/genesiscommunitysuccess/cep-setup-example/pull/2/files).
+
 Any editor/IDE configured as an LSP client using the instance of tsserver which this plugin is installed to _should_ be compatible.
 
 <img src="https://github.com/genesiscommunitysuccess/custom-elements-lsp/blob/master/docs/custom-elements-lsp/base_ce_completion.gif" alt="Custom Element Completion">
