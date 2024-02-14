@@ -1,5 +1,12 @@
 # Changelog
 
+## [5.0.3](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v5.0.2...v5.0.3) (2024-02-14)
+
+
+### Bug Fixes
+
+* add full filepath to main file in package.json [FUI-1827](https://github.com/genesiscommunitysuccess/custom-elements-lsp/issues/1827) (#89) 9057656
+
 ## [5.0.2](https://github.com/genesiscommunitysuccess/custom-elements-lsp/compare/v5.0.1...v5.0.2) (2023-12-20)
 
 
