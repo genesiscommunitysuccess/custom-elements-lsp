@@ -3,7 +3,7 @@
   "version": "5.0.2",
   "description": "Plugin for custom element manifest parser to handle import aliases",
   "type": "module",
-  "main": "./dist",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "repository": {
     "type": "git",

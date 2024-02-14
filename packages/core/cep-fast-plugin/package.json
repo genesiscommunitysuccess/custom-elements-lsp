@@ -2,7 +2,7 @@
   "name": "@genesiscommunitysuccess/cep-fast-plugin",
   "version": "5.0.2",
   "license": "MIT",
-  "main": "./out",
+  "main": "./out/index.js",
   "description": "Plugin for @genesiscommunitysuccess/custom-elements-lsp which enables https://www.fast.design/ enhancements",
   "keywords": [
     "analyzer",

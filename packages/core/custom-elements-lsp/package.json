@@ -2,7 +2,7 @@
   "name": "@genesiscommunitysuccess/custom-elements-lsp",
   "version": "5.0.2",
   "license": "MIT",
-  "main": "./out/main/",
+  "main": "./out/main/index.js",
   "exports": {
     ".": "./out/main/index.js",
     "./out/main/plugins/export-interface": "./out/main/plugins/export-interface.js"
